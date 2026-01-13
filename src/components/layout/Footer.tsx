@@ -9,7 +9,6 @@ const footerLinks = {
   ],
   sellers: [
     { name: "Start Selling", href: "/sell" },
-    { name: "Seller Dashboard", href: "/dashboard" },
     { name: "Pricing & Fees", href: "/pricing" },
     { name: "Seller Guidelines", href: "/guidelines" },
   ],

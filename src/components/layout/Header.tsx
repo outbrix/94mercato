@@ -181,15 +181,11 @@ export const Header = () => {
               </div>
             ) : null}
 
-            <MobileNavLink to="/dashboard" closeMenu={() => setMobileMenuOpen(false)}>
-              <LayoutDashboard className="h-5 w-5" />
-              Dashboard
-            </MobileNavLink>
-
             {navLinks.map(link => (
               <MobileNavLink key={link.to} to={link.to} closeMenu={() => setMobileMenuOpen(false)}>
                 {link.label === 'Products' && <Crown className="h-5 w-5" />}
                 {link.label === 'Sell' && <LogIn className="h-5 w-5" />}
+                {link.label === 'Dashboard' && <LayoutDashboard className="h-5 w-5" />}
                 {link.label === 'About' && <User className="h-5 w-5" />}
                 {link.label === 'Contact' && <User className="h-5 w-5" />}
                 {link.label}
