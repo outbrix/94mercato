@@ -8,6 +8,8 @@ import { HelmetProvider } from "react-helmet-async";
 import { AIAssistantWidget } from "@/components/ai/AIAssistantWidget";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { RequireAdmin } from "@/components/admin/RequireAdmin";
+import { RequireSeller } from "@/components/seller/RequireSeller";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { CookieConsent } from "@/components/ui/CookieConsent";
 import { BackToTop } from "@/components/ui/BackToTop";
@@ -90,19 +92,47 @@ const App = () => (
                   <Route path="/products/:slug" element={<ProductDetail />} />
                   <Route path="/free" element={<FreeDownloads />} />
                   <Route path="/sell" element={<Sell />} />
-                  <Route path="/sell/onboarding" element={<SellerOnboarding />} />
+                  <Route path="/sell/onboarding" element={
+                    <RequireAuth>
+                      <SellerOnboarding />
+                    </RequireAuth>
+                  } />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route path="/dashboard" element={<SellerDashboard />} />
-                  <Route path="/dashboard/upload" element={<DashboardUpload />} />
-                  <Route path="/dashboard/edit/:productId" element={<ProductEdit />} />
-                  <Route path="/dashboard/promo-codes" element={<SellerPromoCodes />} />
-                  <Route path="/purchases" element={<BuyerDashboard />} />
-                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/dashboard" element={
+                    <RequireSeller>
+                      <SellerDashboard />
+                    </RequireSeller>
+                  } />
+                  <Route path="/dashboard/upload" element={
+                    <RequireSeller>
+                      <DashboardUpload />
+                    </RequireSeller>
+                  } />
+                  <Route path="/dashboard/edit/:productId" element={
+                    <RequireSeller>
+                      <ProductEdit />
+                    </RequireSeller>
+                  } />
+                  <Route path="/dashboard/promo-codes" element={
+                    <RequireSeller>
+                      <SellerPromoCodes />
+                    </RequireSeller>
+                  } />
+                  <Route path="/purchases" element={
+                    <RequireAuth>
+                      <BuyerDashboard />
+                    </RequireAuth>
+                  } />
+                  <Route path="/profile" element={
+                    <RequireAuth>
+                      <Profile />
+                    </RequireAuth>
+                  } />
                   <Route path="/seller/:displayName" element={<SellerProfile />} />
                   <Route path="/403" element={<Forbidden />} />
                   <Route path="/purchase/success" element={<PaymentSuccess />} />
