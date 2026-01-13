@@ -123,15 +123,21 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
 
       {/* Content */}
       <div className="p-5 space-y-4 bg-midnight-light/30">
-        {/* Category & Rating */}
+        {/* Category & Rating & Sales */}
         <div className="flex items-center justify-between text-xs">
           <span className="text-cream/50 tracking-wide uppercase">
             {product.category}
           </span>
-          <div className="flex items-center gap-1 text-champagne">
-            <Star className="h-3 w-3 fill-current" />
-            <span className="text-cream">{product.rating}</span>
-            <span className="text-cream/50">({product.sales})</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 text-champagne">
+              <Star className="h-3 w-3 fill-current" />
+              <span className="text-cream">{product.rating}</span>
+            </div>
+            {product.sales > 0 && (
+              <span className="text-cream/50">
+                {product.sales} {product.sales === 1 ? 'sale' : 'sales'}
+              </span>
+            )}
           </div>
         </div>
 

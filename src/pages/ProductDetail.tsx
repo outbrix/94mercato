@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import { useRecentlyViewedStore } from "@/store/recentlyViewedStore";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
@@ -133,6 +134,24 @@ const ProductDetail = () => {
     };
     fetchRelatedProducts();
   }, [product?.category, slug]);
+
+  // Track recently viewed products
+  const addToRecentlyViewed = useRecentlyViewedStore((state) => state.addProduct);
+
+  useEffect(() => {
+    if (product) {
+      addToRecentlyViewed({
+        id: product.id.toString(),
+        title: product.title,
+        slug: product.slug,
+        price: product.price,
+        currency: product.currency || 'INR',
+        image: product.thumbnail_url || (product.images && product.images[0]) || '',
+        category: product.category,
+        sellerName: product.seller_name,
+      });
+    }
+  }, [product, addToRecentlyViewed]);
 
   // Convert both to numbers for comparison to handle type mismatches
   const isOwner = user && product && Number(user.id) === Number(product.seller_id);
