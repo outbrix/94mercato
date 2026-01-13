@@ -9,6 +9,7 @@ const footerLinks = {
   ],
   sellers: [
     { name: "Start Selling", href: "/sell" },
+    { name: "Seller Policy", href: "/seller-policy" },
     { name: "Pricing & Fees", href: "/pricing" },
     { name: "Seller Guidelines", href: "/guidelines" },
   ],
@@ -23,7 +24,7 @@ const footerLinks = {
     { name: "Privacy Policy", href: "/privacy" },
     { name: "Refund Policy", href: "/refund" },
     { name: "License Agreement", href: "/license" },
-    { name: "Cookie Policy", href: "/cookies" },
+    { name: "Cookie Policy", href: "/cookie" },
   ],
 };
 

@@ -68,6 +68,42 @@ export default function Privacy() {
                 You may opt-out of receiving promotional communications from us by following the instructions in those communications. You may also access, update, or delete your personal information by contacting us.
               </p>
 
+              <h2 className="heading-medium text-2xl mt-12 mb-4">6. Your Rights Under GDPR (EU/UK Users)</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                If you are located in the European Economic Area (EEA) or the United Kingdom, you have certain data protection rights under the General Data Protection Regulation (GDPR). These include:
+              </p>
+              <ul className="space-y-3 text-muted-foreground list-disc pl-6">
+                <li>
+                  <strong className="text-foreground">Right of Access:</strong> You have the right to request copies of your personal data.
+                </li>
+                <li>
+                  <strong className="text-foreground">Right to Rectification:</strong> You have the right to request that we correct any information you believe is inaccurate or complete information you believe is incomplete.
+                </li>
+                <li>
+                  <strong className="text-foreground">Right to Erasure:</strong> You have the right to request that we erase your personal data, under certain conditions.
+                </li>
+                <li>
+                  <strong className="text-foreground">Right to Restrict Processing:</strong> You have the right to request that we restrict the processing of your personal data, under certain conditions.
+                </li>
+                <li>
+                  <strong className="text-foreground">Right to Data Portability:</strong> You have the right to request that we transfer the data we have collected to another organization, or directly to you, under certain conditions.
+                </li>
+                <li>
+                  <strong className="text-foreground">Right to Object:</strong> You have the right to object to our processing of your personal data, under certain conditions.
+                </li>
+              </ul>
+              <p className="text-muted-foreground leading-relaxed mt-4">
+                To exercise any of these rights, please contact us at{" "}
+                <a href="mailto:privacy@94mercato.com" className="text-champagne hover:text-champagne/80 transition-colors">
+                  privacy@94mercato.com
+                </a>. We will respond to your request within 30 days.
+              </p>
+
+              <h2 className="heading-medium text-2xl mt-12 mb-4">7. Data Retention</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                We retain your personal data only for as long as necessary to fulfill the purposes for which it was collected, including to satisfy any legal, accounting, or reporting requirements. For sellers, we retain transaction records for 7 years for tax and legal compliance purposes.
+              </p>
+
               <h2 className="heading-medium text-2xl mt-12 mb-4">Contact Us</h2>
               <p className="text-muted-foreground leading-relaxed">
                 If you have any questions about this Privacy Policy, please contact us at{" "}
