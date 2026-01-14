@@ -4,16 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordStrength } from "@/components/ui/PasswordStrength";
 import { Helmet } from "react-helmet-async";
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Loader2, Eye, EyeOff, KeyRound, CheckCircle, AlertCircle } from "lucide-react";
-import api from "@/lib/api";
-import { getErrorMessage } from "@/types/api";
+import { supabase } from "@/integrations/supabase/client";
 
 const ResetPassword = () => {
-    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const token = searchParams.get("token");
 
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -22,12 +19,30 @@ const ResetPassword = () => {
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isValidSession, setIsValidSession] = useState<boolean | null>(null);
 
     useEffect(() => {
-        if (!token) {
-            setError("Invalid or missing reset token. Please request a new password reset link.");
-        }
-    }, [token]);
+        // Check if we have a valid session (user came from password reset email)
+        const checkSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setIsValidSession(!!session);
+        };
+
+        // Listen for auth state changes (handles the token exchange from the reset link)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'PASSWORD_RECOVERY') {
+                setIsValidSession(true);
+            } else if (session) {
+                setIsValidSession(true);
+            }
+        });
+
+        checkSession();
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -47,17 +62,23 @@ const ResetPassword = () => {
         setIsSubmitting(true);
 
         try {
-            await api.post("/auth/reset-password", {
-                token,
-                new_password: password
+            const { error: updateError } = await supabase.auth.updateUser({
+                password: password
             });
-            setIsSuccess(true);
-            // Redirect to login after 3 seconds
-            setTimeout(() => {
-                navigate("/login");
-            }, 3000);
+
+            if (updateError) {
+                setError(updateError.message);
+            } else {
+                setIsSuccess(true);
+                // Sign out the user so they can log in with the new password
+                await supabase.auth.signOut();
+                // Redirect to login after 3 seconds
+                setTimeout(() => {
+                    navigate("/login");
+                }, 3000);
+            }
         } catch (err: unknown) {
-            setError(getErrorMessage(err));
+            setError(err instanceof Error ? err.message : "An unexpected error occurred");
         } finally {
             setIsSubmitting(false);
         }
@@ -105,7 +126,14 @@ const ResetPassword = () => {
                                             Click here if not redirected
                                         </Link>
                                     </div>
-                                ) : !token ? (
+                                ) : isValidSession === null ? (
+                                    <div className="text-center space-y-6">
+                                        <div className="w-16 h-16 mx-auto rounded-full bg-champagne/10 flex items-center justify-center">
+                                            <Loader2 className="w-8 h-8 text-champagne animate-spin" />
+                                        </div>
+                                        <p className="text-muted-foreground">Validating your reset link...</p>
+                                    </div>
+                                ) : !isValidSession ? (
                                     <div className="text-center space-y-6">
                                         <div className="w-16 h-16 mx-auto rounded-full bg-red-500/10 flex items-center justify-center">
                                             <AlertCircle className="w-8 h-8 text-red-500" />
@@ -208,7 +236,7 @@ const ResetPassword = () => {
                                     </form>
                                 )}
 
-                                {!isSuccess && token && (
+                                {!isSuccess && isValidSession && (
                                     <div className="mt-8 text-center">
                                         <Link
                                             to="/login"

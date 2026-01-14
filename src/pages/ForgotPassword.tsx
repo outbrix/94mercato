@@ -6,8 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Loader2, Mail, ArrowLeft, CheckCircle } from "lucide-react";
-import api from "@/lib/api";
-import { getErrorMessage } from "@/types/api";
+import { supabase } from "@/integrations/supabase/client";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
@@ -21,10 +20,17 @@ const ForgotPassword = () => {
         setIsSubmitting(true);
 
         try {
-            await api.post("/auth/forgot-password", { email });
-            setIsSuccess(true);
+            const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/reset-password`,
+            });
+
+            if (resetError) {
+                setError(resetError.message);
+            } else {
+                setIsSuccess(true);
+            }
         } catch (err: unknown) {
-            setError(getErrorMessage(err));
+            setError(err instanceof Error ? err.message : "An unexpected error occurred");
         } finally {
             setIsSubmitting(false);
         }

@@ -8,26 +8,11 @@ import { useCartStore } from '@/store/cartStore';
 
 const Logo = () => (
   <Link to="/" className="flex items-center gap-2">
-    <svg
-      className="h-8 w-auto"
-      width="34"
-      height="34"
-      viewBox="0 0 34 34"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect width="34" height="34" rx="8" fill="url(#paint0_linear_1_2)" />
-      <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fontFamily="'Playfair Display', serif" fontSize="18" fill="white">94</text>
-      <defs>
-        <linearGradient id="paint0_linear_1_2" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#A68B6E" />
-          <stop offset="1" stopColor="#7A634B" />
-        </linearGradient>
-      </defs>
-    </svg>
-    <span className="font-serif text-xl font-bold text-cream">
-      94<span className="text-champagne">mercato</span>
-    </span>
+    <img
+      src="/logo.png"
+      alt="94mercato"
+      className="h-10 w-auto"
+    />
   </Link>
 );
 
