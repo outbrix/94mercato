@@ -37,11 +37,12 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-8 lg:mb-0">
             <Link to="/" className="flex items-center gap-3 mb-6">
-              <img
-                src="/logo.png"
-                alt="94mercato"
-                className="h-12 w-auto"
-              />
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sapphire to-sapphire-glow flex items-center justify-center shadow-sapphire">
+                <span className="font-serif text-lg font-semibold text-cream">M</span>
+              </div>
+              <span className="font-serif text-xl tracking-tight text-cream">
+                94<span className="text-champagne">mercato</span>
+              </span>
             </Link>
             <p className="text-sm text-cream/50 leading-relaxed max-w-xs">
               Where digital craft becomes timeless. A curated marketplace for creators who value excellence.
