@@ -2,11 +2,15 @@ import axios from "axios";
 
 // Helper to determine API URL based on environment
 const getApiUrl = () => {
-    // In production, use the relative path (proxy or same domain)
-    if (import.meta.env.PROD) return "/api/ai";
+    // Use VITE_API_URL from .env if available (e.g., http://localhost:3000/api)
+    const envApiUrl = import.meta.env.VITE_API_URL;
+    if (envApiUrl) {
+        // Ensure no double slashes if env var ends with /
+        return `${envApiUrl.replace(/\/$/, '')}/ai`;
+    }
 
-    // In development with Vite proxy, use /api/ai if proxy is set up, 
-    // OR full URL if CORS is enabled on backend (as per app.js)
+    // Fallback logic
+    if (import.meta.env.PROD) return "/api/ai";
     return "http://localhost:3000/api/ai";
 };
 
