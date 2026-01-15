@@ -99,7 +99,7 @@ const Press = () => {
                                 <dl className="grid sm:grid-cols-2 gap-6">
                                     <div>
                                         <dt className="text-sm text-muted-foreground mb-1">Founded</dt>
-                                        <dd className="font-medium">2024</dd>
+                                        <dd className="font-medium">2025</dd>
                                     </div>
                                     <div>
                                         <dt className="text-sm text-muted-foreground mb-1">Headquarters</dt>
