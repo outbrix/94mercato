@@ -43,6 +43,14 @@ const PaymentCancel = lazy(() => import("./pages/PaymentCancel"));
 const FreeDownloads = lazy(() => import("./pages/FreeDownloads"));
 const SellerPromoCodes = lazy(() => import("./pages/seller/PromoCodes"));
 
+// New Footer Pages
+const Categories = lazy(() => import("./pages/Categories"));
+const Sellers = lazy(() => import("./pages/Sellers"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const Guidelines = lazy(() => import("./pages/Guidelines"));
+const Careers = lazy(() => import("./pages/Careers"));
+const Press = lazy(() => import("./pages/Press"));
+
 // Legal Pages
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -100,6 +108,12 @@ const App = () => (
                   } />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/categories" element={<Categories />} />
+                  <Route path="/sellers" element={<Sellers />} />
+                  <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/guidelines" element={<Guidelines />} />
+                  <Route path="/careers" element={<Careers />} />
+                  <Route path="/press" element={<Press />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
