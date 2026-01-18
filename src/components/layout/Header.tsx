@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { SearchModal } from '@/components/ui/SearchModal';
 import { Search, ShoppingBag, Menu, X, User, LogIn, LogOut, Crown, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCartStore } from '@/store/cartStore';
@@ -50,14 +51,19 @@ const Navigation = ({ links }) => (
   </nav>
 );
 
-const HeaderActions = () => {
+const HeaderActions = ({ onSearchClick }: { onSearchClick: () => void }) => {
   const { user, logout } = useAuth();
   const { items } = useCartStore();
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <div className="flex items-center gap-3">
-      <Button variant="ghost" size="icon" className="text-cream/70 hover:text-cream hover:bg-sapphire/10">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="text-cream/70 hover:text-cream hover:bg-sapphire/10"
+        onClick={onSearchClick}
+      >
         <Search className="h-5 w-5" />
       </Button>
       <Link to="/cart">
@@ -125,6 +131,7 @@ const getNavigationLinks = (user) => [
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const { user, logout } = useAuth();
   const navLinks = getNavigationLinks(user);
@@ -137,72 +144,77 @@ export const Header = () => {
   const containerClasses = "container-luxury flex items-center justify-between h-full";
 
   return (
-    <header className={headerClasses}>
-      <div className={containerClasses}>
-        <Logo />
-        <Navigation links={navLinks} />
-        <div className="flex items-center gap-2">
-          <HeaderActions />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden text-cream"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 top-16 z-40 bg-midnight/90 backdrop-blur-xl animate-fade-in lg:hidden"
-        >
-          <div className="container-luxury pt-8 space-y-4">
-            {user ? (
-              <div className="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
-                <Link to="/profile" className="flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
-                  {user.avatar_url ? (
-                    <img src={user.avatar_url} alt={user.display_name} className="h-12 w-12 rounded-full object-cover" />
-                  ) : (
-                    <div className="h-12 w-12 rounded-full bg-sapphire/30 flex items-center justify-center">
-                      <User className="h-6 w-6 text-cream" />
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-lg font-medium text-cream">{user.display_name || user.name}</p>
-                    <p className="text-sm capitalize text-cream/60">{user.role}</p>
-                  </div>
-                </Link>
-                <Button variant="ghost" size="icon" onClick={() => { logout(); setMobileMenuOpen(false); }}>
-                  <LogOut className="h-6 w-6 text-cream/70" />
-                </Button>
-              </div>
-            ) : null}
-
-            {navLinks.map(link => (
-              <MobileNavLink key={link.to} to={link.to} closeMenu={() => setMobileMenuOpen(false)}>
-                {link.label === 'Products' && <Crown className="h-5 w-5" />}
-                {link.label === 'Sell' && <LogIn className="h-5 w-5" />}
-                {link.label === 'Dashboard' && <LayoutDashboard className="h-5 w-5" />}
-                {link.label === 'About' && <User className="h-5 w-5" />}
-                {link.label === 'Contact' && <User className="h-5 w-5" />}
-                {link.label}
-              </MobileNavLink>
-            ))}
-
-            <div className="border-t border-white/10 pt-6 mt-6 space-y-4">
-              {!user && (
-                <MobileNavLink to="/login" closeMenu={() => setMobileMenuOpen(false)}>
-                  <LogIn className="h-5 w-5" />
-                  Login / Signup
-                </MobileNavLink>
-              )}
-            </div>
+    <>
+      <header className={headerClasses}>
+        <div className={containerClasses}>
+          <Logo />
+          <Navigation links={navLinks} />
+          <div className="flex items-center gap-2">
+            <HeaderActions onSearchClick={() => setSearchOpen(true)} />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden text-cream"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
           </div>
         </div>
-      )}
-    </header>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div
+            className="fixed inset-0 top-16 z-40 bg-midnight/90 backdrop-blur-xl animate-fade-in lg:hidden"
+          >
+            <div className="container-luxury pt-8 space-y-4">
+              {user ? (
+                <div className="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
+                  <Link to="/profile" className="flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt={user.display_name} className="h-12 w-12 rounded-full object-cover" />
+                    ) : (
+                      <div className="h-12 w-12 rounded-full bg-sapphire/30 flex items-center justify-center">
+                        <User className="h-6 w-6 text-cream" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-lg font-medium text-cream">{user.display_name || user.name}</p>
+                      <p className="text-sm capitalize text-cream/60">{user.role}</p>
+                    </div>
+                  </Link>
+                  <Button variant="ghost" size="icon" onClick={() => { logout(); setMobileMenuOpen(false); }}>
+                    <LogOut className="h-6 w-6 text-cream/70" />
+                  </Button>
+                </div>
+              ) : null}
+
+              {navLinks.map(link => (
+                <MobileNavLink key={link.to} to={link.to} closeMenu={() => setMobileMenuOpen(false)}>
+                  {link.label === 'Products' && <Crown className="h-5 w-5" />}
+                  {link.label === 'Sell' && <LogIn className="h-5 w-5" />}
+                  {link.label === 'Dashboard' && <LayoutDashboard className="h-5 w-5" />}
+                  {link.label === 'About' && <User className="h-5 w-5" />}
+                  {link.label === 'Contact' && <User className="h-5 w-5" />}
+                  {link.label}
+                </MobileNavLink>
+              ))}
+
+              <div className="border-t border-white/10 pt-6 mt-6 space-y-4">
+                {!user && (
+                  <MobileNavLink to="/login" closeMenu={() => setMobileMenuOpen(false)}>
+                    <LogIn className="h-5 w-5" />
+                    Login / Signup
+                  </MobileNavLink>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Search Modal */}
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+    </>
   );
 };

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/products/ProductCard";
 import { SemanticSearchBar } from "@/components/products/SemanticSearchBar";
@@ -52,11 +53,25 @@ const mapProduct = (product: BackendProduct) => ({
 });
 
 const Products = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialSearch = searchParams.get("search") || "";
+  const initialCategory = searchParams.get("category") || "All";
+
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const [selectedCategory, setSelectedCategory] = useState(
+    categories.includes(initialCategory) ? initialCategory : "All"
+  );
   const [products, setProducts] = useState<ReturnType<typeof mapProduct>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Update URL when search or category changes
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchQuery) params.set("search", searchQuery);
+    if (selectedCategory !== "All") params.set("category", selectedCategory);
+    setSearchParams(params, { replace: true });
+  }, [searchQuery, selectedCategory, setSearchParams]);
 
   // Fetch products from API
   useEffect(() => {
