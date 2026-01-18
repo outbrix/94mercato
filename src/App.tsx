@@ -13,6 +13,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { CookieConsent } from "@/components/ui/CookieConsent";
 import { BackToTop } from "@/components/ui/BackToTop";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // Eagerly load Index for fast initial render
 import Index from "./pages/Index";
@@ -86,158 +87,160 @@ const App = () => (
   <ErrorBoundary>
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  {/* Public Routes */}
-                  <Route path="/" element={<Index />} />
-                  <Route path="/wishlist" element={<Wishlist />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/products/:slug" element={<ProductDetail />} />
-                  <Route path="/free" element={<FreeDownloads />} />
-                  <Route path="/sell" element={<Sell />} />
-                  <Route path="/sell/onboarding" element={
-                    <RequireAuth>
-                      <SellerOnboarding />
-                    </RequireAuth>
-                  } />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/categories" element={<Categories />} />
-                  <Route path="/sellers" element={<Sellers />} />
-                  <Route path="/pricing" element={<Pricing />} />
-                  <Route path="/guidelines" element={<Guidelines />} />
-                  <Route path="/careers" element={<Careers />} />
-                  <Route path="/press" element={<Press />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route path="/dashboard" element={
-                    <RequireSeller>
-                      <SellerDashboard />
-                    </RequireSeller>
-                  } />
-                  <Route path="/dashboard/upload" element={
-                    <RequireSeller>
-                      <DashboardUpload />
-                    </RequireSeller>
-                  } />
-                  <Route path="/dashboard/edit/:productId" element={
-                    <RequireSeller>
-                      <ProductEdit />
-                    </RequireSeller>
-                  } />
-                  <Route path="/dashboard/promo-codes" element={
-                    <RequireSeller>
-                      <SellerPromoCodes />
-                    </RequireSeller>
-                  } />
-                  <Route path="/purchases" element={
-                    <RequireAuth>
-                      <BuyerDashboard />
-                    </RequireAuth>
-                  } />
-                  <Route path="/profile" element={
-                    <RequireAuth>
-                      <Profile />
-                    </RequireAuth>
-                  } />
-                  <Route path="/seller/:displayName" element={<SellerProfile />} />
-                  <Route path="/403" element={<Forbidden />} />
-                  <Route path="/purchase/success" element={<PaymentSuccess />} />
-                  <Route path="/purchase/cancel" element={<PaymentCancel />} />
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    {/* Public Routes */}
+                    <Route path="/" element={<Index />} />
+                    <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route path="/products/:slug" element={<ProductDetail />} />
+                    <Route path="/free" element={<FreeDownloads />} />
+                    <Route path="/sell" element={<Sell />} />
+                    <Route path="/sell/onboarding" element={
+                      <RequireAuth>
+                        <SellerOnboarding />
+                      </RequireAuth>
+                    } />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/categories" element={<Categories />} />
+                    <Route path="/sellers" element={<Sellers />} />
+                    <Route path="/pricing" element={<Pricing />} />
+                    <Route path="/guidelines" element={<Guidelines />} />
+                    <Route path="/careers" element={<Careers />} />
+                    <Route path="/press" element={<Press />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route path="/dashboard" element={
+                      <RequireSeller>
+                        <SellerDashboard />
+                      </RequireSeller>
+                    } />
+                    <Route path="/dashboard/upload" element={
+                      <RequireSeller>
+                        <DashboardUpload />
+                      </RequireSeller>
+                    } />
+                    <Route path="/dashboard/edit/:productId" element={
+                      <RequireSeller>
+                        <ProductEdit />
+                      </RequireSeller>
+                    } />
+                    <Route path="/dashboard/promo-codes" element={
+                      <RequireSeller>
+                        <SellerPromoCodes />
+                      </RequireSeller>
+                    } />
+                    <Route path="/purchases" element={
+                      <RequireAuth>
+                        <BuyerDashboard />
+                      </RequireAuth>
+                    } />
+                    <Route path="/profile" element={
+                      <RequireAuth>
+                        <Profile />
+                      </RequireAuth>
+                    } />
+                    <Route path="/seller/:displayName" element={<SellerProfile />} />
+                    <Route path="/403" element={<Forbidden />} />
+                    <Route path="/purchase/success" element={<PaymentSuccess />} />
+                    <Route path="/purchase/cancel" element={<PaymentCancel />} />
 
-                  {/* Legal Routes */}
-                  <Route path="/terms" element={<Terms />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/cookie" element={<Cookie />} />
-                  <Route path="/refund" element={<Refund />} />
-                  <Route path="/legal" element={<Legal />} />
-                  <Route path="/license" element={<License />} />
-                  <Route path="/seller-policy" element={<SellerPolicy />} />
+                    {/* Legal Routes */}
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/cookie" element={<Cookie />} />
+                    <Route path="/refund" element={<Refund />} />
+                    <Route path="/legal" element={<Legal />} />
+                    <Route path="/license" element={<License />} />
+                    <Route path="/seller-policy" element={<SellerPolicy />} />
 
-                  {/* Admin Routes - Protected */}
-                  <Route
-                    path="/admin"
-                    element={
-                      <RequireAdmin>
-                        <AdminDashboard />
-                      </RequireAdmin>
-                    }
-                  />
-                  <Route
-                    path="/admin/users"
-                    element={
-                      <RequireAdmin>
-                        <AdminUsers />
-                      </RequireAdmin>
-                    }
-                  />
-                  <Route
-                    path="/admin/products"
-                    element={
-                      <RequireAdmin>
-                        <AdminProducts />
-                      </RequireAdmin>
-                    }
-                  />
-                  <Route
-                    path="/admin/orders"
-                    element={
-                      <RequireAdmin>
-                        <AdminOrders />
-                      </RequireAdmin>
-                    }
-                  />
-                  <Route
-                    path="/admin/payouts"
-                    element={
-                      <RequireAdmin>
-                        <AdminPayouts />
-                      </RequireAdmin>
-                    }
-                  />
-                  <Route
-                    path="/admin/disputes"
-                    element={
-                      <RequireAdmin>
-                        <AdminDisputes />
-                      </RequireAdmin>
-                    }
-                  />
-                  <Route
-                    path="/admin/settings"
-                    element={
-                      <RequireAdmin>
-                        <AdminSettings />
-                      </RequireAdmin>
-                    }
-                  />
-                  <Route
-                    path="/admin/logs"
-                    element={
-                      <RequireAdmin>
-                        <AdminLogs />
-                      </RequireAdmin>
-                    }
-                  />
+                    {/* Admin Routes - Protected */}
+                    <Route
+                      path="/admin"
+                      element={
+                        <RequireAdmin>
+                          <AdminDashboard />
+                        </RequireAdmin>
+                      }
+                    />
+                    <Route
+                      path="/admin/users"
+                      element={
+                        <RequireAdmin>
+                          <AdminUsers />
+                        </RequireAdmin>
+                      }
+                    />
+                    <Route
+                      path="/admin/products"
+                      element={
+                        <RequireAdmin>
+                          <AdminProducts />
+                        </RequireAdmin>
+                      }
+                    />
+                    <Route
+                      path="/admin/orders"
+                      element={
+                        <RequireAdmin>
+                          <AdminOrders />
+                        </RequireAdmin>
+                      }
+                    />
+                    <Route
+                      path="/admin/payouts"
+                      element={
+                        <RequireAdmin>
+                          <AdminPayouts />
+                        </RequireAdmin>
+                      }
+                    />
+                    <Route
+                      path="/admin/disputes"
+                      element={
+                        <RequireAdmin>
+                          <AdminDisputes />
+                        </RequireAdmin>
+                      }
+                    />
+                    <Route
+                      path="/admin/settings"
+                      element={
+                        <RequireAdmin>
+                          <AdminSettings />
+                        </RequireAdmin>
+                      }
+                    />
+                    <Route
+                      path="/admin/logs"
+                      element={
+                        <RequireAdmin>
+                          <AdminLogs />
+                        </RequireAdmin>
+                      }
+                    />
 
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-              <AIAssistantWidget />
-              <CookieConsent />
-              <BackToTop />
-            </BrowserRouter>
-          </TooltipProvider>
-        </AuthProvider>
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+                <AIAssistantWidget />
+                <CookieConsent />
+                <BackToTop />
+              </BrowserRouter>
+            </TooltipProvider>
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
   </ErrorBoundary>

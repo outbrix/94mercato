@@ -8,6 +8,8 @@ import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getErrorMessage } from "@/types/api";
+import { useGoogleLogin } from "@react-oauth/google";
+
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +17,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,6 +36,29 @@ const Login = () => {
       setIsSubmitting(false);
     }
   };
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const user = await loginWithGoogle(tokenResponse.access_token);
+
+        // Redirect based on role
+        if (user.role === 'admin') {
+          navigate("/admin");
+        } else if (user.role === 'seller') {
+          navigate("/dashboard");
+        } else {
+          // Buyers go to home page
+          navigate("/");
+        }
+      } catch (err: unknown) {
+        setError(getErrorMessage(err));
+      }
+    },
+    onError: () => {
+      setError("Google login failed");
+    },
+  });
 
   return (
     <>
@@ -139,7 +164,13 @@ const Login = () => {
                 </div>
 
                 <div className="relative group">
-                  <Button variant="outline" className="w-full opacity-60" size="lg" disabled>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    size="lg"
+                    onClick={() => handleGoogleLogin()}
+                    type="button"
+                  >
                     <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                       <path
                         fill="currentColor"
@@ -160,9 +191,6 @@ const Login = () => {
                     </svg>
                     Continue with Google
                   </Button>
-                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 text-xs bg-secondary rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    Coming soon
-                  </span>
                 </div>
 
                 <p className="text-center text-sm text-muted-foreground mt-8">

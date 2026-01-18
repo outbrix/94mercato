@@ -23,6 +23,7 @@ interface AuthContextType {
   logout: () => void;
   refreshUser: () => Promise<void>;
   updateProfile: (data: ProfileUpdateData) => Promise<User>;
+  loginWithGoogle: (token: string) => Promise<User>;
 }
 
 interface SignupData {
@@ -83,6 +84,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   /**
+   * Login with Google access token
+   */
+  const loginWithGoogle = async (token: string): Promise<User> => {
+    const response = await api.post('/auth/google', { token });
+    const { accessToken, user: userData } = response.data;
+
+    // Store the token and user data
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    return userData;
+  };
+
+  /**
    * Signup and auto-login
    * Backend signup doesn't return a token, so we login after successful registration
    */
@@ -137,7 +152,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       signup,
       logout,
       refreshUser,
-      updateProfile
+      updateProfile,
+      loginWithGoogle
     }}>
       {children}
     </AuthContext.Provider>

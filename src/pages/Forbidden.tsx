@@ -12,7 +12,7 @@ export default function Forbidden() {
         <h1 className="font-serif text-4xl text-cream mb-4">403</h1>
         <h2 className="font-serif text-2xl text-cream/80 mb-4">Access Forbidden</h2>
         <p className="text-cream/60 mb-8">
-          You don't have permission to access this page. This area is restricted to administrators only.
+          You don't have permission to access this page. This area is restricted.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Button variant="outline" className="border-sapphire/30 text-cream hover:bg-sapphire/20" asChild>
