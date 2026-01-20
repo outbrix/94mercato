@@ -1,5 +1,18 @@
 {
     "installCommand": "npm install",
+    "redirects": [
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "www.94mercato.com"
+                }
+            ],
+            "destination": "https://94mercato.com/:path*",
+            "permanent": true
+        }
+    ],
     "rewrites": [
         {
             "source": "/(.*)",
