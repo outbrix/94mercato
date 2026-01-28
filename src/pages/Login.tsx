@@ -26,10 +26,16 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      await login(email, password);
-      // Redirect based on role could be added here
-      // For now, redirect to dashboard
-      navigate("/dashboard");
+      const user = await login(email, password);
+      // Redirect based on role
+      if (user.role === 'admin') {
+        navigate("/admin");
+      } else if (user.role === 'seller') {
+        navigate("/dashboard");
+      } else {
+        // Buyers go to purchases page
+        navigate("/purchases");
+      }
     } catch (err: unknown) {
       setError(getErrorMessage(err));
     } finally {
@@ -49,7 +55,7 @@ const Login = () => {
           navigate("/dashboard");
         } else {
           // Buyers go to home page
-          navigate("/");
+          navigate("/purchases");
         }
       } catch (err: unknown) {
         setError(getErrorMessage(err));

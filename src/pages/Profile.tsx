@@ -37,6 +37,9 @@ const Profile = () => {
         confirmPassword: "",
     });
     const [passwordError, setPasswordError] = useState("");
+    const [showOtpInput, setShowOtpInput] = useState(false);
+    const [otp, setOtp] = useState("");
+    const [otpResendTimer, setOtpResendTimer] = useState(0);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -209,28 +212,75 @@ const Profile = () => {
         setIsChangingPassword(true);
 
         try {
-            await api.put('/auth/password', {
-                currentPassword: passwordData.currentPassword,
-                newPassword: passwordData.newPassword,
-            });
+            if (!showOtpInput) {
+                // Step 1: Request OTP
+                await api.post('/auth/password/otp');
+                setShowOtpInput(true);
+                setOtpResendTimer(60); // 60 seconds cooldown
+                toast({
+                    title: "OTP Sent",
+                    description: "Please check your email for the verification code.",
+                });
+            } else {
+                // Step 2: Verify OTP and Change Password
+                if (otp.length !== 6) {
+                    setPasswordError("Please enter a valid 6-digit OTP.");
+                    setIsChangingPassword(false);
+                    return;
+                }
 
-            toast({
-                title: "Password Changed",
-                description: "Your password has been updated successfully.",
-            });
+                await api.put('/auth/password', {
+                    currentPassword: passwordData.currentPassword,
+                    newPassword: passwordData.newPassword,
+                    otp,
+                });
 
-            // Clear form
-            setPasswordData({
-                currentPassword: "",
-                newPassword: "",
-                confirmPassword: "",
-            });
+                toast({
+                    title: "Password Changed",
+                    description: "Your password has been updated successfully.",
+                });
+
+                // Reset all states
+                setPasswordData({
+                    currentPassword: "",
+                    newPassword: "",
+                    confirmPassword: "",
+                });
+                setOtp("");
+                setShowOtpInput(false);
+            }
 
         } catch (err: any) {
-            const message = err.response?.data?.message || "Failed to change password.";
+            const message = err.response?.data?.message || "Failed to process request.";
             setPasswordError(message);
         } finally {
             setIsChangingPassword(false);
+        }
+    };
+
+    // Resend Timer countdown
+    useEffect(() => {
+        if (otpResendTimer > 0) {
+            const timer = setInterval(() => setOtpResendTimer(prev => prev - 1), 1000);
+            return () => clearInterval(timer);
+        }
+    }, [otpResendTimer]);
+
+    const handleResendOtp = async () => {
+        if (otpResendTimer > 0) return;
+        try {
+            await api.post('/auth/password/otp');
+            setOtpResendTimer(60);
+            toast({
+                title: "OTP Resent",
+                description: "A new code has been sent to your email.",
+            });
+        } catch (err) {
+            toast({
+                title: "Failed",
+                description: "Could not resend OTP.",
+                variant: "destructive",
+            });
         }
     };
 
@@ -548,22 +598,54 @@ const Profile = () => {
                                             </button>
                                         </div>
                                     </div>
+                                    {/* OTP Input - Only show after initial request */}
+                                    {showOtpInput && (
+                                        <div className="space-y-2 animate-fade-in">
+                                            <Label htmlFor="otp">Verification Code (OTP)</Label>
+                                            <div className="flex gap-2">
+                                                <Input
+                                                    id="otp"
+                                                    type="text"
+                                                    placeholder="Enter 6-digit code"
+                                                    value={otp}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+                                                        setOtp(val);
+                                                    }}
+                                                    disabled={isChangingPassword}
+                                                    className="tracking-[0.5em] text-center font-bold text-lg"
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    onClick={handleResendOtp}
+                                                    disabled={otpResendTimer > 0 || isChangingPassword}
+                                                    className="w-32 shrink-0"
+                                                >
+                                                    {otpResendTimer > 0 ? `${otpResendTimer}s` : "Resend"}
+                                                </Button>
+                                            </div>
+                                            <p className="text-xs text-muted-foreground">
+                                                We sent a code to your email address.
+                                            </p>
+                                        </div>
+                                    )}
 
                                     <Button
                                         type="submit"
                                         variant="outline"
                                         className="w-full"
-                                        disabled={isChangingPassword || !passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword}
+                                        disabled={isChangingPassword || !passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword || (showOtpInput && otp.length !== 6)}
                                     >
                                         {isChangingPassword ? (
                                             <>
                                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                Changing Password...
+                                                Processing...
                                             </>
                                         ) : (
                                             <>
                                                 <Lock className="mr-2 h-4 w-4" />
-                                                Change Password
+                                                {showOtpInput ? "Verify & Change Password" : "Send Verification Code"}
                                             </>
                                         )}
                                     </Button>

@@ -20,6 +20,10 @@ export default function ForgotPassword() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        // Debug Alert to confirm handler fires and show URL
+        window.alert(`Submitting to: ${import.meta.env.VITE_API_URL}\nCheck Console for details.`);
+        console.log("🚀 Submitting Forgot Password Request");
+        console.log("🌍 API URL:", import.meta.env.VITE_API_URL);
 
         try {
             await api.post("/auth/forgot-password", { email });

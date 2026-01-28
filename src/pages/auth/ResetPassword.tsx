@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,11 +22,6 @@ export default function ResetPassword() {
     const [isSuccess, setIsSuccess] = useState(false);
     const { toast } = useToast();
     const navigate = useNavigate();
-
-    // Debugging: Log the token from URL
-    useEffect(() => {
-        console.log("🔑 Reset Password Token:", token);
-    }, [token]);
 
     if (!token) {
         return (
@@ -71,7 +66,6 @@ export default function ResetPassword() {
         setIsSubmitting(true);
 
         try {
-            console.log("🚀 Submitting Reset Password Request");
             await api.post("/auth/reset-password", {
                 token,
                 newPassword: formData.newPassword,
@@ -83,7 +77,6 @@ export default function ResetPassword() {
             });
             setTimeout(() => navigate("/login"), 3000);
         } catch (error: any) {
-            console.error("❌ Reset Error:", error.response?.data);
             toast({
                 title: "Reset Failed",
                 description: error.response?.data?.message || "This link may have expired.",
