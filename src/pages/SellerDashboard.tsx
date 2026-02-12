@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import api from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSettings } from "@/hooks/use-settings";
 import { formatPrice, CURRENCY_CONFIG } from "@/lib/utils";
 import {
   DollarSign,
@@ -55,9 +56,9 @@ interface Sale {
 
 const SellerDashboard = () => {
   const { user } = useAuth();
+  const { commissionRate } = useSettings();
   const [products, setProducts] = useState<Product[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
-  const [commissionRate, setCommissionRate] = useState(10);
   const [isLoading, setIsLoading] = useState(true);
   const [salesLoading, setSalesLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -97,7 +98,6 @@ const SellerDashboard = () => {
         setSalesLoading(true);
         const response = await api.get('/orders/my-sales');
         setSales(response.data.sales || []);
-        setCommissionRate(response.data.commission_rate || 10);
       } catch (err: any) {
         console.error('Error fetching sales:', err);
       } finally {
@@ -587,7 +587,7 @@ const SellerDashboard = () => {
             {/* Commission Info */}
             <div className="mt-8 glass-card p-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Platform commission: <span className="font-medium text-foreground">12%</span> per sale.{" "}
+                Platform commission: <span className="font-medium text-foreground">{commissionRate}%</span> per sale.{" "}
                 Your earnings are automatically calculated after each transaction.{" "}
                 <Link to="/pricing" className="text-champagne hover:underline">
                   Learn more about fees

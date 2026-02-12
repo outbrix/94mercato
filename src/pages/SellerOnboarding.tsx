@@ -9,6 +9,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import api from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+import { useSettings } from "@/hooks/use-settings";
 import { ThumbnailUploader } from "@/components/ThumbnailUploader";
 import { ImageUploader } from "@/components/ImageUploader";
 import { TagInput } from "@/components/TagInput";
@@ -59,6 +60,7 @@ const SellerOnboarding = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, refreshUser } = useAuth();
+  const { commissionRate } = useSettings();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -571,16 +573,15 @@ const SellerOnboarding = () => {
                       </p>
                     </div>
 
-                    {/* Commission Info */}
                     <div className="glass-card p-6">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-lg bg-champagne/10 flex items-center justify-center">
                           <DollarSign className="h-5 w-5 text-champagne" />
                         </div>
                         <div>
-                          <p className="font-medium">Platform Commission: 12%</p>
+                          <p className="font-medium">Platform Commission: {commissionRate}%</p>
                           <p className="text-sm text-muted-foreground">
-                            You keep 88% of every sale
+                            You keep {100 - Number(commissionRate)}% of every sale
                           </p>
                         </div>
                       </div>
@@ -590,12 +591,12 @@ const SellerOnboarding = () => {
                           <span>$100</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Platform fee (12%):</span>
-                          <span className="text-taupe">-$12</span>
+                          <span>Platform fee ({commissionRate}%):</span>
+                          <span className="text-taupe">-${Number(commissionRate)}</span>
                         </div>
                         <div className="flex justify-between font-medium pt-2 border-t border-border">
                           <span>Your earnings:</span>
-                          <span className="text-champagne">$88</span>
+                          <span className="text-champagne">${100 - Number(commissionRate)}</span>
                         </div>
                       </div>
                     </div>

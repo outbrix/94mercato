@@ -79,7 +79,7 @@ export default function AdminOrders() {
     {
       key: "amount",
       header: "Amount",
-      render: (order: Order) => formatPrice(order.amount * 100, 'USD'),
+      render: (order: Order) => formatPrice(order.amount, 'USD'),
     },
     {
       key: "status",

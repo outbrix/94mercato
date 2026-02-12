@@ -261,7 +261,7 @@ export default function AdminDashboard() {
                     <p className="text-xs text-cream/50">{order.buyerEmail}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-cream">{formatPrice(order.amount * 100, 'USD')}</p>
+                    <p className="text-sm text-cream">{formatPrice(order.amount, 'USD')}</p>
                     <StatusBadge status={order.status} />
                   </div>
                 </div>

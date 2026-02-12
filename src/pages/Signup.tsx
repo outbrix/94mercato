@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Eye, EyeOff, CheckCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getErrorMessage } from "@/types/api";
+import { useSettings } from "@/hooks/use-settings";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +24,7 @@ const Signup = () => {
   });
   const { signup } = useAuth();
   const navigate = useNavigate();
+  const { commissionRate } = useSettings();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,7 +161,7 @@ const Signup = () => {
                           I want to sell products
                         </Label>
                         <p className="text-xs text-muted-foreground">
-                          Get a seller dashboard with only 12% commission on sales
+                          Get a seller dashboard with only {commissionRate}% commission on sales
                         </p>
                       </div>
                     </div>
@@ -172,7 +174,7 @@ const Signup = () => {
                         Seller Benefits
                       </p>
                       <ul className="text-xs text-muted-foreground space-y-1 ml-6">
-                        <li>• Keep 88% of every sale</li>
+                        <li>• Keep {100 - Number(commissionRate)}% of every sale</li>
                         <li>• Detailed analytics dashboard</li>
                         <li>• Secure Stripe Connect payouts</li>
                         <li>• AI-powered tools for listings</li>

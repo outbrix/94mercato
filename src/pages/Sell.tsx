@@ -2,6 +2,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { useSettings } from "@/hooks/use-settings";
 import {
   ArrowRight,
   Upload,
@@ -13,45 +14,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 
-const benefits = [
-  {
-    icon: DollarSign,
-    title: "Keep 88% of Sales",
-    description:
-      "We take only 12% commission — you keep the majority of your earnings. No hidden fees, no surprises.",
-  },
-  {
-    icon: Upload,
-    title: "Easy Upload Process",
-    description:
-      "List your products in minutes with our intuitive upload flow. Drag, drop, and publish.",
-  },
-  {
-    icon: BarChart3,
-    title: "Detailed Analytics",
-    description:
-      "Track your performance with real-time insights. Understand your audience and optimize your listings.",
-  },
-  {
-    icon: Users,
-    title: "Global Audience",
-    description:
-      "Reach thousands of customers worldwide who are actively looking for premium digital products.",
-  },
-  {
-    icon: Shield,
-    title: "Secure Payments",
-    description:
-      "Get paid securely via Stripe Connect. Automatic payouts directly to your bank account.",
-  },
-  {
-    icon: Zap,
-    title: "Instant Delivery",
-    description:
-      "Automated file delivery means your customers get instant access after purchase.",
-  },
-];
-
+// Moved steps outside as they are static
 const steps = [
   {
     number: "01",
@@ -73,13 +36,61 @@ const steps = [
 ];
 
 const Sell = () => {
+  const { commissionRate } = useSettings();
+  const sellerKeepPercentage = 100 - Number(commissionRate);
+
+  // Benefits array moved inside component to use dynamic rate
+  const benefits = [
+    {
+      icon: DollarSign,
+      title: `Keep ${sellerKeepPercentage}% of Sales`,
+      description:
+        `We take only ${commissionRate}% commission — you keep the majority of your earnings. No hidden fees, no surprises.`,
+    },
+    {
+      icon: Upload,
+      title: "Easy Upload Process",
+      description:
+        "List your products in minutes with our intuitive upload flow. Drag, drop, and publish.",
+    },
+    {
+      icon: BarChart3,
+      title: "Detailed Analytics",
+      description:
+        "Track your performance with real-time insights. Understand your audience and optimize your listings.",
+    },
+    {
+      icon: Users,
+      title: "Global Audience",
+      description:
+        "Reach thousands of customers worldwide who are actively looking for premium digital products.",
+    },
+    {
+      icon: Shield,
+      title: "Secure Payments",
+      description:
+        "Get paid securely via Stripe Connect. Automatic payouts directly to your bank account.",
+    },
+    {
+      icon: Zap,
+      title: "Instant Delivery",
+      description:
+        "Automated file delivery means your customers get instant access after purchase.",
+    },
+  ];
+
+  // Example calculation
+  const exampleSalePrice = 1000;
+  const exampleCommission = Math.round(exampleSalePrice * (Number(commissionRate) / 100));
+  const exampleEarnings = exampleSalePrice - exampleCommission;
+
   return (
     <>
       <Helmet>
         <title>Start Selling — Mercato94</title>
         <meta
           name="description"
-          content="Join 850+ verified sellers on Mercato94. Sell your digital products, keep 85% of sales, and reach a global audience of creators."
+          content={`Join verified sellers on Mercato94. Sell your digital products, keep ${sellerKeepPercentage}% of sales, and reach a global audience of creators.`}
         />
       </Helmet>
       <Layout>
@@ -128,7 +139,7 @@ const Sell = () => {
                 </div>
                 <div className="w-px h-10 bg-border" />
                 <div className="text-center">
-                  <p className="text-2xl font-serif font-medium">12%</p>
+                  <p className="text-2xl font-serif font-medium">{commissionRate}%</p>
                   <p className="text-sm text-muted-foreground">Commission Only</p>
                 </div>
               </div>
@@ -156,9 +167,8 @@ const Sell = () => {
               {benefits.map((benefit, index) => (
                 <div
                   key={benefit.title}
-                  className={`glass-card-elevated p-8 animate-fade-up delay-${
-                    (index + 1) * 100
-                  }`}
+                  className={`glass-card-elevated p-8 animate-fade-up delay-${(index + 1) * 100
+                    }`}
                 >
                   <div className="w-12 h-12 rounded-lg bg-champagne/10 flex items-center justify-center mb-6">
                     <benefit.icon className="h-6 w-6 text-champagne" />
@@ -215,7 +225,7 @@ const Sell = () => {
         </section>
 
         {/* Pricing */}
-        <section className="section-padding bg-background">
+        <section className="section-padding bg-background" id="pricing">
           <div className="container-luxury">
             <div className="max-w-3xl mx-auto">
               <div className="glass-card-elevated p-12 text-center">
@@ -226,7 +236,7 @@ const Sell = () => {
                   No Monthly Fees
                 </h2>
                 <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
-                  We only make money when you make money. Pay only a 12% commission
+                  We only make money when you make money. Pay only a {commissionRate}% commission
                   on each sale — no subscriptions, no hidden fees.
                 </p>
 
@@ -236,15 +246,15 @@ const Sell = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Sale Price</span>
-                      <span>₹1,000</span>
+                      <span>₹{exampleSalePrice.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Platform Fee (12%)</span>
-                      <span className="text-taupe">-₹120</span>
+                      <span className="text-muted-foreground">Platform Fee ({commissionRate}%)</span>
+                      <span className="text-taupe">-₹{exampleCommission.toLocaleString()}</span>
                     </div>
                     <div className="border-t border-border pt-2 flex justify-between font-medium">
                       <span>Your Earnings</span>
-                      <span className="text-champagne">₹880</span>
+                      <span className="text-champagne">₹{exampleEarnings.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -252,13 +262,13 @@ const Sell = () => {
                 <div className="flex items-center justify-center gap-8 mb-10">
                   <div>
                     <p className="text-5xl font-serif font-bold text-champagne">
-                      88%
+                      {sellerKeepPercentage}%
                     </p>
                     <p className="text-sm text-muted-foreground">Your Earnings</p>
                   </div>
                   <div className="w-px h-16 bg-border" />
                   <div>
-                    <p className="text-5xl font-serif font-bold text-taupe">12%</p>
+                    <p className="text-5xl font-serif font-bold text-taupe">{commissionRate}%</p>
                     <p className="text-sm text-muted-foreground">Our Commission</p>
                   </div>
                 </div>
