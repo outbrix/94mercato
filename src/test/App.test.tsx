@@ -1,11 +1,33 @@
+import { describe, it, expect } from 'vitest';
+import { render, screen } from './test-utils';
+import { Hero } from '../components/home/Hero';
 
-import { render, screen } from '@testing-library/react';
-import App from '../App';
+describe('Hero Component', () => {
+  it('renders the main headline correctly', () => {
+    render(<Hero />);
 
-describe('App', () => {
-  it('renders the main application component without crashing', () => {
-    render(<App />);
-    // Check if a key element from the Index page is rendered
-    expect(screen.getByText(/A digital marketplace for creators/i)).toBeInTheDocument();
+    expect(screen.getByText(/Where Digital Craft/i)).toBeInTheDocument();
+    expect(screen.getByText(/Becomes Timeless/i)).toBeInTheDocument();
+  });
+
+  it('displays the marketplace badge', () => {
+    render(<Hero />);
+
+    expect(screen.getByText(/Premium Digital Marketplace/i)).toBeInTheDocument();
+  });
+
+  it('renders call-to-action buttons', () => {
+    render(<Hero />);
+
+    expect(screen.getByRole('link', { name: /Start Selling/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Explore Marketplace/i })).toBeInTheDocument();
+  });
+
+  it('shows the marketplace stats', () => {
+    render(<Hero />);
+
+    expect(screen.getByText(/Curated/i)).toBeInTheDocument();
+    expect(screen.getByText(/Premium Products/i)).toBeInTheDocument();
+    expect(screen.getByText(/Verified Sellers/i)).toBeInTheDocument();
   });
 });
