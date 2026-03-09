@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { Hero } from "@/components/home/Hero";
-import FeaturedProducts from "@/components/home/FeaturedProducts";
+
 import { RecentlyViewed } from "@/components/home/RecentlyViewed";
 import { Categories } from "@/components/home/Categories";
 import { SellerCTA } from "@/components/home/SellerCTA";
@@ -31,7 +31,7 @@ const Index = () => {
         <Hero />
         <Categories />
         <TrendingProducts />
-        <FeaturedProducts />
+
         <FeaturedCreators />
         <SellerCTA />
         <Testimonials />
