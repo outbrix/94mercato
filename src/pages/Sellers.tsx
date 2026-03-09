@@ -25,7 +25,7 @@ const Sellers = () => {
                 setIsLoading(true);
                 const response = await api.get('/sellers/featured');
                 setSellers(response.data);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error('Error fetching sellers:', err);
                 // Use fallback data if API fails
                 setSellers([]);

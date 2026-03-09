@@ -25,6 +25,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
+import { SubscriptionStatus } from "@/components/seller/SubscriptionStatus";
 
 interface Product {
   id: number;
@@ -62,6 +64,8 @@ const SellerDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [salesLoading, setSalesLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sellerTier, setSellerTier] = useState<SellerTier>("starter");
+  const [subscriptionExpiresAt, setSubscriptionExpiresAt] = useState<string | null>(null);
 
   // Stripe Connect state
   const [stripeStatus, setStripeStatus] = useState<{
@@ -80,9 +84,9 @@ const SellerDashboard = () => {
         setIsLoading(true);
         const response = await api.get('/products/my-products');
         setProducts(response.data.products || []);
-      } catch (err: any) {
-        console.error('Error fetching products:', err);
-        setError(err.response?.data?.message || 'Failed to load products');
+      } catch (err: unknown) {
+        const axiosErr = err as { response?: { data?: { message?: string } } };
+        setError(axiosErr.response?.data?.message || 'Failed to load products');
       } finally {
         setIsLoading(false);
       }
@@ -98,7 +102,7 @@ const SellerDashboard = () => {
         setSalesLoading(true);
         const response = await api.get('/orders/my-sales');
         setSales(response.data.sales || []);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching sales:', err);
       } finally {
         setSalesLoading(false);
@@ -108,6 +112,22 @@ const SellerDashboard = () => {
     fetchSales();
   }, []);
 
+  // Fetch seller tier from profile
+  useEffect(() => {
+    const fetchSellerTier = async () => {
+      try {
+        const response = await api.get('/seller/profile');
+        const tier = response.data?.seller_tier || response.data?.tier || 'starter';
+        setSellerTier(tier as SellerTier);
+        setSubscriptionExpiresAt(response.data?.subscription_expires_at || null);
+      } catch {
+        // Default to starter if endpoint not available
+        setSellerTier('starter');
+      }
+    };
+    fetchSellerTier();
+  }, []);
+
   // Check Stripe connection status
   useEffect(() => {
     const checkStripeStatus = async () => {
@@ -115,7 +135,7 @@ const SellerDashboard = () => {
       try {
         const response = await api.get('/stripe/connect/status');
         setStripeStatus(response.data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error checking Stripe status:', err);
         setStripeStatus({
           connected: false,
@@ -137,10 +157,11 @@ const SellerDashboard = () => {
     try {
       const response = await api.post('/stripe/connect/create-account');
       window.location.href = response.data.onboardingUrl;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
       toast({
         title: "Connection Failed",
-        description: err.response?.data?.message || "Failed to start Stripe onboarding.",
+        description: axiosErr.response?.data?.message || "Failed to start Stripe onboarding.",
         variant: "destructive",
       });
       setIsConnectingStripe(false);
@@ -151,10 +172,11 @@ const SellerDashboard = () => {
     try {
       const response = await api.post('/stripe/connect/dashboard-link');
       window.open(response.data.dashboardUrl, '_blank');
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
       toast({
         title: "Error",
-        description: err.response?.data?.message || "Failed to open Stripe dashboard.",
+        description: axiosErr.response?.data?.message || "Failed to open Stripe dashboard.",
         variant: "destructive",
       });
     }
@@ -220,7 +242,10 @@ const SellerDashboard = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
               <div>
-                <h1 className="heading-large">Seller Dashboard</h1>
+                <div className="flex items-center gap-3 mb-1">
+                  <h1 className="heading-large">Seller Dashboard</h1>
+                  <TierBadge tier={sellerTier} size="md" />
+                </div>
                 <p className="text-muted-foreground">
                   Welcome back, {user?.display_name || user?.name || 'Seller'}. Here's your overview.
                 </p>
@@ -261,8 +286,14 @@ const SellerDashboard = () => {
             <div className="glass-card-elevated p-6 mb-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-serif text-xl font-medium">Recent Sales</h2>
-                <Badge variant="outline" className="text-xs">
-                  {commissionRate}% Platform Fee
+                <Badge
+                  variant="outline"
+                  className={`text-xs ${sellerTier !== 'starter'
+                    ? 'border-sapphire/30 bg-sapphire/10 text-sapphire'
+                    : ''
+                    }`}
+                >
+                  {sellerTier !== 'starter' ? '2' : commissionRate}% Commission
                 </Badge>
               </div>
               <div className="overflow-x-auto">
@@ -412,6 +443,47 @@ const SellerDashboard = () => {
 
               {/* Right Sidebar */}
               <div className="space-y-6">
+                {/* Subscription Status */}
+                <SubscriptionStatus
+                  tier={sellerTier}
+                  subscriptionExpiresAt={subscriptionExpiresAt}
+                  onUpgrade={() => setSellerTier('creator_pro')}
+                />
+                {/* Wallet / Earnings Summary */}
+                <div className="glass-card-elevated p-6">
+                  <h2 className="font-serif text-lg font-medium mb-5">Wallet</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Total Earned</span>
+                      <span className="font-serif font-bold text-champagne">
+                        {formatPrice(
+                          sales.reduce((sum, s) => sum + s.gross_amount, 0),
+                          'USD'
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Commission Paid</span>
+                      <span className="text-sm text-muted-foreground">
+                        {formatPrice(
+                          sales.reduce((sum, s) => sum + s.commission, 0),
+                          'USD'
+                        )}
+                      </span>
+                    </div>
+                    <hr className="border-border" />
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Available</span>
+                      <span className="font-serif text-lg font-bold text-green-500">
+                        {formatPrice(
+                          sales.reduce((sum, s) => sum + s.net_amount, 0),
+                          'USD'
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Payouts Panel */}
                 <div className="glass-card-elevated p-6">
                   <div className="flex items-center gap-2 mb-6">

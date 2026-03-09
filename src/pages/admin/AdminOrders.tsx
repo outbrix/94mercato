@@ -36,7 +36,7 @@ export default function AdminOrders() {
         setIsLoading(true);
         const response = await api.get('/admin/orders?limit=100');
         setOrders(response.data.orders || []);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching orders:', err);
         toast({
           title: "Error",

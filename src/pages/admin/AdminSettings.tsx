@@ -68,7 +68,7 @@ const AdminSettings = () => {
           initialValues[key] = response.data.settings[key].value;
         });
         setEditedValues(initialValues);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching settings:', err);
         toast({
           title: "Error",
@@ -89,7 +89,7 @@ const AdminSettings = () => {
       const response = await api.get('/admin/settings/audit-log');
       setAuditLog(response.data.audit_log);
       setShowAuditLog(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Error",
         description: "Failed to load audit log.",
@@ -130,7 +130,7 @@ const AdminSettings = () => {
           description: "No settings were changed.",
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Error",
         description: err.response?.data?.message || "Failed to save settings.",

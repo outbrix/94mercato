@@ -182,10 +182,10 @@ const DashboardUpload = () => {
 
             // Navigate back to dashboard
             navigate('/dashboard');
-        } catch (error: any) {
-            console.error('Product creation error:', error);
+        } catch (error: unknown) {
+            const axiosErr = error as { response?: { data?: { message?: string } } };
             setUploadError(
-                error.response?.data?.message || "Failed to create product. Please try again."
+                axiosErr.response?.data?.message || "Failed to create product. Please try again."
             );
         } finally {
             setIsUploading(false);

@@ -1,128 +1,114 @@
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Upload, DollarSign, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const benefits = [
-  {
-    icon: Upload,
-    title: "Easy Upload",
-    description: "List your products in minutes with our intuitive upload flow",
-  },
-  {
-    icon: DollarSign,
-    title: "Competitive Commission",
-    description: "Generous commission rates for our valued sellers",
-  },
-  {
-    icon: BarChart3,
-    title: "Analytics",
-    description: "Track your performance with detailed insights",
-  },
-];
+import { ArrowRight, Zap, Crown, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function SellerCTA() {
   return (
-    <section className="section-padding bg-gradient-to-br from-sapphire/20 via-midnight to-midnight-light relative overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute top-1/4 right-0 w-[50vw] h-[50vh] bg-sapphire/20 rounded-full blur-[150px]" />
-      <div className="absolute bottom-1/4 left-0 w-[40vw] h-[40vh] bg-champagne/10 rounded-full blur-[120px]" />
-      
+    <section className="py-20 md:py-28 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-midnight-light to-midnight" />
+      <div className="absolute top-1/3 left-0 w-[60vw] h-[50vh] bg-sapphire/15 rounded-full blur-[150px]" />
+      <div className="absolute bottom-0 right-0 w-[40vw] h-[40vh] bg-champagne/8 rounded-full blur-[120px]" />
+
       <div className="container-luxury relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left content */}
-          <div className="space-y-8 text-center lg:text-left">
-            <div className="space-y-4">
-              <span className="text-xs tracking-widest uppercase text-champagne">
-                For Creators
-              </span>
-              <h2 className="font-serif text-3xl md:text-5xl font-medium leading-tight text-cream">
-                Turn Your Craft
-                <br />
-                <span className="gradient-text">Into Revenue</span>
-              </h2>
-              <p className="text-cream/60 text-base md:text-lg max-w-md mx-auto lg:mx-0">
-                Join our growing community of creators and reach customers looking for premium digital products.
-              </p>
-            </div>
-
-            {/* Benefits */}
-            <div className="space-y-6 max-w-md mx-auto lg:mx-0">
-              {benefits.map((benefit) => (
-                <div key={benefit.title} className="flex items-start gap-4 text-left">
-                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-br from-sapphire/30 to-sapphire/10 border border-sapphire/30 flex items-center justify-center flex-shrink-0">
-                    <benefit.icon className="h-5 w-5 text-champagne" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-cream mb-1">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-sm text-cream/50">
-                      {benefit.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
-              <Button variant="champagne" size="lg" asChild>
-                <Link to="/sell">
-                  Start Selling Today
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
+        {/* Full‑width text‑heavy CTA — not a 2-col layout */}
+        <div className="max-w-3xl mx-auto text-center mb-14">
+          <h2 className="font-serif text-3xl md:text-5xl font-medium text-cream leading-tight mb-6">
+            You make amazing things.
+            <br />
+            <span className="bg-gradient-to-r from-champagne to-gold bg-clip-text text-transparent">
+              We help you sell them.
+            </span>
+          </h2>
+          <p className="text-cream/50 text-lg max-w-xl mx-auto mb-8">
+            Set up shop in minutes. Upload your product, set your price, and share
+            the link. 94mercato handles payments, delivery, and everything in between.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Button variant="champagne" size="xl" asChild className="px-8 text-base">
+              <Link to="/sell">
+                Start selling free
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Link
+              to="/pricing"
+              className="text-sm text-cream/50 hover:text-champagne transition-colors underline underline-offset-4"
+            >
+              Compare seller plans
+            </Link>
           </div>
+        </div>
 
-          {/* Right visual */}
-          <div className="relative mt-12 lg:mt-0">
-            <div className="relative space-y-4 max-w-md mx-auto">
-              {/* Stats card */}
-              <div className="midnight-glass p-6 w-full animate-slide-up">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-cream/60">Your Dashboard</span>
-                </div>
-                <p className="text-3xl md:text-4xl font-serif font-medium text-cream mb-2">
-                  Track Your
-                </p>
-                <p className="text-sm text-cream/50">Earnings & Growth</p>
-              </div>
-
-              {/* Recent sale notification */}
-              <div className="midnight-glass p-4 max-w-xs animate-slide-up delay-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-champagne/30 to-gold/20 flex items-center justify-center">
-                    <span className="text-lg">💰</span>
+        {/* Tier teaser — horizontal row, not stacked cards */}
+        <div className="max-w-2xl mx-auto">
+          <p className="text-xs text-cream/30 text-center uppercase tracking-widest mb-4">
+            Choose your plan
+          </p>
+          <div className="space-y-2">
+            {[
+              {
+                name: "Starter",
+                fee: "9%",
+                price: "Free forever",
+                color: "text-cream/60",
+                border: "border-cream/8",
+                bg: "bg-cream/[0.02]",
+              },
+              {
+                name: "Creator Pro",
+                fee: "2%",
+                price: "$30/mo",
+                color: "text-sapphire",
+                border: "border-sapphire/20",
+                bg: "bg-sapphire/5",
+                icon: Zap,
+                badge: "Most popular",
+              },
+              {
+                name: "Partner",
+                fee: "2%",
+                price: "Invite only",
+                color: "text-champagne",
+                border: "border-champagne/20",
+                bg: "bg-champagne/5",
+                icon: Crown,
+              },
+            ].map((tier) => {
+              const Icon = tier.icon;
+              return (
+                <Link
+                  key={tier.name}
+                  to="/pricing"
+                  className={`flex items-center justify-between p-4 rounded-xl border ${tier.border} ${tier.bg} hover:bg-cream/[0.06] transition-all duration-200 group`}
+                >
+                  <div className="flex items-center gap-3">
+                    {Icon ? (
+                      <Icon className={`h-4 w-4 fill-current ${tier.color}`} />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full bg-cream/20" />
+                    )}
+                    <span className={`text-sm font-medium ${tier.color}`}>
+                      {tier.name}
+                    </span>
+                    {tier.badge && (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-sapphire/15 text-sapphire border border-sapphire/20">
+                        {tier.badge}
+                      </span>
+                    )}
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-cream">New Sale!</p>
-                    <p className="text-xs text-cream/50">Get notified instantly</p>
+                  <div className="flex items-center gap-6">
+                    <div className="text-right">
+                      <span className={`text-sm font-bold ${tier.color}`}>{tier.fee}</span>
+                      <span className="text-xs text-cream/30 ml-1">fee</span>
+                    </div>
+                    <span className="text-xs text-cream/40 w-20 text-right">
+                      {tier.price}
+                    </span>
+                    <ChevronRight className="h-4 w-4 text-cream/20 group-hover:text-cream/40 transition-colors" />
                   </div>
-                </div>
-              </div>
-
-              {/* Rating card */}
-              <div className="midnight-glass p-4 max-w-xs ml-auto animate-slide-up delay-200">
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <svg
-                        key={i}
-                        className="w-4 h-4 text-champagne fill-current"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-cream">Build Your Rating</p>
-                    <p className="text-xs text-cream/50">Earn customer trust</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

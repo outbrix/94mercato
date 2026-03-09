@@ -149,11 +149,11 @@ const Profile = () => {
                 description: "Click 'Save Changes' to update your profile.",
             });
 
-        } catch (err: any) {
-            console.error('Avatar upload error:', err);
+        } catch (err: unknown) {
+            const axiosErr = err as { response?: { data?: { message?: string } } };
             toast({
                 title: "Upload Failed",
-                description: err.response?.data?.message || "Could not upload avatar.",
+                description: axiosErr.response?.data?.message || "Could not upload avatar.",
                 variant: "destructive",
             });
         } finally {
@@ -177,10 +177,11 @@ const Profile = () => {
                 title: "Profile Updated",
                 description: "Your profile has been updated successfully.",
             });
-        } catch (err: any) {
+        } catch (err: unknown) {
+            const axiosErr = err as { response?: { data?: { message?: string } } };
             toast({
                 title: "Update Failed",
-                description: err.response?.data?.message || "Could not update profile.",
+                description: axiosErr.response?.data?.message || "Could not update profile.",
                 variant: "destructive",
             });
         } finally {
@@ -250,8 +251,9 @@ const Profile = () => {
                 setShowOtpInput(false);
             }
 
-        } catch (err: any) {
-            const message = err.response?.data?.message || "Failed to process request.";
+        } catch (err: unknown) {
+            const axiosErr = err as { response?: { data?: { message?: string } } };
+            const message = axiosErr.response?.data?.message || "Failed to process request.";
             setPasswordError(message);
         } finally {
             setIsChangingPassword(false);

@@ -81,9 +81,10 @@ const BuyerDashboard = () => {
         window.open(response.data.downloadUrl, "_blank");
         toast.success("Download started!");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosErr = error as { response?: { data?: { message?: string } } };
       toast.error("Download failed", {
-        description: error.response?.data?.message || "Please try again.",
+        description: axiosErr.response?.data?.message || "Please try again.",
       });
     } finally {
       setIsDownloading(null);
@@ -175,9 +176,10 @@ const BuyerDashboard = () => {
         `);
         invoiceWindow.document.close();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosErr = error as { response?: { data?: { message?: string } } };
       toast.error("Failed to load invoice", {
-        description: error.response?.data?.message || "Please try again.",
+        description: axiosErr.response?.data?.message || "Please try again.",
       });
     }
   };

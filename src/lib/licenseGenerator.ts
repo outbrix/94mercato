@@ -4,104 +4,114 @@
  */
 
 export interface LicenseData {
-    licenseKey: string;
-    purchaseDate: Date;
-    buyerName: string;
-    buyerEmail: string;
-    productTitle: string;
-    productId: number | string;
-    licenseType: "standard" | "extended";
-    orderId: string;
+  licenseKey: string;
+  purchaseDate: Date;
+  buyerName: string;
+  buyerEmail: string;
+  productTitle: string;
+  productId: number | string;
+  licenseType: "standard" | "extended";
+  orderId: string;
+}
+
+/**
+ * Cryptographically secure random character picker
+ */
+function secureRandomChar(chars: string): string {
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  return chars.charAt(array[0] % chars.length);
 }
 
 /**
  * Generate a unique license key in format: M94-XXXX-XXXX-XXXX
  */
 export function generateLicenseKey(): string {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const segments: string[] = ["M94"];
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const segments: string[] = ["M94"];
 
-    for (let s = 0; s < 3; s++) {
-        let segment = "";
-        for (let i = 0; i < 4; i++) {
-            segment += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        segments.push(segment);
+  for (let s = 0; s < 3; s++) {
+    let segment = "";
+    for (let i = 0; i < 4; i++) {
+      segment += secureRandomChar(chars);
     }
+    segments.push(segment);
+  }
 
-    return segments.join("-");
+  return segments.join("-");
 }
 
 /**
  * Generate a gift code in format: GIFT-XXXXXXXX
  */
 export function generateGiftCode(): string {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let code = "GIFT-";
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = "GIFT-";
 
-    for (let i = 0; i < 8; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+  for (let i = 0; i < 8; i++) {
+    code += secureRandomChar(chars);
+  }
 
-    return code;
+  return code;
 }
 
 /**
  * Generate an affiliate code in format: ref_xxxxxxxx
  */
 export function generateAffiliateCode(): string {
-    const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    let code = "ref_";
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let code = "ref_";
 
-    for (let i = 0; i < 8; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+  for (let i = 0; i < 8; i++) {
+    code += secureRandomChar(chars);
+  }
 
-    return code;
+  return code;
 }
 
 /**
  * Generate a promo code in format: PROMO-XXXXXX
  */
 export function generatePromoCode(prefix: string = "PROMO"): string {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let code = `${prefix.toUpperCase()}-`;
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = `${prefix.toUpperCase()}-`;
 
-    for (let i = 0; i < 6; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+  for (let i = 0; i < 6; i++) {
+    code += secureRandomChar(chars);
+  }
 
-    return code;
+  return code;
 }
+
 
 /**
  * Generate downloadable license certificate as HTML (can be converted to PDF)
  */
 export function generateLicenseHTML(license: LicenseData): string {
-    const formattedDate = new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    }).format(license.purchaseDate);
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(license.purchaseDate);
 
-    const licenseRights =
-        license.licenseType === "extended"
-            ? [
-                "✓ Personal and Commercial Use",
-                "✓ Unlimited Projects",
-                "✓ SaaS/Web App Use",
-                "✓ Resale Rights",
-                "✓ Unlimited Team Members",
-            ]
-            : [
-                "✓ Personal Use",
-                "✓ Single Commercial Project",
-                "✓ Single End Product",
-                "✗ SaaS/Web App Use",
-                "✗ Resale Rights",
-            ];
+  const licenseRights =
+    license.licenseType === "extended"
+      ? [
+        "✓ Personal and Commercial Use",
+        "✓ Unlimited Projects",
+        "✓ SaaS/Web App Use",
+        "✓ Resale Rights",
+        "✓ Unlimited Team Members",
+      ]
+      : [
+        "✓ Personal Use",
+        "✓ Single Commercial Project",
+        "✓ Single End Product",
+        "✗ SaaS/Web App Use",
+        "✗ Resale Rights",
+      ];
 
-    return `
+  return `
 <!DOCTYPE html>
 <html>
 <head>
@@ -279,31 +289,31 @@ export function generateLicenseHTML(license: LicenseData): string {
  * Download license as HTML file (can be printed to PDF)
  */
 export function downloadLicenseHTML(license: LicenseData): void {
-    const html = generateLicenseHTML(license);
-    const blob = new Blob([html], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
+  const html = generateLicenseHTML(license);
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `license-${license.licenseKey}.html`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `license-${license.licenseKey}.html`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 /**
  * Validate a license key format
  */
 export function validateLicenseKey(key: string): boolean {
-    const pattern = /^M94-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
-    return pattern.test(key);
+  const pattern = /^M94-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+  return pattern.test(key);
 }
 
 /**
  * Validate a promo code format
  */
 export function validatePromoCode(code: string): boolean {
-    const pattern = /^[A-Z0-9]+-[A-Z0-9]{4,8}$/;
-    return pattern.test(code);
+  const pattern = /^[A-Z0-9]+-[A-Z0-9]{4,8}$/;
+  return pattern.test(code);
 }

@@ -46,7 +46,7 @@ export default function AdminProducts() {
     try {
       const response = await api.get('/admin/products');
       setProducts(response.data.products);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to fetch products:', err);
       setError(err.response?.data?.message || 'Failed to load products');
       toast({
@@ -73,7 +73,7 @@ export default function AdminProducts() {
       });
       // Refresh the product list
       fetchProducts();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to update product status:', err);
       toast({
         title: "Error",
@@ -92,7 +92,7 @@ export default function AdminProducts() {
         description: "Product removed successfully.",
       });
       fetchProducts();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to delete product:', err);
       toast({
         title: "Error",
@@ -115,7 +115,7 @@ export default function AdminProducts() {
         title: "Download Started",
         description: `Downloading ${fileName}...`,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to get download URL:', err);
       toast({
         title: "Error",

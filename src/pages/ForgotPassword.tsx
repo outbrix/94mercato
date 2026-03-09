@@ -28,8 +28,9 @@ export default function ForgotPassword() {
                 title: "Reset link sent",
                 description: "Check your email for the password reset link.",
             });
-        } catch (error: any) {
-            if (error.response?.status === 404) {
+        } catch (error: unknown) {
+            const axiosErr = error as { response?: { status?: number; data?: { message?: string } } };
+            if (axiosErr.response?.status === 404) {
                 toast({
                     title: "Account not found",
                     description: "No account found with this email. Redirecting to sign up...",
@@ -39,7 +40,7 @@ export default function ForgotPassword() {
             } else {
                 toast({
                     title: "Error",
-                    description: error.response?.data?.message || "Something went wrong.",
+                    description: axiosErr.response?.data?.message || "Something went wrong.",
                     variant: "destructive",
                 });
             }

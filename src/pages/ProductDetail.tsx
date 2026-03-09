@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { ProductCard } from "@/components/products/ProductCard";
 import { ReviewSection } from "@/components/products/ReviewSection";
 import { SocialShare } from "@/components/products/SocialShare";
+import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
 
 interface Product {
   id: number;
@@ -50,6 +51,7 @@ interface Product {
   seller_name: string;
   seller_avatar: string | null;
   seller_is_verified: boolean;
+  seller_tier?: SellerTier;
 }
 
 interface RelatedProduct {
@@ -90,7 +92,7 @@ const ProductDetail = () => {
       setError(null);
       const response = await api.get(`/products/${slug}`);
       setProduct(response.data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching product:', err);
       setError(err.response?.data?.message || 'Product not found');
     } finally {
@@ -537,6 +539,7 @@ const ProductDetail = () => {
                         {product.seller_is_verified && (
                           <Shield className="h-4 w-4 text-champagne" />
                         )}
+                        <TierBadge tier={product.seller_tier ?? 'starter'} size="sm" />
                       </div>
                       {product.seller_is_verified ? (
                         <p className="text-sm text-muted-foreground">Verified Seller</p>

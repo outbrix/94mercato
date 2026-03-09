@@ -114,7 +114,7 @@ const SellerOnboarding = () => {
           bio: profile.bio || '',
           website: profile.website || '',
         }));
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching profile:', err);
       } finally {
         setIsLoadingProfile(false);
@@ -130,7 +130,7 @@ const SellerOnboarding = () => {
     try {
       const response = await api.get('/stripe/connect/status');
       setStripeStatus(response.data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error checking Stripe status:', err);
       setStripeStatus({
         connected: false,
@@ -185,11 +185,11 @@ const SellerOnboarding = () => {
       const { onboardingUrl } = response.data;
       // Redirect to Stripe's hosted onboarding
       window.location.href = onboardingUrl;
-    } catch (err: any) {
-      console.error('Error connecting Stripe:', err);
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
       toast({
         title: "Connection Failed",
-        description: err.response?.data?.message || "Failed to start Stripe onboarding.",
+        description: axiosErr.response?.data?.message || "Failed to start Stripe onboarding.",
         variant: "destructive",
       });
       setIsConnectingStripe(false);
@@ -203,11 +203,11 @@ const SellerOnboarding = () => {
       const response = await api.post('/stripe/connect/refresh-link');
       const { onboardingUrl } = response.data;
       window.location.href = onboardingUrl;
-    } catch (err: any) {
-      console.error('Error refreshing Stripe link:', err);
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
       toast({
         title: "Error",
-        description: err.response?.data?.message || "Failed to refresh onboarding link.",
+        description: axiosErr.response?.data?.message || "Failed to refresh onboarding link.",
         variant: "destructive",
       });
       setIsConnectingStripe(false);
@@ -237,10 +237,11 @@ const SellerOnboarding = () => {
         description: "Your seller profile has been updated.",
       });
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
       toast({
         title: "Error",
-        description: err.response?.data?.message || "Failed to save profile.",
+        description: axiosErr.response?.data?.message || "Failed to save profile.",
         variant: "destructive",
       });
       return false;
@@ -330,10 +331,10 @@ const SellerOnboarding = () => {
 
       // Move to completion step
       setCurrentStep(4);
-    } catch (error: any) {
-      console.error('Product creation error:', error);
+    } catch (error: unknown) {
+      const axiosErr = error as { response?: { data?: { message?: string } } };
       setUploadError(
-        error.response?.data?.message || "Failed to create product. Please try again."
+        axiosErr.response?.data?.message || "Failed to create product. Please try again."
       );
     } finally {
       setIsUploading(false);
@@ -401,10 +402,11 @@ const SellerOnboarding = () => {
       setShowPasswordDialog(false);
       setConfirmPassword("");
       setCurrentStep(2);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
       toast({
         title: "Upgrade Failed",
-        description: err.response?.data?.message || "Failed to upgrade account.",
+        description: axiosErr.response?.data?.message || "Failed to upgrade account.",
         variant: "destructive",
       });
     } finally {
@@ -639,10 +641,11 @@ const SellerOnboarding = () => {
                             try {
                               const response = await api.post('/stripe/connect/dashboard-link');
                               window.open(response.data.dashboardUrl, '_blank');
-                            } catch (err: any) {
+                            } catch (err: unknown) {
+                              const axiosErr = err as { response?: { data?: { message?: string } } };
                               toast({
                                 title: "Error",
-                                description: err.response?.data?.message || "Failed to open Stripe dashboard.",
+                                description: axiosErr.response?.data?.message || "Failed to open Stripe dashboard.",
                                 variant: "destructive",
                               });
                             }

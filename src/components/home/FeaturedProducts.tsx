@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { ProductCard } from "@/components/products/ProductCard";
-import { Loader2 } from "lucide-react";
+import { ArrowUpRight, Loader2 } from "lucide-react";
 import api from "@/lib/api";
 
 interface BackendProduct {
@@ -18,7 +19,6 @@ interface BackendProduct {
   seller_avatar: string | null;
 }
 
-// Map backend product to ProductCard format
 const mapProduct = (product: BackendProduct) => ({
   id: product.id.toString(),
   title: product.title,
@@ -30,7 +30,8 @@ const mapProduct = (product: BackendProduct) => ({
     name: product.seller_name || "Seller",
     avatar: product.seller_avatar || "",
   },
-  image: product.thumbnail_url || (product.images && product.images[0]) || "",
+  image:
+    product.thumbnail_url || (product.images && product.images[0]) || "",
   badge: product.badge || undefined,
   category: product.category || "Templates",
   rating: 4.8,
@@ -38,7 +39,9 @@ const mapProduct = (product: BackendProduct) => ({
 });
 
 export default function FeaturedProducts() {
-  const [products, setProducts] = useState<ReturnType<typeof mapProduct>[]>([]);
+  const [products, setProducts] = useState<ReturnType<typeof mapProduct>[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -46,41 +49,57 @@ export default function FeaturedProducts() {
       try {
         setIsLoading(true);
         const response = await api.get("/products");
-        // Take first 6 products as featured
-        const mappedProducts = response.data.slice(0, 6).map(mapProduct);
-        setProducts(mappedProducts);
-      } catch (err) {
-        console.error("Error fetching featured products:", err);
+        const data = response.data.products || response.data || [];
+        const arr = Array.isArray(data) ? data : [];
+        setProducts(arr.slice(0, 6).map(mapProduct));
+      } catch {
+        // Silently fail — section will be hidden
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchProducts();
   }, []);
 
   if (isLoading) {
     return (
-      <section className="py-12">
-        <h2 className="text-3xl font-bold text-center mb-8">Featured Products</h2>
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-champagne" />
+      <section className="py-16 bg-midnight">
+        <div className="container-luxury flex justify-center py-8">
+          <Loader2 className="h-6 w-6 animate-spin text-champagne" />
         </div>
       </section>
     );
   }
 
-  if (products.length === 0) {
-    return null; // Don't show section if no products
-  }
+  if (products.length === 0) return null;
 
   return (
-    <section className="py-12">
-      <h2 className="text-3xl font-bold text-center mb-8">Featured Products</h2>
-      <div className="container-luxury">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+    <section className="py-16 md:py-24 relative overflow-hidden">
+      <div className="absolute inset-0 bg-midnight" />
+
+      <div className="container-luxury relative z-10">
+        <div className="flex items-end justify-between mb-8">
+          <h2 className="font-serif text-2xl md:text-3xl font-medium text-cream">
+            Featured products
+          </h2>
+          <Link
+            to="/products"
+            className="text-sm text-cream/40 hover:text-champagne transition-colors flex items-center gap-1"
+          >
+            Browse all <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        {/* Asymmetric grid: first product is large, rest are smaller */}
+        <div className="grid md:grid-cols-3 gap-5">
+          {products.map((product, i) => (
+            <div
+              key={product.id}
+              className={`animate-fade-up ${i === 0 ? "md:col-span-2 md:row-span-2" : ""}`}
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
+              <ProductCard product={product} />
+            </div>
           ))}
         </div>
       </div>

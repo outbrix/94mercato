@@ -53,7 +53,7 @@ export default function AdminDashboard() {
         // Filter only pending products
         const pending = allProducts.filter((p: any) => p.status === 'pending');
         setPendingProducts(pending);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching pending products:', err);
       } finally {
         setIsLoading(false);
@@ -70,7 +70,7 @@ export default function AdminDashboard() {
         setOrdersLoading(true);
         const response = await api.get('/admin/orders?limit=5');
         setRecentOrders(response.data.orders || []);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching orders:', err);
       } finally {
         setOrdersLoading(false);
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
         setStatsLoading(true);
         const response = await api.get('/admin/stats');
         setStats(response.data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching stats:', err);
       } finally {
         setStatsLoading(false);
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
         title: "Success",
         description: "Product approved and published.",
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Error",
         description: err.response?.data?.message || "Failed to approve product.",
@@ -123,7 +123,7 @@ export default function AdminDashboard() {
         title: "Rejected",
         description: "Product has been rejected.",
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Error",
         description: err.response?.data?.message || "Failed to reject product.",

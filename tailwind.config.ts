@@ -139,6 +139,10 @@ export default {
             boxShadow: "0 0 30px hsl(var(--sapphire) / 0.4), 0 0 60px hsl(var(--sapphire) / 0.2)"
           },
         },
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -150,6 +154,7 @@ export default {
         shimmer: "shimmer 3s ease-in-out infinite",
         float: "float 6s ease-in-out infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+        marquee: "marquee 28s linear infinite",
       },
     },
   },

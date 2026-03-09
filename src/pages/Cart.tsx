@@ -120,11 +120,11 @@ const Cart = () => {
             } else {
                 throw new Error("No checkout URL received");
             }
-        } catch (error: any) {
-            console.error("Checkout error:", error);
+        } catch (error: unknown) {
+            const axiosErr = error as { response?: { data?: { message?: string } } };
             toast.error("Checkout failed", {
                 description:
-                    error.response?.data?.message || "Please try again later.",
+                    axiosErr.response?.data?.message || "Please try again later.",
             });
         } finally {
             setIsCheckingOut(false);

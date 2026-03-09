@@ -23,10 +23,7 @@ export default function ResetPassword() {
     const { toast } = useToast();
     const navigate = useNavigate();
 
-    // Debugging: Log the token from URL
-    useEffect(() => {
-        console.log("🔑 Reset Password Token:", token);
-    }, [token]);
+
 
     if (!token) {
         return (
@@ -71,7 +68,6 @@ export default function ResetPassword() {
         setIsSubmitting(true);
 
         try {
-            console.log("🚀 Submitting Reset Password Request");
             await api.post("/auth/reset-password", {
                 token,
                 newPassword: formData.newPassword,
@@ -82,11 +78,11 @@ export default function ResetPassword() {
                 description: "You can now login with your new password.",
             });
             setTimeout(() => navigate("/login"), 3000);
-        } catch (error: any) {
-            console.error("❌ Reset Error:", error.response?.data);
+        } catch (error: unknown) {
+            const axiosErr = error as { response?: { data?: { message?: string } } };
             toast({
                 title: "Reset Failed",
-                description: error.response?.data?.message || "This link may have expired.",
+                description: axiosErr.response?.data?.message || "This link may have expired.",
                 variant: "destructive",
             });
         } finally {

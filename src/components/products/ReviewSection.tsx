@@ -84,7 +84,7 @@ export function ReviewSection({ productId, productSlug }: ReviewSectionProps) {
             setRating(0);
             setComment("");
             fetchReviews(); // Refresh reviews
-        } catch (err: any) {
+        } catch (err: unknown) {
             const message = err.response?.data?.message || "Failed to submit review";
             toast.error(message);
         } finally {

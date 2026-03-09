@@ -5,6 +5,7 @@ import { Eye, ShoppingCart, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import { toast } from "sonner";
+import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
 
 interface ProductCardProps {
   product: {
@@ -17,6 +18,7 @@ interface ProductCardProps {
     seller: {
       name: string;
       avatar: string;
+      tier?: SellerTier;
     };
     image: string;
     badge?: string;
@@ -156,7 +158,7 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t border-sapphire/20">
           {/* Seller */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {product.seller.avatar ? (
               <img
                 src={product.seller.avatar}
@@ -173,6 +175,9 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
             <span className="text-xs text-cream/50">
               {product.seller.name}
             </span>
+            {product.seller.tier && product.seller.tier !== 'starter' && (
+              <TierBadge tier={product.seller.tier} size="sm" />
+            )}
           </div>
 
           {/* Price */}

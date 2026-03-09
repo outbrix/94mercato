@@ -91,9 +91,9 @@ const ProductEdit = () => {
                 setTags(product.tags || []);
                 setFeatures(product.features || []);
                 setProductSlug(product.slug || "");
-            } catch (err: any) {
-                console.error('Error fetching product:', err);
-                setError(err.response?.data?.message || 'Failed to load product');
+            } catch (err: unknown) {
+                const axiosErr = err as { response?: { data?: { message?: string } } };
+                setError(axiosErr.response?.data?.message || 'Failed to load product');
             } finally {
                 setIsLoading(false);
             }
@@ -138,11 +138,11 @@ const ProductEdit = () => {
 
             // Navigate back to dashboard
             navigate('/dashboard');
-        } catch (error: any) {
-            console.error('Product update error:', error);
+        } catch (error: unknown) {
+            const axiosErr = error as { response?: { data?: { message?: string } } };
             toast({
                 title: "Error",
-                description: error.response?.data?.message || "Failed to update product.",
+                description: axiosErr.response?.data?.message || "Failed to update product.",
                 variant: "destructive",
             });
         } finally {

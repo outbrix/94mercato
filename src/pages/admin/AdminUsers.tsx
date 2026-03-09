@@ -110,7 +110,7 @@ export default function AdminUsers() {
 
       setUsers(mappedUsers);
       setError(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to fetch users:', err);
       setError(err.response?.data?.message || 'Failed to load users');
     } finally {
@@ -127,7 +127,7 @@ export default function AdminUsers() {
     try {
       const response = await api.get(`/admin/users/${user.id}`);
       setUserDetails(response.data.user);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Error",
         description: err.response?.data?.message || "Could not load user details.",
@@ -161,7 +161,7 @@ export default function AdminUsers() {
         description: `${selectedUser.name} is now a ${newRole}.`,
       });
       setRoleModal(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Action Failed",
         description: err.response?.data?.message || "Could not change user role.",
@@ -186,7 +186,7 @@ export default function AdminUsers() {
         title: newStatus ? "User Verified" : "Verification Removed",
         description: `${user.name} is now ${newStatus ? 'verified' : 'unverified'}.`,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Action Failed",
         description: err.response?.data?.message || "Could not update verification status.",
@@ -211,7 +211,7 @@ export default function AdminUsers() {
         title: newStatus === "banned" ? "User Banned" : "User Unbanned",
         description: `${user.name} has been ${newStatus === "banned" ? "banned" : "unbanned"}.`,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Action Failed",
         description: err.response?.data?.message || "Could not update user status.",

@@ -1,29 +1,108 @@
-import { Button } from "@/components/ui/button";
+import { Star, ArrowRight } from "lucide-react";
+import { TierBadge } from "@/components/seller/TierBadge";
+import type { SellerTier } from "@/components/seller/TierBadge";
+
+const testimonials = [
+  {
+    name: "Aisha Rahman",
+    tier: "creator_partner" as SellerTier,
+    initial: "A",
+    gradient: "from-champagne/50 to-gold/20",
+    rating: 5,
+    highlight: "$12,400 earned last month",
+    quote:
+      "94mercato gave my business a real home. The 2% commission rate means I actually keep what I make. No other platform comes close.",
+  },
+  {
+    name: "Marcus Chen",
+    tier: "creator_pro" as SellerTier,
+    initial: "M",
+    gradient: "from-sapphire/50 to-sapphire/10",
+    rating: 5,
+    highlight: "Sales doubled in 3 months",
+    quote:
+      "Switching to Creator Pro was a no-brainer. Priority visibility and better analytics made all the difference. Best $30 I spend each month.",
+  },
+  {
+    name: "Priya Nair",
+    tier: "creator_pro" as SellerTier,
+    initial: "P",
+    gradient: "from-sapphire/30 to-champagne/15",
+    rating: 5,
+    highlight: "890+ sales and growing",
+    quote:
+      "I was skeptical about paying for a plan, but Creator Pro paid for itself in my first week. The analytics alone are worth it.",
+  },
+];
 
 export function Testimonials() {
   return (
-    <section className="section-padding bg-midnight-light relative overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute top-0 left-1/3 w-[50vw] h-[50vh] bg-sapphire/10 rounded-full blur-[120px]" />
-      <div className="absolute bottom-0 right-1/3 w-[40vw] h-[40vh] bg-champagne/5 rounded-full blur-[100px]" />
-      
+    <section className="py-20 md:py-28 relative overflow-hidden">
+      <div className="absolute inset-0 bg-midnight" />
+
       <div className="container-luxury relative z-10">
-        {/* Section header */}
-        <div className="text-center max-w-2xl mx-auto">
-          <span className="text-xs tracking-widest uppercase text-champagne">
-            Community Feedback
-          </span>
-          <h2 className="heading-large mt-3 mb-4 text-cream">
-            Help Us Grow
-          </h2>
-          <p className="text-cream/60 mb-8">
-            We're just getting started, and your feedback is crucial in helping us build the best platform for digital creators. Share your experience and help shape the future of 94mercato.
-          </p>
-          <Button variant="champagne-outline" size="lg" asChild>
-            <a href="/contact">
-              Share Your Feedback
+        {/* Asymmetric layout: text left + cards right */}
+        <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
+          {/* Left sticky text */}
+          <div className="lg:col-span-2 lg:sticky lg:top-32 lg:self-start">
+            <p className="text-xs tracking-widest uppercase text-champagne mb-4">
+              Don't take our word for it
+            </p>
+            <h2 className="font-serif text-3xl md:text-4xl font-medium text-cream leading-tight mb-5">
+              Creators love selling on 94mercato
+            </h2>
+            <p className="text-cream/50 text-base leading-relaxed mb-6">
+              From solo makers to design studios, thousands of creators choose
+              94mercato because they keep more, sell more, and stress less.
+            </p>
+            <a
+              href="/sell"
+              className="inline-flex items-center gap-2 text-sm text-champagne hover:text-champagne/80 transition-colors font-medium"
+            >
+              Start selling today <ArrowRight className="h-4 w-4" />
             </a>
-          </Button>
+          </div>
+
+          {/* Right — stacked cards, NOT a perfect grid */}
+          <div className="lg:col-span-3 space-y-5">
+            {testimonials.map((t, i) => (
+              <div
+                key={t.name}
+                className="relative p-6 md:p-8 rounded-2xl border border-cream/8 bg-cream/[0.02] backdrop-blur-sm animate-fade-up"
+                style={{ animationDelay: `${i * 120}ms` }}
+              >
+                {/* Highlight stat */}
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-champagne/10 border border-champagne/15 mb-5">
+                  <span className="text-xs font-semibold text-champagne">{t.highlight}</span>
+                </div>
+
+                {/* Quote */}
+                <p className="text-cream/70 text-base md:text-lg leading-relaxed mb-6">
+                  "{t.quote}"
+                </p>
+
+                {/* Author row */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center`}
+                    >
+                      <span className="text-sm font-semibold text-cream">{t.initial}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-cream">{t.name}</p>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        {[...Array(t.rating)].map((_, idx) => (
+                          <Star key={idx} className="h-3 w-3 text-champagne fill-current" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <TierBadge tier={t.tier} size="sm" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

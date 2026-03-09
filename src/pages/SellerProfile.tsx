@@ -17,6 +17,7 @@ import {
     Globe,
     ExternalLink,
 } from "lucide-react";
+import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
 
 interface Seller {
     display_name: string;
@@ -27,6 +28,7 @@ interface Seller {
     member_since: string;
     product_count: number;
     total_sales: number;
+    seller_tier?: SellerTier;
 }
 
 interface Product {
@@ -58,9 +60,9 @@ const SellerProfile = () => {
                 const response = await api.get(`/auth/seller/${encodeURIComponent(displayName)}`);
                 setSeller(response.data.seller);
                 setProducts(response.data.products);
-            } catch (err: any) {
-                console.error('Error fetching seller profile:', err);
-                setError(err.response?.data?.message || 'Seller not found');
+            } catch (err: unknown) {
+                const axiosErr = err as { response?: { data?: { message?: string } } };
+                setError(axiosErr.response?.data?.message || 'Seller not found');
             } finally {
                 setIsLoading(false);
             }
@@ -144,7 +146,7 @@ const SellerProfile = () => {
 
                             {/* Info */}
                             <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
+                                <div className="flex flex-wrap items-center gap-3 mb-2">
                                     <h1 className="heading-large">{seller.display_name}</h1>
                                     {seller.is_verified && (
                                         <Badge variant="outline" className="bg-champagne/20 text-champagne border-champagne/30">
@@ -152,6 +154,7 @@ const SellerProfile = () => {
                                             Verified Seller
                                         </Badge>
                                     )}
+                                    <TierBadge tier={seller.seller_tier ?? 'starter'} size="md" />
                                 </div>
 
                                 {seller.bio && (
