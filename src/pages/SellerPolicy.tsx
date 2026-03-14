@@ -86,10 +86,10 @@ export default function SellerPolicy() {
                             </p>
                             <ul className="space-y-3 text-muted-foreground list-disc pl-6">
                                 <li>
-                                    <strong className="text-foreground">Platform Commission:</strong> 12% of each sale
+                                    <strong className="text-foreground">Platform Commission:</strong> Starting at 6% of each sale (as low as 2% for Partner creators)
                                 </li>
                                 <li>
-                                    <strong className="text-foreground">Your Earnings:</strong> 88% of each sale
+                                    <strong className="text-foreground">Your Earnings:</strong> Up to 98% of each sale
                                 </li>
                                 <li>
                                     <strong className="text-foreground">Payout Schedule:</strong> Automatic via Stripe (typically 2-7 days after sale)

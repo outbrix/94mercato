@@ -170,7 +170,7 @@ const About = () => {
                     middleman. Not the algorithm.
                   </p>
                   <p className="text-cream/35 leading-relaxed">
-                    So we built a marketplace where Starter creators pay 9% — already a fraction
+                    So we built a marketplace where Starter creators pay 6% — already a fraction
                     of what others charge — and committed creators pay 2%. Because loyalty should
                     flow both ways. Because creative work is labor. Because commerce without
                     dignity is just extraction.

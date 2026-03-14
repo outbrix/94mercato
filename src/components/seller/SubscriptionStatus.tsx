@@ -3,6 +3,7 @@ import { UpgradeButton } from "./UpgradeButton";
 import { Percent, Calendar, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { getCommissionRate } from "@/lib/commission";
 
 interface SubscriptionStatusProps {
     tier: SellerTier;
@@ -11,11 +12,6 @@ interface SubscriptionStatusProps {
     className?: string;
 }
 
-const tierCommission: Record<SellerTier, number> = {
-    starter: 9,
-    creator_pro: 2,
-    creator_partner: 2,
-};
 
 const tierLabel: Record<SellerTier, string> = {
     starter: "Starter",
@@ -29,7 +25,7 @@ export function SubscriptionStatus({
     onUpgrade,
     className,
 }: SubscriptionStatusProps) {
-    const commission = tierCommission[tier] ?? 9;
+    const commission = getCommissionRate(tier);
     const isUpgradeable = tier === "starter";
 
     const formatDate = (dateStr: string) =>
@@ -93,7 +89,7 @@ export function SubscriptionStatus({
                 <div className="mt-2 space-y-3">
                     <p className="text-xs text-muted-foreground leading-relaxed">
                         Upgrade to <strong className="text-foreground">Creator Pro</strong> and reduce your
-                        commission from 9% → <strong className="text-sapphire">2%</strong>.
+                        commission from 6% → <strong className="text-sapphire">3%</strong>.
                     </p>
                     <UpgradeButton
                         onSuccess={onUpgrade}

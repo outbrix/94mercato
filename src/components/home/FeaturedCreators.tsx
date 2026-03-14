@@ -33,7 +33,7 @@ export function FeaturedCreators() {
                         bio: "Premium UI/UX templates & design systems for modern teams",
                         is_verified: true,
                         product_count: 24,
-                        total_sales: 340,
+                        total_sales: 3400,
                         seller_tier: "creator_pro",
                     },
                     {
@@ -42,7 +42,7 @@ export function FeaturedCreators() {
                         bio: "Full-stack courses and production-grade code templates",
                         is_verified: true,
                         product_count: 12,
-                        total_sales: 890,
+                        total_sales: 12500,
                         seller_tier: "creator_partner",
                     },
                     {
@@ -51,16 +51,16 @@ export function FeaturedCreators() {
                         bio: "Custom typefaces and font families for modern brands",
                         is_verified: false,
                         product_count: 8,
-                        total_sales: 156,
+                        total_sales: 856,
                         seller_tier: "creator_pro",
                     },
                     {
-                        display_name: "MockupStudio",
+                        display_name: "StudioVibe",
                         avatar_url: null,
                         bio: "Realistic device mockups & branding presentation kits",
                         is_verified: true,
                         product_count: 31,
-                        total_sales: 520,
+                        total_sales: 5200,
                         seller_tier: "creator_pro",
                     },
                 ]);

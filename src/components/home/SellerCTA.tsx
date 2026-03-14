@@ -48,7 +48,7 @@ export function SellerCTA() {
             {[
               {
                 name: "Starter",
-                fee: "9%",
+                fee: "6%",
                 price: "Free forever",
                 color: "text-cream/60",
                 border: "border-cream/8",
@@ -56,8 +56,8 @@ export function SellerCTA() {
               },
               {
                 name: "Creator Pro",
-                fee: "2%",
-                price: "$30/mo",
+                fee: "3%",
+                price: "$15/mo",
                 color: "text-sapphire",
                 border: "border-sapphire/20",
                 bg: "bg-sapphire/5",

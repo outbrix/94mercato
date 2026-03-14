@@ -39,6 +39,8 @@ interface OrderDetails {
     amountTotal: number;
     purchasedAt: string;
     items: OrderItem[];
+    type?: "order" | "subscription";
+    planName?: string;
 }
 
 const PaymentSuccess = () => {
@@ -249,14 +251,18 @@ const PaymentSuccess = () => {
 
                                     <div className="flex items-center justify-center gap-2 text-champagne text-sm font-medium tracking-widest uppercase">
                                         <Sparkles className="w-4 h-4" />
-                                        Payment Successful
+                                        {order?.type === "subscription" ? "Upgrade Complete" : "Payment Successful"}
                                         <Sparkles className="w-4 h-4" />
                                     </div>
                                     <h1 className="text-3xl md:text-4xl font-serif font-medium text-cream">
-                                        Thank You for Your Purchase!
+                                        {order?.type === "subscription" 
+                                            ? "Welcome to Creator Pro!" 
+                                            : "Thank You for Your Purchase!"}
                                     </h1>
                                     <p className="text-muted-foreground max-w-md mx-auto">
-                                        Your order has been confirmed. Download your files below.
+                                        {order?.type === "subscription"
+                                            ? "Your account has been upgraded. You now enjoy lower commissions and priority visibility."
+                                            : "Your order has been confirmed. Download your files below."}
                                     </p>
                                 </div>
 

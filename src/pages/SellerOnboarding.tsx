@@ -57,11 +57,23 @@ const CURRENCIES = [
 ];
 
 const SellerOnboarding = () => {
-  const navigate = useNavigate();
+const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, refreshUser } = useAuth();
   const { commissionRate } = useSettings();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Security: Allowed MIME types for digital product uploads
+  const ALLOWED_MIMES = [
+    'application/zip',
+    'application/x-zip-compressed',
+    'application/pdf',
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'video/mp4',
+    'application/octet-stream' // Often used for binary files
+  ];
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
@@ -254,6 +266,11 @@ const SellerOnboarding = () => {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Security: Validate MIME type
+      if (!ALLOWED_MIMES.includes(file.type) && !file.name.endsWith('.zip') && !file.name.endsWith('.rar')) {
+        setUploadError("Invalid file type. Please upload a ZIP, PDF, MP4, or Image asset.");
+        return;
+      }
       // Validate file size (100MB max)
       if (file.size > 100 * 1024 * 1024) {
         setUploadError("File size must be less than 100MB");
@@ -269,6 +286,11 @@ const SellerOnboarding = () => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (file) {
+      // Security: Validate MIME type
+      if (!ALLOWED_MIMES.includes(file.type) && !file.name.endsWith('.zip') && !file.name.endsWith('.rar')) {
+        setUploadError("Invalid file type. Please upload a ZIP, PDF, MP4, or Image asset.");
+        return;
+      }
       if (file.size > 100 * 1024 * 1024) {
         setUploadError("File size must be less than 100MB");
         return;
@@ -523,7 +545,10 @@ const SellerOnboarding = () => {
 
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="displayName">Display Name</Label>
+                        <div className="flex justify-between">
+                          <Label htmlFor="displayName">Display Name</Label>
+                          <span className="text-[10px] text-muted-foreground">{formData.displayName.length}/50</span>
+                        </div>
                         <Input
                           id="displayName"
                           placeholder="Your brand or studio name"
@@ -531,11 +556,15 @@ const SellerOnboarding = () => {
                           onChange={(e) =>
                             setFormData({ ...formData, displayName: e.target.value })
                           }
+                          maxLength={50}
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="bio">Bio</Label>
+                        <div className="flex justify-between">
+                          <Label htmlFor="bio">Bio</Label>
+                          <span className="text-[10px] text-muted-foreground">{formData.bio.length}/500</span>
+                        </div>
                         <Textarea
                           id="bio"
                           placeholder="Tell buyers about your work and expertise..."
@@ -544,6 +573,7 @@ const SellerOnboarding = () => {
                           onChange={(e) =>
                             setFormData({ ...formData, bio: e.target.value })
                           }
+                          maxLength={500}
                         />
                       </div>
 
@@ -557,6 +587,7 @@ const SellerOnboarding = () => {
                           onChange={(e) =>
                             setFormData({ ...formData, website: e.target.value })
                           }
+                          maxLength={200}
                         />
                       </div>
                     </div>
@@ -754,7 +785,10 @@ const SellerOnboarding = () => {
 
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="productTitle">Product Title</Label>
+                        <div className="flex justify-between">
+                          <Label htmlFor="productTitle">Product Title</Label>
+                          <span className="text-[10px] text-muted-foreground">{formData.productTitle.length}/100</span>
+                        </div>
                         <Input
                           id="productTitle"
                           placeholder="Modern Portfolio Template"
@@ -762,26 +796,30 @@ const SellerOnboarding = () => {
                           onChange={(e) =>
                             setFormData({ ...formData, productTitle: e.target.value })
                           }
+                          maxLength={100}
                         />
                       </div>
 
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <div>
-                            <Label htmlFor="productDescription">Short Description</Label>
-                            <p className="text-xs text-muted-foreground">Brief summary for product cards</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Label htmlFor="productDescription">Short Description</Label>
+                              <span className="text-[10px] text-muted-foreground">{formData.productDescription.length}/200</span>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="minimal"
+                              size="sm"
+                              onClick={handleAIDescription}
+                              disabled={aiGenerating}
+                            >
+                              <Wand2 className="h-4 w-4 mr-1" />
+                              {aiGenerating ? "Generating..." : "AI Write"}
+                            </Button>
                           </div>
-                          <Button
-                            type="button"
-                            variant="minimal"
-                            size="sm"
-                            onClick={handleAIDescription}
-                            disabled={aiGenerating}
-                          >
-                            <Wand2 className="h-4 w-4 mr-1" />
-                            {aiGenerating ? "Generating..." : "AI Write"}
-                          </Button>
                         </div>
+                        <p className="text-xs text-muted-foreground mb-1">Brief summary for product cards</p>
                         <Textarea
                           id="productDescription"
                           placeholder="A brief one-liner about your product..."
@@ -793,12 +831,16 @@ const SellerOnboarding = () => {
                               productDescription: e.target.value,
                             })
                           }
+                          maxLength={200}
                         />
                       </div>
 
                       {/* Full Description */}
                       <div className="space-y-2">
-                        <Label htmlFor="productFullDescription">Detailed Description</Label>
+                        <div className="flex justify-between">
+                          <Label htmlFor="productFullDescription">Detailed Description</Label>
+                          <span className="text-[10px] text-muted-foreground">{formData.productFullDescription.length}/3000</span>
+                        </div>
                         <p className="text-xs text-muted-foreground">Full description for product page</p>
                         <Textarea
                           id="productFullDescription"
@@ -811,6 +853,7 @@ const SellerOnboarding = () => {
                               productFullDescription: e.target.value,
                             })
                           }
+                          maxLength={3000}
                         />
                       </div>
 
@@ -865,6 +908,8 @@ const SellerOnboarding = () => {
                             id="productPrice"
                             type="number"
                             placeholder="29"
+                            min="1"
+                            max="1000000"
                             value={formData.productPrice}
                             onChange={(e) =>
                               setFormData({ ...formData, productPrice: e.target.value })

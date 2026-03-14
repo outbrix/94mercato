@@ -107,7 +107,7 @@ const Products = () => {
           mapProduct
         );
         setProducts(mappedProducts);
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error("Error fetching products:", err);
         setError(
           err.response?.data?.message || "Failed to load products"
@@ -160,10 +160,10 @@ const Products = () => {
   return (
     <>
       <Helmet>
-        <title>Browse Products — 94mercato</title>
+        <title>Premium Digital Assets — 94mercato</title>
         <meta
           name="description"
-          content="Explore our curated collection of premium digital products. Templates, UI kits, courses, and more from verified creators."
+          content="Explore a curated collection of high-end UI kits, templates, and digital assets. Professional tools for modern creators and studios."
         />
       </Helmet>
       <Layout>

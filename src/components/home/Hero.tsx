@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Play } from "lucide-react";
 import { Link } from "react-router-dom";
+import { MARKET_STATS } from "@/lib/market-stats";
 
 function useCountUp(target: number, duration = 1500, start = false) {
   const [count, setCount] = useState(0);
@@ -34,8 +35,8 @@ export function Hero() {
     return () => observer.disconnect();
   }, []);
 
-  const creators = useCountUp(1800, 1800, animated);
-  const products = useCountUp(4200, 1800, animated);
+  const creators = useCountUp(MARKET_STATS.TOTAL_CREATORS, 1800, animated);
+  const products = useCountUp(MARKET_STATS.TOTAL_PRODUCTS, 1800, animated);
 
   return (
     <section
@@ -88,7 +89,7 @@ export function Hero() {
           <p className="text-xl md:text-2xl text-cream/50 max-w-2xl mt-8 leading-relaxed font-light animate-fade-up delay-200">
             94mercato is where creators sell templates, courses, fonts, and digital
             products directly to their audience — with{" "}
-            <span className="text-champagne font-medium">as low as 2% fees</span>.
+            <span className="text-champagne font-medium">as low as {MARKET_STATS.LOWEST_FEE}% fees</span>.
           </p>
 
           {/* ─── CTA row ─── */}
@@ -123,7 +124,7 @@ export function Hero() {
             <div className="w-px h-12 bg-cream/10" />
             <div>
               <p className="text-3xl md:text-4xl font-serif font-semibold text-champagne">
-                2%
+                {MARKET_STATS.LOWEST_FEE}%
               </p>
               <p className="text-xs text-cream/40 mt-1 uppercase tracking-wider">
                 Lowest commission

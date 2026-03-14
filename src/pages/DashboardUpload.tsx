@@ -36,6 +36,18 @@ const DashboardUpload = () => {
     const { user } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // Security: Allowed MIME types for digital product uploads
+    const ALLOWED_MIMES = [
+        'application/zip',
+        'application/x-zip-compressed',
+        'application/pdf',
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'video/mp4',
+        'application/octet-stream' // Often used for binary files
+    ];
+
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -76,6 +88,11 @@ const DashboardUpload = () => {
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Security: Validate MIME type
+            if (!ALLOWED_MIMES.includes(file.type) && !file.name.endsWith('.zip') && !file.name.endsWith('.rar')) {
+                setUploadError("Invalid file type. Please upload a ZIP, PDF, MP4, or Image asset.");
+                return;
+            }
             if (file.size > 100 * 1024 * 1024) {
                 setUploadError("File size must be less than 100MB");
                 return;
@@ -90,6 +107,11 @@ const DashboardUpload = () => {
         e.preventDefault();
         const file = e.dataTransfer.files?.[0];
         if (file) {
+            // Security: Validate MIME type
+            if (!ALLOWED_MIMES.includes(file.type) && !file.name.endsWith('.zip') && !file.name.endsWith('.rar')) {
+                setUploadError("Invalid file type. Please upload a ZIP, PDF, MP4, or Image asset.");
+                return;
+            }
             if (file.size > 100 * 1024 * 1024) {
                 setUploadError("File size must be less than 100MB");
                 return;
@@ -237,7 +259,10 @@ const DashboardUpload = () => {
 
                                 {/* Title */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="title">Product Title *</Label>
+                                    <div className="flex justify-between">
+                                        <Label htmlFor="title">Product Title *</Label>
+                                        <span className="text-[10px] text-muted-foreground">{formData.title.length}/100</span>
+                                    </div>
                                     <Input
                                         id="title"
                                         placeholder="Modern Portfolio Template"
@@ -246,6 +271,7 @@ const DashboardUpload = () => {
                                             setFormData({ ...formData, title: e.target.value })
                                         }
                                         required
+                                        maxLength={100}
                                     />
                                 </div>
 
@@ -275,9 +301,9 @@ const DashboardUpload = () => {
                                 {/* Short Description */}
                                 <div className="space-y-2">
                                     <div className="flex items-center justify-between">
-                                        <div>
+                                        <div className="flex items-center gap-2">
                                             <Label htmlFor="description">Short Description</Label>
-                                            <p className="text-xs text-muted-foreground">Brief summary shown in product cards</p>
+                                            <span className="text-[10px] text-muted-foreground">{formData.description.length}/200</span>
                                         </div>
                                         <Button
                                             type="button"
@@ -290,6 +316,7 @@ const DashboardUpload = () => {
                                             {aiGenerating ? "Generating..." : "AI Write"}
                                         </Button>
                                     </div>
+                                    <p className="text-xs text-muted-foreground mb-1">Brief summary shown in product cards</p>
                                     <Textarea
                                         id="description"
                                         placeholder="A brief one-liner about your product..."
@@ -298,12 +325,16 @@ const DashboardUpload = () => {
                                         onChange={(e) =>
                                             setFormData({ ...formData, description: e.target.value })
                                         }
+                                        maxLength={200}
                                     />
                                 </div>
 
                                 {/* Detailed Description */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="full_description">Detailed Description</Label>
+                                    <div className="flex justify-between">
+                                        <Label htmlFor="full_description">Detailed Description</Label>
+                                        <span className="text-[10px] text-muted-foreground">{formData.full_description.length}/3000</span>
+                                    </div>
                                     <p className="text-xs text-muted-foreground">Full product description shown on product page</p>
                                     <Textarea
                                         id="full_description"
@@ -313,6 +344,7 @@ const DashboardUpload = () => {
                                         onChange={(e) =>
                                             setFormData({ ...formData, full_description: e.target.value })
                                         }
+                                        maxLength={3000}
                                     />
                                 </div>
 
@@ -349,6 +381,7 @@ const DashboardUpload = () => {
                                             type="number"
                                             placeholder="29"
                                             min="1"
+                                            max="1000000"
                                             value={formData.price}
                                             onChange={(e) =>
                                                 setFormData({ ...formData, price: e.target.value })

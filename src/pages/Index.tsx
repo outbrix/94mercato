@@ -9,6 +9,7 @@ import { Newsletter } from "@/components/home/Newsletter";
 import { TrendingProducts } from "@/components/home/TrendingProducts";
 import { FeaturedCreators } from "@/components/home/FeaturedCreators";
 import { Helmet } from "react-helmet-async";
+import { FlashSaleBanner } from "@/components/ui/FlashSaleBanner";
 
 const Index = () => {
   return (
@@ -28,6 +29,7 @@ const Index = () => {
         <link rel="canonical" href="https://94mercato.com" />
       </Helmet>
       <Layout>
+        <FlashSaleBanner className="mt-16" />
         <Hero />
         <Categories />
         <TrendingProducts />

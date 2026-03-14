@@ -13,7 +13,7 @@ interface PublicSettings {
 }
 
 const defaultSettings: PublicSettings = {
-    platform_fee_percent: '12', // Fallback to avoid UI flicker
+    platform_fee_percent: '6', // Fallback to Starter commission
     min_payout_amount: '50',
     payout_processing_days: '3'
 };

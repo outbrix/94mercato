@@ -8,6 +8,7 @@ import api from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSettings } from "@/hooks/use-settings";
 import { formatPrice, CURRENCY_CONFIG } from "@/lib/utils";
+import { getCommissionRate } from "@/lib/commission";
 import {
   DollarSign,
   Package,
@@ -293,7 +294,7 @@ const SellerDashboard = () => {
                     : ''
                     }`}
                 >
-                  {sellerTier !== 'starter' ? '2' : commissionRate}% Commission
+                  {getCommissionRate(sellerTier)}% Commission
                 </Badge>
               </div>
               <div className="overflow-x-auto">
@@ -314,7 +315,7 @@ const SellerDashboard = () => {
                         <th className="text-left py-3">Product</th>
                         <th className="text-left py-3">Buyer</th>
                         <th className="text-right py-3">Amount</th>
-                        <th className="text-right py-3">Commission ({commissionRate}%)</th>
+                        <th className="text-right py-3">Commission ({getCommissionRate(sellerTier)}%)</th>
                         <th className="text-right py-3">Your Earnings</th>
                       </tr>
                     </thead>
@@ -656,10 +657,9 @@ const SellerDashboard = () => {
               </div>
             </div>
 
-            {/* Commission Info */}
             <div className="mt-8 glass-card p-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Platform commission: <span className="font-medium text-foreground">{commissionRate}%</span> per sale.{" "}
+                Platform commission: <span className="font-medium text-foreground">{getCommissionRate(sellerTier)}%</span> per sale.{" "}
                 Your earnings are automatically calculated after each transaction.{" "}
                 <Link to="/pricing" className="text-champagne hover:underline">
                   Learn more about fees

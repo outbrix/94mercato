@@ -404,7 +404,10 @@ const Profile = () => {
 
                                     {/* Display Name */}
                                     <div className="space-y-2">
-                                        <Label htmlFor="display_name">Display Name</Label>
+                                        <div className="flex justify-between">
+                                            <Label htmlFor="display_name">Display Name</Label>
+                                            <span className="text-[10px] text-muted-foreground">{formData.display_name.length}/50</span>
+                                        </div>
                                         <Input
                                             id="display_name"
                                             type="text"
@@ -414,12 +417,16 @@ const Profile = () => {
                                                 setFormData({ ...formData, display_name: e.target.value })
                                             }
                                             disabled={isSubmitting}
+                                            maxLength={50}
                                         />
                                     </div>
 
                                     {/* Full Name */}
                                     <div className="space-y-2">
-                                        <Label htmlFor="name">Full Name</Label>
+                                        <div className="flex justify-between">
+                                            <Label htmlFor="name">Full Name</Label>
+                                            <span className="text-[10px] text-muted-foreground">{formData.name.length}/50</span>
+                                        </div>
                                         <Input
                                             id="name"
                                             type="text"
@@ -429,12 +436,16 @@ const Profile = () => {
                                                 setFormData({ ...formData, name: e.target.value })
                                             }
                                             disabled={isSubmitting}
+                                            maxLength={50}
                                         />
                                     </div>
 
                                     {/* Bio */}
                                     <div className="space-y-2">
-                                        <Label htmlFor="bio">Bio</Label>
+                                        <div className="flex justify-between">
+                                            <Label htmlFor="bio">Bio</Label>
+                                            <span className="text-[10px] text-muted-foreground">{formData.bio.length}/500</span>
+                                        </div>
                                         <Textarea
                                             id="bio"
                                             placeholder="Tell us a bit about yourself..."
@@ -445,6 +456,7 @@ const Profile = () => {
                                             disabled={isSubmitting}
                                             rows={4}
                                             className="resize-none"
+                                            maxLength={500}
                                         />
                                         <p className="text-xs text-muted-foreground">
                                             This will be visible on your public profile
@@ -467,6 +479,7 @@ const Profile = () => {
                                                     setFormData({ ...formData, website: e.target.value })
                                                 }
                                                 disabled={isSubmitting}
+                                                maxLength={200}
                                             />
                                             <p className="text-xs text-muted-foreground">
                                                 Your portfolio or business website

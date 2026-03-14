@@ -23,10 +23,16 @@ export function UpgradeButton({
     const handleUpgrade = async () => {
         setIsLoading(true);
         try {
-            await api.post("/subscription/upgrade");
+            const response = await api.post("/subscription/upgrade");
+            
+            if (response.data.checkoutUrl) {
+                window.location.href = response.data.checkoutUrl;
+                return;
+            }
+
             toast({
-                title: "🎉 Upgraded to Creator Pro!",
-                description: "Your commission rate is now 2%. Enjoy your new plan.",
+                title: "🎉 Plan Upgraded!",
+                description: "Your commission rate is now 3%. Enjoy your new plan.",
             });
             setShowModal(false);
             onSuccess?.();
@@ -86,16 +92,16 @@ export function UpgradeButton({
                         {/* Pricing */}
                         <div className="glass-card p-5 mb-6 text-center border-sapphire/20 bg-sapphire/5">
                             <div className="flex items-baseline justify-center gap-1 mb-1">
-                                <span className="text-4xl font-serif font-bold text-sapphire">$30</span>
+                                <span className="text-4xl font-serif font-bold text-sapphire">$15</span>
                                 <span className="text-muted-foreground">/month</span>
                             </div>
-                            <p className="text-xs text-muted-foreground">or ₹500 / 25 AED per month</p>
+                            <p className="text-xs text-muted-foreground">or ₹500 per month</p>
                         </div>
 
                         {/* Features */}
                         <ul className="space-y-3 mb-6">
                             {[
-                                "2% commission rate (save 7% vs Starter)",
+                                "3% commission rate (save 3% vs Starter)",
                                 "Priority creator visibility in marketplace",
                                 "Advanced creator analytics",
                                 "Creator Pro badge on your profile & products",

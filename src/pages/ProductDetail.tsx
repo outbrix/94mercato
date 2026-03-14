@@ -92,7 +92,7 @@ const ProductDetail = () => {
       setError(null);
       const response = await api.get(`/products/${slug}`);
       setProduct(response.data);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Error fetching product:', err);
       setError(err.response?.data?.message || 'Product not found');
     } finally {
@@ -288,7 +288,7 @@ const ProductDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{product.title} — Mercato94</title>
+        <title>{product.title} — 94mercato</title>
         <meta name="description" content={product.description} />
         <meta property="og:title" content={product.title} />
         <meta property="og:description" content={product.description} />

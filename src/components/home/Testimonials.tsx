@@ -9,9 +9,9 @@ const testimonials = [
     initial: "A",
     gradient: "from-champagne/50 to-gold/20",
     rating: 5,
-    highlight: "$12,400 earned last month",
+    highlight: "₹12.4L Payout Last Quarter",
     quote:
-      "94mercato gave my business a real home. The 2% commission rate means I actually keep what I make. No other platform comes close.",
+      "94mercato is the first platform that feels like an actual partner. Converting my shop was seamless, and the 2.0% partner fee is unbeatable in the industry.",
   },
   {
     name: "Marcus Chen",
@@ -19,9 +19,9 @@ const testimonials = [
     initial: "M",
     gradient: "from-sapphire/50 to-sapphire/10",
     rating: 5,
-    highlight: "Sales doubled in 3 months",
+    highlight: "94% Growth in 60 Days",
     quote:
-      "Switching to Creator Pro was a no-brainer. Priority visibility and better analytics made all the difference. Best $30 I spend each month.",
+      "The Creator Pro tier paid for itself in my first product launch. The homepage featuring alone drove more traffic than my entire Instagram following.",
   },
   {
     name: "Priya Nair",

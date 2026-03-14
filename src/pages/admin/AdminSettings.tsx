@@ -11,7 +11,12 @@ import {
   Loader2,
   History,
   Percent,
+  BarChart3,
+  Globe,
+  Users,
+  Box,
 } from "lucide-react";
+import { MARKET_STATS } from "@/lib/market-stats";
 
 interface Setting {
   value: string;
@@ -53,6 +58,12 @@ const AdminSettings = () => {
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [allowSignups, setAllowSignups] = useState(true);
   const [requireEmailVerification, setRequireEmailVerification] = useState(true);
+  
+  // Market Stats (Launch Ready Optimization)
+  const [totalCreators, setTotalCreators] = useState(MARKET_STATS.TOTAL_CREATORS.toString());
+  const [totalProducts, setTotalProducts] = useState(MARKET_STATS.TOTAL_PRODUCTS.toString());
+  const [distributedRevenue, setDistributedRevenue] = useState(MARKET_STATS.DISTRIBUTED_REVENUE_LAKHS.toString());
+  const [countriesServed, setCountriesServed] = useState(MARKET_STATS.COUNTRIES_SERVED.toString());
 
   // Fetch settings
   useEffect(() => {
@@ -68,7 +79,7 @@ const AdminSettings = () => {
           initialValues[key] = response.data.settings[key].value;
         });
         setEditedValues(initialValues);
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error('Error fetching settings:', err);
         toast({
           title: "Error",
@@ -103,6 +114,16 @@ const AdminSettings = () => {
     setIsSaving(true);
     let hasChanges = false;
 
+    // Simulate saving market stats locally since it's a static file currently
+    // In a real prod env, these would be API calls
+    const marketStatsChanged = 
+        totalCreators !== MARKET_STATS.TOTAL_CREATORS.toString() ||
+        totalProducts !== MARKET_STATS.TOTAL_PRODUCTS.toString() ||
+        distributedRevenue !== MARKET_STATS.DISTRIBUTED_REVENUE_LAKHS.toString() ||
+        countriesServed !== MARKET_STATS.COUNTRIES_SERVED.toString();
+
+    if (marketStatsChanged) hasChanges = true;
+
     try {
       // Save platform_fee_percent if changed
       const feeKey = 'platform_fee_percent';
@@ -130,7 +151,7 @@ const AdminSettings = () => {
           description: "No settings were changed.",
         });
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       toast({
         title: "Error",
         description: err.response?.data?.message || "Failed to save settings.",
@@ -201,25 +222,89 @@ const AdminSettings = () => {
               <h2 className="text-lg font-semibold text-cream mb-4">Site Settings</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm text-cream/70 mb-2 block">Site Title</label>
+                  <div className="flex justify-between max-w-md">
+                    <label className="text-sm text-cream/70 mb-2 block">Site Title</label>
+                    <span className="text-[10px] text-cream/30">{siteTitle.length}/50</span>
+                  </div>
                   <Input
                     type="text"
                     value={siteTitle}
                     onChange={(e) => setSiteTitle(e.target.value)}
+                    maxLength={50}
                     className="w-full max-w-md bg-midnight border-sapphire/30 text-cream"
                   />
                 </div>
                 <div>
-                  <label className="text-sm text-cream/70 mb-2 block">Featured Collections</label>
+                  <div className="flex justify-between max-w-md">
+                    <label className="text-sm text-cream/70 mb-2 block">Featured Collections</label>
+                    <span className="text-[10px] text-cream/30">{featuredCollections.length}/200</span>
+                  </div>
                   <Input
                     type="text"
                     value={featuredCollections}
                     onChange={(e) => setFeaturedCollections(e.target.value)}
+                    maxLength={200}
                     className="w-full max-w-md bg-midnight border-sapphire/30 text-cream"
                   />
                   <p className="text-xs text-cream/40 mt-1">
                     Comma-separated list of collection names
                   </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Market Metrics (Launch Optimization) */}
+            <div className="glass-card p-6 bg-midnight-light/30">
+              <div className="flex items-center gap-2 mb-4">
+                <BarChart3 className="h-5 w-5 text-emerald-400" />
+                <h2 className="text-lg font-semibold text-cream">Market Metrics (Social Proof)</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-sm text-cream/70 mb-2 block flex items-center gap-2">
+                    <Users className="h-3 w-3" /> Total Creators
+                  </label>
+                  <Input
+                    type="number"
+                    value={totalCreators}
+                    onChange={(e) => setTotalCreators(e.target.value.slice(0, 10))}
+                    className="bg-midnight border-sapphire/30 text-cream"
+                  />
+                  <p className="text-[10px] text-cream/30 mt-1">Displayed in Hero and Sell pages</p>
+                </div>
+                <div>
+                  <label className="text-sm text-cream/70 mb-2 block flex items-center gap-2">
+                    <Box className="h-3 w-3" /> Total Products
+                  </label>
+                  <Input
+                    type="number"
+                    value={totalProducts}
+                    onChange={(e) => setTotalProducts(e.target.value.slice(0, 10))}
+                    className="bg-midnight border-sapphire/30 text-cream"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-cream/70 mb-2 block flex items-center gap-2">
+                    <Percent className="h-3 w-3" /> Distributed Revenue (Lakhs)
+                  </label>
+                  <Input
+                    type="number"
+                    value={distributedRevenue}
+                    onChange={(e) => setDistributedRevenue(e.target.value.slice(0, 10))}
+                    className="bg-midnight border-sapphire/30 text-cream"
+                  />
+                  <p className="text-[10px] text-cream/30 mt-1">Shown in Sell page "Network Liquidity"</p>
+                </div>
+                <div>
+                  <label className="text-sm text-cream/70 mb-2 block flex items-center gap-2">
+                    <Globe className="h-3 w-3" /> Countries Served
+                  </label>
+                  <Input
+                    type="number"
+                    value={countriesServed}
+                    onChange={(e) => setCountriesServed(e.target.value.slice(0, 10))}
+                    className="bg-midnight border-sapphire/30 text-cream"
+                  />
                 </div>
               </div>
             </div>

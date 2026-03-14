@@ -86,7 +86,7 @@ const Signup = () => {
                       {error}
                     </div>
                   )}
-                  <div className="space-y-2">
+                    <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
                     <Input
                       id="name"
@@ -98,6 +98,7 @@ const Signup = () => {
                       }
                       required
                       disabled={isSubmitting}
+                      maxLength={50}
                     />
                   </div>
 
@@ -113,6 +114,7 @@ const Signup = () => {
                       }
                       required
                       disabled={isSubmitting}
+                      maxLength={100}
                     />
                   </div>
 
@@ -129,6 +131,7 @@ const Signup = () => {
                         }
                         required
                         disabled={isSubmitting}
+                        maxLength={128}
                       />
                       <button
                         type="button"

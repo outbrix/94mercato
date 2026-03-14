@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
+import { isFlashSaleDay } from "@/lib/commission";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import {
@@ -18,6 +19,9 @@ import { formatPrice } from "@/lib/utils";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { PromoCodeInput } from "@/components/checkout/PromoCodeInput";
+
+const BASE_MARKET_FEE_PERCENT = 6; // Standard 6% fee paid by buyer
+const FLASH_SALE_FEE_PERCENT = 2.5; // Reduced 2.5% fee during Flash Sales
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -45,7 +49,13 @@ const Cart = () => {
             : appliedPromo.discount
         : 0;
 
-    const total = subtotal - discount;
+    const totalBeforeFees = subtotal - discount;
+    
+    // Dynamic Fee Logic (Phase 24: Buyer Pays Fees)
+    const activeFeeRate = isFlashSaleDay() ? FLASH_SALE_FEE_PERCENT : BASE_MARKET_FEE_PERCENT;
+    const marketFeeAmount = (totalBeforeFees * activeFeeRate) / 100;
+    
+    const total = totalBeforeFees + marketFeeAmount;
 
     const handleQuantityChange = (itemId: string, newQuantity: number) => {
         if (newQuantity < 1) {
@@ -291,9 +301,14 @@ const Cart = () => {
                                                     <span>-{formatPrice(discount, "USD")}</span>
                                                 </div>
                                             )}
-                                            <div className="flex justify-between text-muted-foreground">
-                                                <span>Processing Fee</span>
-                                                <span>Calculated at checkout</span>
+                                            <div className="flex justify-between text-muted-foreground group relative">
+                                                <span className="flex items-center gap-1">
+                                                    Network Support Fee {isFlashSaleDay() && <span className="text-[8px] font-black bg-champagne text-midnight px-1 rounded">FLASH</span>}
+                                                </span>
+                                                <span>{formatPrice(marketFeeAmount, "USD")}</span>
+                                                <div className="absolute left-0 -top-8 bg-charcoal text-[10px] text-cream p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none">
+                                                    {activeFeeRate}% Marketplace liquidity & delivery fee.
+                                                </div>
                                             </div>
                                         </div>
 

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 import { ProductCard } from "@/components/products/ProductCard";
 import api from "@/lib/api";
+import { getProductRating, getSimulatedSales } from "@/lib/market-stats";
 
 interface TrendingProduct {
     id: string;
@@ -44,8 +45,8 @@ export function TrendingProducts() {
                         image: p.thumbnail_url || p.images?.[0] || "",
                         badge: p.badge || undefined,
                         category: p.category || "Templates",
-                        rating: 4.8,
-                        sales: p.sales_count || 0,
+                        rating: getProductRating(p.slug || p.id.toString()),
+                        sales: p.sales_count || getSimulatedSales(p.slug || p.id.toString()),
                     }))
                 );
             } catch {
@@ -80,9 +81,9 @@ export function TrendingProducts() {
                     </h2>
                     <Link
                         to="/products?sort=popular"
-                        className="text-sm text-cream/40 hover:text-champagne transition-colors flex items-center gap-1"
+                        className="group text-sm font-bold text-cream/40 hover:text-champagne transition-colors flex items-center gap-2 px-4 py-2 -mr-4"
                     >
-                        See all <ArrowUpRight className="h-3.5 w-3.5" />
+                        See all <ArrowUpRight className="h-4 w-4 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </Link>
                 </div>
 

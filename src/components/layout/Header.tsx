@@ -3,7 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SearchModal } from '@/components/ui/SearchModal';
-import { Search, ShoppingBag, Menu, X, User, LogIn, LogOut, Crown, LayoutDashboard } from 'lucide-react';
+import { Search, ShoppingBag, Menu, X, User, LogIn, LogOut, Crown, LayoutDashboard, ArrowUpRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCartStore } from '@/store/cartStore';
 
@@ -162,51 +162,66 @@ export const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Overlay */}
         {mobileMenuOpen && (
           <div
-            className="fixed inset-0 top-16 z-40 bg-midnight/90 backdrop-blur-xl animate-fade-in lg:hidden"
+            className="fixed inset-0 top-0 z-[60] bg-midnight/95 backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-300 lg:hidden"
           >
-            <div className="container-luxury pt-8 space-y-4">
-              {user ? (
-                <div className="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
-                  <Link to="/profile" className="flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
-                    {user.avatar_url ? (
-                      <img src={user.avatar_url} alt={user.display_name} className="h-12 w-12 rounded-full object-cover" />
-                    ) : (
-                      <div className="h-12 w-12 rounded-full bg-sapphire/30 flex items-center justify-center">
-                        <User className="h-6 w-6 text-cream" />
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-lg font-medium text-cream">{user.display_name || user.name}</p>
-                      <p className="text-sm capitalize text-cream/60">{user.role}</p>
+            <div className="container-luxury h-full flex flex-col pt-24 pb-12">
+              <div className="flex justify-between items-center mb-12">
+                <Logo />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-cream"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <X className="h-8 w-8" />
+                </Button>
+              </div>
+
+              <div className="flex-1 space-y-2 overflow-y-auto">
+                {navLinks.map((link, i) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="group flex items-center justify-between py-6 border-b border-white/5"
+                  >
+                    <div className="flex items-center gap-6">
+                      <span className="text-[10px] font-mono text-champagne/40">0{i + 1}</span>
+                      <span className="text-3xl font-sans font-black text-cream uppercase tracking-tighter group-active:text-champagne transition-colors">
+                        {link.label}
+                      </span>
                     </div>
+                    <ArrowUpRight className="w-6 h-6 text-cream/20 group-hover:text-champagne transition-colors" />
                   </Link>
-                  <Button variant="ghost" size="icon" onClick={() => { logout(); setMobileMenuOpen(false); }}>
-                    <LogOut className="h-6 w-6 text-cream/70" />
-                  </Button>
-                </div>
-              ) : null}
+                ))}
+              </div>
 
-              {navLinks.map(link => (
-                <MobileNavLink key={link.to} to={link.to} closeMenu={() => setMobileMenuOpen(false)}>
-                  {link.label === 'Products' && <Crown className="h-5 w-5" />}
-                  {link.label === 'Sell' && <LogIn className="h-5 w-5" />}
-                  {link.label === 'Dashboard' && <LayoutDashboard className="h-5 w-5" />}
-                  {link.label === 'About' && <User className="h-5 w-5" />}
-                  {link.label === 'Contact' && <User className="h-5 w-5" />}
-                  {link.label}
-                </MobileNavLink>
-              ))}
-
-              <div className="border-t border-white/10 pt-6 mt-6 space-y-4">
-                {!user && (
-                  <MobileNavLink to="/login" closeMenu={() => setMobileMenuOpen(false)}>
-                    <LogIn className="h-5 w-5" />
-                    Login / Signup
-                  </MobileNavLink>
+              <div className="pt-12 mt-auto border-t border-white/10 flex items-center justify-between">
+                {!user ? (
+                   <Link 
+                    to="/login" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-4 px-8 py-4 bg-champagne text-midnight font-black text-xs tracking-widest uppercase rounded-full"
+                   >
+                     Login / Join
+                   </Link>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <img src={user.avatar_url || ""} alt="" className="w-10 h-10 rounded-full border border-white/10" />
+                    <div>
+                      <p className="text-sm font-bold text-cream">{user.display_name}</p>
+                      <button onClick={logout} className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-white">Sign Out</button>
+                    </div>
+                  </div>
                 )}
+                <div className="flex gap-4">
+                   <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                      <Search className="w-4 h-4 text-cream/50" />
+                   </div>
+                </div>
               </div>
             </div>
           </div>
