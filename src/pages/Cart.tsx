@@ -14,6 +14,7 @@ import {
     Loader2,
 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
+import { useCurrencyStore } from "@/store/currencyStore";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatPrice } from "@/lib/utils";
 import api from "@/lib/api";
@@ -27,6 +28,7 @@ const Cart = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const { items, removeItem, updateQuantity, clearCart } = useCartStore();
+    const { currentCurrency, convert } = useCurrencyStore();
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
     // Promo code state
@@ -36,26 +38,36 @@ const Cart = () => {
         discountType: "percentage" | "fixed";
     } | null>(null);
 
-    // Calculate totals
-    const subtotal = items.reduce(
-        (total, item) => total + item.price * item.quantity,
+    // Calculate totals in USD base
+    const subtotalUSD = items.reduce(
+        (total, item) => {
+            const itemPriceUSD = convert(item.price / 100, (item.currency || 'USD') as any, 'USD');
+            return total + (itemPriceUSD * 100 * item.quantity);
+        },
         0
     );
+    
+    const subtotal = subtotalUSD; // Normalized to USD cents
 
-    // Calculate discount
+    // Calculate discount in USD
     const discount = appliedPromo
         ? appliedPromo.discountType === "percentage"
             ? (subtotal * appliedPromo.discount) / 100
-            : appliedPromo.discount
+            : convert(appliedPromo.discount, 'USD', 'USD') * 100 // Discounts are usually in USD base
         : 0;
 
     const totalBeforeFees = subtotal - discount;
     
-    // Dynamic Fee Logic (Phase 24: Buyer Pays Fees)
-    const activeFeeRate = isFlashSaleDay() ? FLASH_SALE_FEE_PERCENT : BASE_MARKET_FEE_PERCENT;
-    const marketFeeAmount = (totalBeforeFees * activeFeeRate) / 100;
-    
-    const total = totalBeforeFees + marketFeeAmount;
+    // Traditional Model (Phase 24: Seller Pays Fees)
+    // No extra fee added to the buyer's total
+    const total = totalBeforeFees;
+
+    // Helper to format based on globally selected currency
+    // Now takes fromCurrency to avoid treats everything as USD
+    const formatDisplayPrice = (valInCents: number, fromCurrency: string = 'USD') => {
+        const converted = convert(valInCents / 100, fromCurrency as any, currentCurrency);
+        return formatPrice(converted * 100, currentCurrency);
+    };
 
     const handleQuantityChange = (itemId: string, newQuantity: number) => {
         if (newQuantity < 1) {
@@ -151,227 +163,235 @@ const Cart = () => {
                 />
             </Helmet>
             <Layout>
-                <section className="pt-32 pb-20 min-h-screen">
-                    <div className="container-luxury">
+                <section className="pt-28 md:pt-36 pb-24 min-h-screen bg-midnight">
+                    <div className="container-luxury px-4">
                         {/* Header */}
-                        <div className="flex items-center justify-between mb-12">
-                            <div>
-                                <h1 className="heading-large mb-2">Shopping Cart</h1>
-                                <p className="text-muted-foreground">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
+                            <div className="space-y-2">
+                                <h1 className="text-4xl md:text-6xl font-serif text-cream tracking-tight animate-in slide-in-from-left duration-700">
+                                    Your <span className="text-champagne">Collection</span>
+                                </h1>
+                                <p className="text-sm md:text-base text-cream/40 font-medium tracking-wide uppercase">
                                     {items.length === 0
-                                        ? "Your cart is empty"
-                                        : `${items.length} item${items.length > 1 ? "s" : ""} in your cart`}
+                                        ? "Inventory is empty"
+                                        : `${items.length} exquisite item${items.length > 1 ? "s" : ""} selected`}
                                 </p>
                             </div>
                             {items.length > 0 && (
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
+                                <button
                                     onClick={() => {
                                         clearCart();
-                                        toast.success("Cart cleared");
+                                        toast.success("Collection cleared");
                                     }}
-                                    className="text-muted-foreground hover:text-destructive"
+                                    className="text-[10px] font-black tracking-widest uppercase text-cream/20 hover:text-destructive transition-colors text-left md:text-right"
                                 >
-                                    Clear Cart
-                                </Button>
+                                    Empty Container
+                                </button>
                             )}
                         </div>
 
                         {items.length === 0 ? (
                             /* Empty Cart State */
-                            <div className="flex flex-col items-center justify-center py-20 text-center">
-                                <div className="w-24 h-24 rounded-full bg-sapphire/10 flex items-center justify-center mb-6">
-                                    <ShoppingBag className="h-12 w-12 text-sapphire/50" />
+                            <div className="flex flex-col items-center justify-center py-32 text-center animate-in fade-in zoom-in duration-1000">
+                                <div className="relative group mb-10">
+                                    <div className="absolute inset-0 bg-champagne/20 rounded-full blur-3xl group-hover:bg-champagne/30 transition-all duration-700" />
+                                    <div className="relative w-32 h-32 rounded-full border border-white/10 bg-midnight-light/50 flex items-center justify-center backdrop-blur-xl">
+                                        <ShoppingCart className="h-12 w-12 text-champagne/60" />
+                                    </div>
                                 </div>
-                                <h2 className="text-2xl font-serif font-medium mb-4">
-                                    Your cart is empty
+                                <h2 className="text-3xl font-serif text-cream mb-4">
+                                    Your collection awaits
                                 </h2>
-                                <p className="text-muted-foreground mb-8 max-w-md">
-                                    Looks like you haven't added any products yet. Browse our
-                                    collection to find something you love.
+                                <p className="text-cream/50 mb-12 max-w-sm leading-relaxed">
+                                    Begin your journey by discovering our curated selection of high-performance digital assets.
                                 </p>
-                                <Button variant="luxury" size="lg" asChild>
+                                <Button variant="luxury" size="lg" className="rounded-full px-10 h-14" asChild>
                                     <Link to="/products">
-                                        <ShoppingCart className="h-5 w-5 mr-2" />
-                                        Browse Products
+                                        Exploration
+                                        <ArrowRight className="ml-3 h-5 w-5" />
                                     </Link>
                                 </Button>
                             </div>
                         ) : (
                             /* Cart Items */
-                            <div className="grid lg:grid-cols-3 gap-12">
+                            <div className="grid lg:grid-cols-12 gap-16 items-start">
                                 {/* Items List */}
-                                <div className="lg:col-span-2 space-y-6">
-                                    {items.map((item) => (
+                                <div className="lg:col-span-8 space-y-8">
+                                    {items.map((item, index) => (
                                         <div
                                             key={item.id}
-                                            className="flex gap-6 p-6 rounded-xl bg-midnight-light/30 border border-sapphire/20"
+                                            className="group relative flex flex-col gap-6 p-6 rounded-2xl bg-midnight-light/20 border border-white/5 backdrop-blur-sm hover:bg-midnight-light/40 transition-all duration-500 animate-in slide-in-from-bottom duration-700 fill-mode-both"
+                                            style={{ animationDelay: `${index * 100}ms` }}
                                         >
-                                            {/* Image */}
-                                            <div className="w-24 h-24 rounded-lg overflow-hidden bg-midnight flex-shrink-0">
-                                                {item.image ? (
-                                                    <img
-                                                        src={item.image}
-                                                        alt={item.name}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                                                        <ShoppingBag className="h-8 w-8" />
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Details */}
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-medium text-cream truncate mb-1">
-                                                    {item.name}
-                                                </h3>
-                                                <p className="text-champagne font-medium">
-                                                    {formatPrice(item.price, item.currency || "USD")}
-                                                </p>
-                                            </div>
-
-                                            {/* Quantity Controls */}
-                                            <div className="flex items-center gap-3">
-                                                <Button
-                                                    variant="outline"
-                                                    size="icon"
-                                                    className="h-8 w-8 rounded-full"
-                                                    onClick={() =>
-                                                        handleQuantityChange(item.id, item.quantity - 1)
-                                                    }
-                                                >
-                                                    <Minus className="h-4 w-4" />
-                                                </Button>
-                                                <span className="w-8 text-center font-medium">
-                                                    {item.quantity}
-                                                </span>
-                                                <Button
-                                                    variant="outline"
-                                                    size="icon"
-                                                    className="h-8 w-8 rounded-full"
-                                                    onClick={() =>
-                                                        handleQuantityChange(item.id, item.quantity + 1)
-                                                    }
-                                                >
-                                                    <Plus className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-
-                                            {/* Item Total & Remove */}
-                                            <div className="flex flex-col items-end justify-between">
-                                                <p className="font-medium text-cream">
-                                                    {formatPrice(
-                                                        item.price * item.quantity,
-                                                        item.currency || "USD"
+                                            <div className="flex gap-6 md:gap-8">
+                                                {/* Image */}
+                                                <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden bg-midnight shrink-0 border border-white/5">
+                                                    {item.image ? (
+                                                        <img
+                                                            src={item.image}
+                                                            alt={item.name}
+                                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-white/10">
+                                                            <ShoppingBag className="h-10 w-10" />
+                                                        </div>
                                                     )}
-                                                </p>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                                                    onClick={() => {
-                                                        removeItem(item.id);
-                                                        toast.success("Item removed from cart");
-                                                    }}
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
+                                                </div>
+
+                                                {/* Details */}
+                                                <div className="flex-1 py-1 space-y-3">
+                                                    <div className="flex justify-between items-start gap-4">
+                                                        <h3 className="text-lg md:text-xl font-serif text-cream leading-tight hover:text-champagne transition-colors cursor-pointer">
+                                                            {item.name}
+                                                        </h3>
+                                                        <button
+                                                            onClick={() => {
+                                                                removeItem(item.id);
+                                                                toast.success("Item removed");
+                                                            }}
+                                                            className="p-2 -mr-2 text-white/10 hover:text-destructive transition-colors shrink-0"
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+                                                        <p className="text-champagne font-mono tracking-tighter text-lg">
+                                                            {formatDisplayPrice(item.price, item.currency)}
+                                                        </p>
+                                                        <div className="h-4 w-px bg-white/10 hidden md:block" />
+                                                        <p className="text-cream/30 uppercase tracking-widest text-[10px] font-black">
+                                                            High Performance Asset
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Footer Controls */}
+                                            <div className="flex items-center justify-between pt-6 border-t border-white/5">
+                                                <div className="flex items-center p-1 rounded-full bg-midnight border border-white/5">
+                                                    <button
+                                                        onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                                        className="h-8 w-8 rounded-full flex items-center justify-center text-cream/40 hover:text-cream hover:bg-white/5 transition-all"
+                                                    >
+                                                        <Minus className="h-3 w-3" />
+                                                    </button>
+                                                    <span className="w-10 text-center text-sm font-mono text-cream/80">
+                                                        {item.quantity.toString().padStart(2, '0')}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                                        className="h-8 w-8 rounded-full flex items-center justify-center text-cream/40 hover:text-cream hover:bg-white/5 transition-all"
+                                                    >
+                                                        <Plus className="h-3 w-3" />
+                                                    </button>
+                                                </div>
+
+                                                <div className="text-right">
+                                                    <p className="text-xs text-cream/20 uppercase tracking-widest font-black mb-1">Row Total</p>
+                                                    <p className="font-serif text-xl text-cream">
+                                                        {formatDisplayPrice(item.price * item.quantity, item.currency)}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
 
                                 {/* Order Summary */}
-                                <div className="lg:col-span-1">
-                                    <div className="sticky top-24 p-6 rounded-xl bg-midnight-light/50 border border-sapphire/20 space-y-6">
-                                        <h2 className="text-lg font-medium">Order Summary</h2>
+                                <div className="lg:col-span-4 lg:sticky lg:top-32">
+                                    <div className="p-8 rounded-3xl bg-midnight-light/30 border border-white/5 backdrop-blur-xl space-y-10">
+                                        <div className="flex items-center justify-between border-b border-white/5 pb-6">
+                                            <h2 className="text-2xl font-serif text-cream">Summary</h2>
+                                            <div className="h-2 w-2 rounded-full bg-champagne animate-pulse-slow shadow-[0_0_10px_rgba(196,163,115,0.5)]" />
+                                        </div>
 
-                                        {/* Summary Lines */}
-                                        <div className="space-y-4 text-sm">
-                                            <div className="flex justify-between">
-                                                <span className="text-muted-foreground">Subtotal</span>
-                                                <span>{formatPrice(subtotal, "USD")}</span>
+                                        {/* Summary Lines */}                                        <div className="space-y-5">
+                                            <div className="flex justify-between items-center group transition-all duration-300 hover:translate-x-1">
+                                                <span className="text-xs text-cream/40 uppercase tracking-widest font-bold">Subtotal</span>
+                                                <span className="text-cream font-mono text-base">{formatDisplayPrice(subtotal)}</span>
                                             </div>
+                                            
                                             {appliedPromo && (
-                                                <div className="flex justify-between text-green-500">
-                                                    <span>Discount ({appliedPromo.code})</span>
-                                                    <span>-{formatPrice(discount, "USD")}</span>
+                                                <div className="flex justify-between items-center text-green-400 group transition-all duration-300 hover:translate-x-1">
+                                                    <span className="text-xs uppercase tracking-widest font-bold">Privilege ({appliedPromo.code})</span>
+                                                    <span className="font-mono">-{formatDisplayPrice(discount)}</span>
                                                 </div>
                                             )}
-                                            <div className="flex justify-between text-muted-foreground group relative">
-                                                <span className="flex items-center gap-1">
-                                                    Network Support Fee {isFlashSaleDay() && <span className="text-[8px] font-black bg-champagne text-midnight px-1 rounded">FLASH</span>}
-                                                </span>
-                                                <span>{formatPrice(marketFeeAmount, "USD")}</span>
-                                                <div className="absolute left-0 -top-8 bg-charcoal text-[10px] text-cream p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none">
-                                                    {activeFeeRate}% Marketplace liquidity & delivery fee.
-                                                </div>
-                                            </div>
+                                            
                                         </div>
+
 
                                         {/* Promo Code Input */}
-                                        <PromoCodeInput
-                                            onApply={handleApplyPromo}
-                                            onRemove={handleRemovePromo}
-                                            appliedCode={appliedPromo?.code}
-                                            appliedDiscount={appliedPromo?.discount}
-                                            discountType={appliedPromo?.discountType}
-                                        />
-
-                                        <div className="border-t border-sapphire/20 pt-4">
-                                            <div className="flex justify-between text-lg font-medium">
-                                                <span>Total</span>
-                                                <span className="text-champagne">
-                                                    {formatPrice(total, "USD")}
-                                                </span>
-                                            </div>
+                                        <div className="pt-2">
+                                            <PromoCodeInput
+                                                onApply={handleApplyPromo}
+                                                onRemove={handleRemovePromo}
+                                                appliedCode={appliedPromo?.code}
+                                                appliedDiscount={appliedPromo?.discount}
+                                                discountType={appliedPromo?.discountType}
+                                            />
                                         </div>
 
-                                        {/* Checkout Button */}
-                                        <Button
-                                            variant="luxury"
-                                            size="lg"
-                                            className="w-full"
-                                            onClick={handleCheckout}
-                                            disabled={isCheckingOut || items.length === 0}
-                                        >
-                                            {isCheckingOut ? (
-                                                <>
-                                                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                                                    Processing...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    Proceed to Checkout
-                                                    <ArrowRight className="h-5 w-5 ml-2" />
-                                                </>
-                                            )}
-                                        </Button>
+                                        <div className="pt-8 border-t border-white/10">
+                                            <div className="flex justify-between items-end mb-8">
+                                                <div className="space-y-1">
+                                                    <span className="text-[10px] text-cream/20 uppercase tracking-widest font-black block">Total Investment</span>
+                                                    <span className="text-[8px] text-champagne/40 uppercase tracking-[0.2em]">Live Conversion</span>
+                                                </div>
+                                                <span className="text-4xl md:text-5xl font-serif text-champagne leading-none drop-shadow-[0_0_15px_rgba(196,163,115,0.2)]">
+                                                    {formatDisplayPrice(total)}
+                                                </span>
+                                            </div>
 
-                                        {!user && (
-                                            <p className="text-xs text-center text-muted-foreground">
-                                                You'll need to{" "}
-                                                <Link
-                                                    to="/login"
-                                                    className="text-champagne hover:underline"
-                                                >
-                                                    login
-                                                </Link>{" "}
-                                                to complete your purchase.
+                                            <p className="text-[9px] text-cream/20 uppercase tracking-[0.2em] font-medium leading-relaxed mb-6 text-center bg-white/[0.02] py-2 rounded-lg border border-white/5">
+                                                Prices are approximate. Final amount will be calculated by Stripe in your bank's currency at checkout.
                                             </p>
-                                        )}
 
-                                        {/* Continue Shopping */}
-                                        <Button
-                                            variant="ghost"
-                                            className="w-full"
-                                            asChild
-                                        >
-                                            <Link to="/products">Continue Shopping</Link>
-                                        </Button>
+                                            <Button
+                                                variant="luxury"
+                                                size="lg"
+                                                className="w-full h-16 rounded-full text-sm font-black uppercase tracking-widest animate-pulse-slow shadow-2xl shadow-champagne/10"
+                                                onClick={handleCheckout}
+                                                disabled={isCheckingOut || items.length === 0}
+                                            >
+                                                {isCheckingOut ? (
+                                                    <>
+                                                        <Loader2 className="h-5 w-5 mr-3 animate-spin" />
+                                                        Authorizing...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Initiate Transaction
+                                                        <ArrowRight className="h-5 w-5 ml-3" />
+                                                    </>
+                                                )}
+                                            </Button>
+
+                                            <div className="mt-8 space-y-4">
+                                                {!user ? (
+                                                    <p className="text-[10px] text-center text-cream/30 uppercase tracking-[0.2em] font-bold">
+                                                        Authentication required to{" "}
+                                                        <Link to="/login" className="text-champagne hover:text-cream transition-colors">
+                                                            Finalize
+                                                        </Link>
+                                                    </p>
+                                                ) : (
+                                                    <p className="text-[10px] text-center text-cream/20 uppercase tracking-[0.2em] font-medium leading-relaxed">
+                                                        Secure payment processed via Stripe encrypted infrastructure
+                                                    </p>
+                                                )}
+                                                
+                                                <Button
+                                                    variant="ghost"
+                                                    className="w-full text-cream/20 hover:text-cream hover:bg-transparent transition-all h-auto py-2 text-[10px] uppercase font-black tracking-widest"
+                                                    asChild
+                                                >
+                                                    <Link to="/products">Return to Marketplace</Link>
+                                                </Button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
