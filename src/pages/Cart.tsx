@@ -63,9 +63,8 @@ const Cart = () => {
     const total = totalBeforeFees;
 
     // Helper to format based on globally selected currency
-    // Now takes fromCurrency to avoid treats everything as USD
     const formatDisplayPrice = (valInCents: number, fromCurrency: string = 'USD') => {
-        const converted = convert(valInCents / 100, fromCurrency as any, currentCurrency);
+        const converted = convert(valInCents / 100, (fromCurrency || 'USD') as any, currentCurrency);
         return formatPrice(converted * 100, currentCurrency);
     };
 

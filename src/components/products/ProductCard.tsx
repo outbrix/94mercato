@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import { toast } from "sonner";
 import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
+import { useCurrencyStore, type CurrencyCode } from "@/store/currencyStore";
+import { formatPrice as formatPriceUtils } from "@/lib/utils";
 
 interface ProductCardProps {
   product: {
@@ -38,13 +40,16 @@ const badgeVariants: Record<string, string> = {
 
 export function ProductCard({ product, className, style }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
+  const { currentCurrency, convert } = useCurrencyStore();
+
+  const displayPrice = convert(
+    product.price, 
+    (product.currency as CurrencyCode) || 'USD', 
+    currentCurrency
+  );
 
   const formatPrice = (price: number, currency: string) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: currency,
-      minimumFractionDigits: 0,
-    }).format(price / 100);
+    return formatPriceUtils(price, currency);
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -182,7 +187,7 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
 
           {/* Price */}
           <p className="font-medium text-champagne">
-            {formatPrice(product.price, product.currency)}
+            {formatPrice(displayPrice, currentCurrency)}
           </p>
         </div>
       </div>

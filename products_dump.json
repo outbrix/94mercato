@@ -1,0 +1,50 @@
+[
+  {
+    "id": "15",
+    "title": "Magazine Design Presentation",
+    "slug": "magazine-design-presentation-9202",
+    "description": "A beautiful presentation ",
+    "price": "1200.00",
+    "currency": "USD",
+    "category": "Templates",
+    "badge": null,
+    "images": [],
+    "thumbnail_url": "https://pub-7930c3461b2a4830a8e19eb2c0e58295.r2.dev/images/0989ae76cb777d62b7f06e158e676e05.jpg",
+    "seller_name": "Musab (94 Mercato Admin)",
+    "seller_avatar": null,
+    "seller_is_verified": true
+  },
+  {
+    "id": "14",
+    "title": "C++ Course",
+    "slug": "c-course-8141",
+    "description": "C++ is Amazing",
+    "price": "900.00",
+    "currency": "AED",
+    "category": "Courses",
+    "badge": null,
+    "images": [],
+    "thumbnail_url": "https://pub-7930c3461b2a4830a8e19eb2c0e58295.r2.dev/images/3476581674d26f6a977d982f4a4649f9.png",
+    "seller_name": "SellerShop",
+    "seller_avatar": "https://pub-7930c3461b2a4830a8e19eb2c0e58295.r2.dev/profiles/64bb1c09b0ea58eea06f42484b0d1020.jpg",
+    "seller_is_verified": false
+  },
+  {
+    "id": "9",
+    "title": "Assembly Guide Kit",
+    "slug": "assembly-guide-kit-3440",
+    "description": "A meticulously crafted digital product designed for modern creators. Features include high-resolution assets, fully customizable layouts, and comprehensive documentation. Perfect for professionals seeking premium quality and attention to detail.",
+    "price": "3500.00",
+    "currency": "USD",
+    "category": "Courses",
+    "badge": null,
+    "images": [
+      "https://pub-7930c3461b2a4830a8e19eb2c0e58295.r2.dev/images/bd43f55f4fa9efb18cbca1e076e713f0.png",
+      "https://pub-7930c3461b2a4830a8e19eb2c0e58295.r2.dev/images/c4ca62cb51a724f2c1ca2f61bd849ec4.png"
+    ],
+    "thumbnail_url": "https://pub-7930c3461b2a4830a8e19eb2c0e58295.r2.dev/images/009ffad76df81a52fdedfd1d36206e32.png",
+    "seller_name": "SellerShop",
+    "seller_avatar": "https://pub-7930c3461b2a4830a8e19eb2c0e58295.r2.dev/profiles/64bb1c09b0ea58eea06f42484b0d1020.jpg",
+    "seller_is_verified": false
+  }
+]

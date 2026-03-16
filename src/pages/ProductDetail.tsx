@@ -26,6 +26,7 @@ import { useRecentlyViewedStore } from "@/store/recentlyViewedStore";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
+import { useCurrencyStore, type CurrencyCode } from "@/store/currencyStore";
 import { toast } from "sonner";
 import { ProductCard } from "@/components/products/ProductCard";
 import { ReviewSection } from "@/components/products/ReviewSection";
@@ -75,6 +76,7 @@ const ProductDetail = () => {
   const { user } = useAuth();
   const addItem = useCartStore((state) => state.addItem);
   const { toggleItem, isInWishlist } = useWishlistStore();
+  const { currentCurrency, convert } = useCurrencyStore();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -443,7 +445,10 @@ const ProductDetail = () => {
                 <div className="space-y-4">
                   <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-serif font-medium">
-                      {formatPrice(product.price, product.currency)}
+                      {formatPrice(
+                        convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency), 
+                        currentCurrency
+                      )}
                     </span>
                   </div>
 
