@@ -8,7 +8,7 @@ import { getCommissionRate } from "@/lib/commission";
 import { cn } from "@/lib/utils";
 
 const comparisonFeatures = [
-    { feature: "Commission Rate", starter: "6%", pro: "3%", partner: "2%", note: "Paid by Buyer" },
+    { feature: "Commission Rate", starter: "6%", pro: "3%", partner: "2%", note: "Paid by Seller" },
     { feature: "Monthly Fee", starter: "Free", pro: "$15/mo", partner: "Free" },
     { feature: "Product Listings", starter: "Unlimited", pro: "Unlimited", partner: "Unlimited" },
     { feature: "Verification Badge", starter: "—", pro: "✓", partner: "✓" },
@@ -21,9 +21,11 @@ const Pricing = () => {
     const [calcTier, setCalcTier] = useState<"starter" | "pro">("starter");
     const productPrice = 100;
     const commission = getCommissionRate(calcTier === "starter" ? "Starter" : "Creator");
-    // Under "Buyer Pays Fees" model (Phase 24), platform fee is NOT deducted from seller
-    const processingFee = productPrice * 0.029 + 0.3; // Standard Stripe Fee
-    const youReceive = productPrice - processingFee;
+    // Marketplace commission is paid by the seller
+    const commissionAmount = productPrice * (commission / 100);
+    // Stripe processing is covered by the buyer
+    const processingFee = productPrice * 0.029 + 0.3; 
+    const youReceive = productPrice - commissionAmount;
 
     return (
         <>
@@ -52,7 +54,7 @@ const Pricing = () => {
                                         description: "Entry-level tier for new asset developers.",
                                         color: "chrome",
                                         features: [
-                                            "6.0% platform commission (Paid by Buyer)",
+                                            "6.0% platform commission",
                                             "Unlimited listings",
                                             "Auto asset delivery",
                                             "Standard marketplace profile",
@@ -68,7 +70,7 @@ const Pricing = () => {
                                         color: "sapphire",
                                         popular: true,
                                         features: [
-                                            "3.0% commission (Paid by Buyer)",
+                                            "3.0% commission",
                                             "Verified Pro Badge",
                                             "Homepage 'Featured' Slot",
                                             "Newsletter promotion",
@@ -83,7 +85,7 @@ const Pricing = () => {
                                         description: "Bespoke framework for elite studios and labels.",
                                         color: "gold",
                                         features: [
-                                            "2.0% enterprise commission (Paid by Buyer)",
+                                            "2.0% enterprise commission",
                                             "Curated 'Invited' Badge",
                                             "Ranking boost",
                                             "Early feature access",
@@ -169,12 +171,12 @@ const Pricing = () => {
                                                 <span>${productPrice.toFixed(2)}</span>
                                             </div>
                                             <div className="flex justify-between text-sm italic opacity-60 font-serif items-center">
-                                                <span>Market Fee ({commission}%)</span>
+                                                <span>Stripe Processing</span>
                                                 <span className="text-emerald-400 text-[10px] font-black uppercase tracking-widest bg-emerald-400/10 px-2 py-0.5 rounded">Paid by Buyer</span>
                                             </div>
                                             <div className="flex justify-between text-sm italic opacity-60 font-serif">
-                                                <span>Stripe Processing</span>
-                                                <span className="text-red-400">-${processingFee.toFixed(2)}</span>
+                                                <span>Market Fee ({commission}%)</span>
+                                                <span className="text-red-400">-${(productPrice * (commission / 100)).toFixed(2)}</span>
                                             </div>
                                             <div className="pt-6 border-t border-cream/10">
                                                 <div className="flex justify-between items-end">
