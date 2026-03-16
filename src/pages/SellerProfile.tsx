@@ -17,7 +17,7 @@ import {
     Globe,
     ExternalLink,
 } from "lucide-react";
-import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
+import { TierBadge, resolveSellerTier } from "@/components/seller/TierBadge";
 
 interface Seller {
     display_name: string;
@@ -28,7 +28,8 @@ interface Seller {
     member_since: string;
     product_count: number;
     total_sales: number;
-    seller_tier?: SellerTier;
+    seller_tier?: string;
+    seller_role?: string;
 }
 
 interface Product {
@@ -154,7 +155,7 @@ const SellerProfile = () => {
                                             Verified Seller
                                         </Badge>
                                     )}
-                                    <TierBadge tier={seller.seller_tier ?? 'starter'} size="md" />
+                                    <TierBadge tier={resolveSellerTier(seller.seller_tier, seller.seller_role)} size="md" />
                                 </div>
 
                                 {seller.bio && (

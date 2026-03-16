@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MoreHorizontal, Eye, Ban, UserCog, Shield, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { MoreHorizontal, Eye, Ban, UserCog, Shield, Loader2, CheckCircle, XCircle, Crown } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 
@@ -39,6 +39,7 @@ interface AdminUser {
   lastLogin: string;
   status: "active" | "banned" | "pending";
   balance?: number;
+  sellerType: string;
 }
 
 // Type for backend response
@@ -49,6 +50,7 @@ interface BackendUser {
   role: "admin" | "seller" | "buyer";
   is_verified: boolean;
   balance: number;
+  seller_type?: string;
   created_at: string;
   status?: "active" | "banned" | "pending";
   last_login?: string;
@@ -66,6 +68,7 @@ interface UserDetails {
   is_verified: boolean;
   balance: number;
   status: string;
+  seller_type?: string;
   created_at: string;
   last_login: string;
   product_count: number;
@@ -84,6 +87,8 @@ export default function AdminUsers() {
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [newRole, setNewRole] = useState<string>("");
+  const [sellerTypeModal, setSellerTypeModal] = useState(false);
+  const [newSellerType, setNewSellerType] = useState<string>("");
 
   // Fetch users from backend
   useEffect(() => {
@@ -106,6 +111,7 @@ export default function AdminUsers() {
         lastLogin: user.last_login ? new Date(user.last_login).toLocaleDateString() : "-",
         status: (user.status as "active" | "banned" | "pending") || "active",
         balance: user.balance,
+        sellerType: user.seller_type || "Starter",
       }));
 
       setUsers(mappedUsers);
@@ -165,6 +171,38 @@ export default function AdminUsers() {
       toast({
         title: "Action Failed",
         description: err.response?.data?.message || "Could not change user role.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Change Seller Type handler
+  const handleOpenSellerTypeModal = (user: AdminUser) => {
+    setSelectedUser(user);
+    setNewSellerType(user.sellerType);
+    setSellerTypeModal(true);
+  };
+
+  const handleChangeSellerType = async () => {
+    if (!selectedUser || !newSellerType) return;
+
+    try {
+      await api.patch(`/admin/users/${selectedUser.id}/seller-type`, { seller_type: newSellerType });
+
+      // Update local state
+      setUsers(prev => prev.map(u =>
+        u.id === selectedUser.id ? { ...u, sellerType: newSellerType } : u
+      ));
+
+      toast({
+        title: "Seller Type Updated",
+        description: `${selectedUser.name} is now a ${newSellerType}.`,
+      });
+      setSellerTypeModal(false);
+    } catch (err: unknown) {
+      toast({
+        title: "Action Failed",
+        description: (err as any).response?.data?.message || "Could not change seller type.",
         variant: "destructive",
       });
     }
@@ -251,6 +289,23 @@ export default function AdminUsers() {
       ),
     },
     {
+      key: "sellerType",
+      header: "Seller Type",
+      render: (user: AdminUser) => (
+        user.role === "seller" ? (
+          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${user.sellerType === 'Partner' ? 'bg-purple-500/20 text-purple-300' :
+              user.sellerType === 'Creator' ? 'bg-blue-500/20 text-blue-300' :
+                'bg-stone/30 text-cream/60'
+            }`}>
+            {user.sellerType === 'Partner' && <Crown className="h-3 w-3" />}
+            {user.sellerType}
+          </span>
+        ) : (
+          <span className="text-cream/30">—</span>
+        )
+      ),
+    },
+    {
       key: "balance",
       header: "Balance",
       render: (user: AdminUser) => (
@@ -292,6 +347,15 @@ export default function AdminUsers() {
               <UserCog className="h-4 w-4 mr-2" />
               Change Role
             </DropdownMenuItem>
+            {user.role === "seller" && (
+              <DropdownMenuItem
+                className="text-purple-300 cursor-pointer"
+                onClick={() => handleOpenSellerTypeModal(user)}
+              >
+                <Crown className="h-4 w-4 mr-2" />
+                Change Seller Type
+              </DropdownMenuItem>
+            )}
 
             {/* Verification Toggle */}
             <DropdownMenuSeparator className="bg-sapphire/20" />
@@ -417,6 +481,10 @@ export default function AdminUsers() {
                   <p className="font-medium capitalize">{userDetails.status || "active"}</p>
                 </div>
                 <div className="bg-stone/30 p-3 rounded">
+                  <span className="text-cream/50">Seller Type</span>
+                  <p className="font-medium">{userDetails.seller_type || "Starter"}</p>
+                </div>
+                <div className="bg-stone/30 p-3 rounded">
                   <span className="text-cream/50">Verified</span>
                   <p className="font-medium">{userDetails.is_verified ? "Yes" : "No"}</p>
                 </div>
@@ -477,6 +545,38 @@ export default function AdminUsers() {
             <div className="flex gap-2 justify-end">
               <Button variant="outline" onClick={() => setRoleModal(false)}>Cancel</Button>
               <Button onClick={handleChangeRole} disabled={newRole === selectedUser?.role}>
+                Save Changes
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Seller Type Modal */}
+      <Dialog open={sellerTypeModal} onOpenChange={setSellerTypeModal}>
+        <DialogContent className="bg-midnight border-sapphire/20 max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-cream">Change Seller Type</DialogTitle>
+            <DialogDescription className="text-cream/60">
+              Update seller tier for {selectedUser?.name}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <Select value={newSellerType} onValueChange={setNewSellerType}>
+              <SelectTrigger className="bg-stone/30 border-sapphire/20 text-cream">
+                <SelectValue placeholder="Select seller type" />
+              </SelectTrigger>
+              <SelectContent className="bg-midnight border-sapphire/20">
+                <SelectItem value="Starter" className="text-cream">Starter</SelectItem>
+                <SelectItem value="Creator" className="text-cream">Creator</SelectItem>
+                <SelectItem value="Partner" className="text-cream">Partner</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setSellerTypeModal(false)}>Cancel</Button>
+              <Button onClick={handleChangeSellerType} disabled={newSellerType === selectedUser?.sellerType}>
                 Save Changes
               </Button>
             </div>

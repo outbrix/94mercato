@@ -2,27 +2,30 @@
  * Commission calculation logic for 94mercato
  * 
  * Fees Structure:
+ * - Starter: 6%
+ * - Creator (Creator Pro): 3%
  * - Partner (Invite Only): 2%
- * - Public (Starter): 6%
- * - Subscriber (Creator Pro): 3%
+ * - Admin: 0%
  * 
  * Flash Sale System (1st of every month):
- * - Partner & Pro: 0% Platform Commission
+ * - Partner, Creator & Admin: 0% Platform Commission
  * - Starter: 2.5% Platform Commission
  */
 
-export type SellerTier = 'starter' | 'creator_pro' | 'creator_partner';
+import type { SellerTier } from "@/components/seller/TierBadge";
 
 export const TIER_COMMISSION: Record<SellerTier, number> = {
-  starter: 6,
-  creator_pro: 3,
-  creator_partner: 2,
+  Starter: 6,
+  Creator: 3,
+  Partner: 2,
+  Admin: 2,
 };
 
 export const FLASH_SALE_COMMISSION: Record<SellerTier, number> = {
-  starter: 2.5,
-  creator_pro: 0,
-  creator_partner: 0,
+  Starter: 2.5,
+  Creator: 0,
+  Partner: 0,
+  Admin: 0,
 };
 
 /**
@@ -38,9 +41,9 @@ export function isFlashSaleDay(): boolean {
  */
 export function getCommissionRate(tier: SellerTier): number {
   if (isFlashSaleDay()) {
-    return FLASH_SALE_COMMISSION[tier];
+    return FLASH_SALE_COMMISSION[tier] ?? FLASH_SALE_COMMISSION.Starter;
   }
-  return TIER_COMMISSION[tier];
+  return TIER_COMMISSION[tier] ?? TIER_COMMISSION.Starter;
 }
 
 /**

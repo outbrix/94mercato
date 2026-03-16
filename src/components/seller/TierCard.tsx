@@ -11,7 +11,7 @@ interface TierCardProps {
 }
 
 const tierData = {
-    starter: {
+    Starter: {
         name: "Starter",
         badge: null,
         price: "Free",
@@ -33,7 +33,7 @@ const tierData = {
             "Instant digital delivery",
         ],
     },
-    creator_pro: {
+    Creator: {
         name: "Creator Pro",
         badge: "Best Value",
         price: "$15",
@@ -55,7 +55,7 @@ const tierData = {
             "Early access to new features",
         ],
     },
-    creator_partner: {
+    Partner: {
         name: "Creator Partnership",
         badge: "Invite Only",
         price: "Free",
@@ -82,7 +82,7 @@ const tierData = {
 export function TierCard({ tier, isCurrentPlan = false, onUpgrade }: TierCardProps) {
     const data = tierData[tier];
     const IconComp = data.icon;
-    const isHighlighted = tier === "creator_pro";
+    const isHighlighted = tier === "Creator";
 
     return (
         <div
@@ -100,12 +100,12 @@ export function TierCard({ tier, isCurrentPlan = false, onUpgrade }: TierCardPro
                 <div
                     className={cn(
                         "absolute top-4 right-4 z-10 text-xs font-semibold px-3 py-1 rounded-full tracking-wide",
-                        tier === "creator_pro"
+                        tier === "Creator"
                             ? "bg-sapphire/20 text-sapphire border border-sapphire/30"
                             : "bg-champagne/20 text-champagne border border-champagne/30"
                     )}
                 >
-                    {tier === "creator_partner" && <Star className="inline h-2.5 w-2.5 mr-1 fill-current" />}
+                    {tier === "Partner" && <Star className="inline h-2.5 w-2.5 mr-1 fill-current" />}
                     {data.badge}
                 </div>
             )}
@@ -130,12 +130,12 @@ export function TierCard({ tier, isCurrentPlan = false, onUpgrade }: TierCardPro
                     <span
                         className={cn(
                             "text-4xl font-serif font-bold",
-                            tier === "creator_pro" ? "text-sapphire" : tier === "creator_partner" ? "text-champagne" : ""
+                            tier === "Creator" ? "text-sapphire" : tier === "Partner" ? "text-champagne" : ""
                         )}
                     >
                         {data.price}
                     </span>
-                    {tier === "creator_pro" && <span className="text-muted-foreground text-base ml-1">/mo</span>}
+                    {tier === "Creator" && <span className="text-muted-foreground text-base ml-1">/mo</span>}
                 </div>
                 <p className="text-xs text-muted-foreground">{data.priceSub}</p>
             </div>
@@ -146,7 +146,7 @@ export function TierCard({ tier, isCurrentPlan = false, onUpgrade }: TierCardPro
                     <span
                         className={cn(
                             "text-3xl font-serif font-bold",
-                            tier === "starter" ? "text-muted-foreground" : "text-champagne"
+                            tier === "Starter" ? "text-muted-foreground" : "text-champagne"
                         )}
                     >
                         {data.commission}
@@ -164,9 +164,9 @@ export function TierCard({ tier, isCurrentPlan = false, onUpgrade }: TierCardPro
                             <div
                                 className={cn(
                                     "w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5",
-                                    tier === "creator_partner"
+                                    tier === "Partner"
                                         ? "bg-champagne/20"
-                                        : tier === "creator_pro"
+                                        : tier === "Creator"
                                             ? "bg-sapphire/20"
                                             : "bg-muted/50"
                                 )}
@@ -174,9 +174,9 @@ export function TierCard({ tier, isCurrentPlan = false, onUpgrade }: TierCardPro
                                 <Check
                                     className={cn(
                                         "h-2.5 w-2.5",
-                                        tier === "creator_partner"
+                                        tier === "Partner"
                                             ? "text-champagne"
-                                            : tier === "creator_pro"
+                                            : tier === "Creator"
                                                 ? "text-sapphire"
                                                 : "text-muted-foreground"
                                     )}
@@ -194,9 +194,9 @@ export function TierCard({ tier, isCurrentPlan = false, onUpgrade }: TierCardPro
                     <div className="w-full text-center py-2.5 rounded-full border border-border text-sm text-muted-foreground font-medium">
                         Current Plan
                     </div>
-                ) : tier === "creator_pro" ? (
+                ) : tier === "Creator" ? (
                     <UpgradeButton onSuccess={onUpgrade} className="w-full" size="default" variant="sapphire" />
-                ) : tier === "creator_partner" ? (
+                ) : tier === "Partner" ? (
                     <div className="w-full text-center py-2.5 rounded-full bg-champagne/10 border border-champagne/30 text-champagne text-sm font-medium">
                         <Star className="inline h-3.5 w-3.5 mr-1 fill-current" />
                         By Invitation Only

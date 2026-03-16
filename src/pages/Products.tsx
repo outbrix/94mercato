@@ -14,6 +14,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import api from "@/lib/api";
+import { resolveSellerTier } from "@/components/seller/TierBadge";
 import type { SellerTier } from "@/components/seller/TierBadge";
 
 const categories = [
@@ -46,7 +47,8 @@ interface BackendProduct {
   images: string[];
   seller_name: string;
   seller_avatar: string | null;
-  seller_tier?: SellerTier;
+  seller_tier?: string;
+  seller_role?: string;
 }
 
 // Map backend product to ProductCard format
@@ -60,7 +62,7 @@ const mapProduct = (product: BackendProduct) => ({
   seller: {
     name: product.seller_name || "Seller",
     avatar: product.seller_avatar || "",
-    tier: (product.seller_tier || "starter") as SellerTier,
+    tier: resolveSellerTier(product.seller_tier, product.seller_role),
   },
   image:
     product.thumbnail_url || (product.images && product.images[0]) || "",
@@ -221,8 +223,8 @@ const Products = () => {
                             setShowSortMenu(false);
                           }}
                           className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${sortBy === opt.value
-                              ? "bg-sapphire/10 text-sapphire font-medium"
-                              : "hover:bg-secondary/50 text-muted-foreground"
+                            ? "bg-sapphire/10 text-sapphire font-medium"
+                            : "hover:bg-secondary/50 text-muted-foreground"
                             }`}
                         >
                           {opt.label}
@@ -237,8 +239,8 @@ const Products = () => {
                   <button
                     onClick={() => setViewMode("grid")}
                     className={`p-2 transition-colors ${viewMode === "grid"
-                        ? "bg-sapphire/10 text-sapphire"
-                        : "text-muted-foreground hover:bg-secondary/50"
+                      ? "bg-sapphire/10 text-sapphire"
+                      : "text-muted-foreground hover:bg-secondary/50"
                       }`}
                   >
                     <LayoutGrid className="h-4 w-4" />
@@ -246,8 +248,8 @@ const Products = () => {
                   <button
                     onClick={() => setViewMode("list")}
                     className={`p-2 transition-colors border-l border-border ${viewMode === "list"
-                        ? "bg-sapphire/10 text-sapphire"
-                        : "text-muted-foreground hover:bg-secondary/50"
+                      ? "bg-sapphire/10 text-sapphire"
+                      : "text-muted-foreground hover:bg-secondary/50"
                       }`}
                   >
                     <List className="h-4 w-4" />
@@ -263,16 +265,16 @@ const Products = () => {
                   key={category}
                   onClick={() => setSelectedCategory(category)}
                   className={`whitespace-nowrap px-4 py-2 text-sm rounded-full border transition-all ${selectedCategory === category
-                      ? "bg-champagne text-midnight border-champagne font-medium"
-                      : "border-border text-muted-foreground hover:border-champagne/50 hover:text-champagne"
+                    ? "bg-champagne text-midnight border-champagne font-medium"
+                    : "border-border text-muted-foreground hover:border-champagne/50 hover:text-champagne"
                     }`}
                 >
                   {category}
                   {categoryCounts[category] > 0 && (
                     <span
                       className={`ml-1.5 text-xs ${selectedCategory === category
-                          ? "text-midnight/70"
-                          : "text-muted-foreground/70"
+                        ? "text-midnight/70"
+                        : "text-muted-foreground/70"
                         }`}
                     >
                       {categoryCounts[category]}

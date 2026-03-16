@@ -30,7 +30,7 @@ import { toast } from "sonner";
 import { ProductCard } from "@/components/products/ProductCard";
 import { ReviewSection } from "@/components/products/ReviewSection";
 import { SocialShare } from "@/components/products/SocialShare";
-import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
+import { TierBadge, resolveSellerTier } from "@/components/seller/TierBadge";
 
 interface Product {
   id: number;
@@ -51,7 +51,8 @@ interface Product {
   seller_name: string;
   seller_avatar: string | null;
   seller_is_verified: boolean;
-  seller_tier?: SellerTier;
+  seller_tier?: string;
+  seller_role?: string;
 }
 
 interface RelatedProduct {
@@ -539,7 +540,7 @@ const ProductDetail = () => {
                         {product.seller_is_verified && (
                           <Shield className="h-4 w-4 text-champagne" />
                         )}
-                        <TierBadge tier={product.seller_tier ?? 'starter'} size="sm" />
+                        <TierBadge tier={resolveSellerTier(product.seller_tier, product.seller_role)} size="sm" />
                       </div>
                       {product.seller_is_verified ? (
                         <p className="text-sm text-muted-foreground">Verified Seller</p>

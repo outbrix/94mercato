@@ -1,7 +1,11 @@
 import { cn } from "@/lib/utils";
-import { Star, Zap } from "lucide-react";
+import { Star, Zap, Shield } from "lucide-react";
 
-export type SellerTier = "starter" | "creator_pro" | "creator_partner";
+/**
+ * SellerTier maps directly to the `seller_type` column in the DB.
+ * "Admin" is a special tier derived from the user's role.
+ */
+export type SellerTier = "Starter" | "Creator" | "Partner" | "Admin";
 
 interface TierBadgeProps {
   tier: SellerTier;
@@ -10,27 +14,47 @@ interface TierBadgeProps {
 }
 
 const tierConfig = {
-  starter: {
+  Starter: {
     label: "Starter",
     className: "bg-muted/60 text-muted-foreground border-muted-foreground/20",
     icon: null,
   },
-  creator_pro: {
+  Creator: {
     label: "Creator Pro",
     className:
       "bg-sapphire/15 text-sapphire border-sapphire/30 shadow-[0_0_12px_hsl(var(--sapphire)/0.2)]",
     icon: Zap,
   },
-  creator_partner: {
-    label: "Partner Creator",
+  Partner: {
+    label: "Partner",
     className:
       "bg-champagne/15 text-champagne border-champagne/30 shadow-[0_0_12px_hsl(var(--champagne)/0.25)]",
     icon: Star,
   },
+  Admin: {
+    label: "Admin",
+    className:
+      "bg-rose-500/15 text-rose-400 border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.2)]",
+    icon: Shield,
+  },
 };
 
+/**
+ * Helper: resolves the display tier from seller_type and role.
+ * If the user's role is 'admin', always show "Admin" badge.
+ * Otherwise use their seller_type (Starter/Creator/Partner).
+ */
+export function resolveSellerTier(
+  sellerType?: string | null,
+  role?: string | null
+): SellerTier {
+  if (role === "admin") return "Admin";
+  if (sellerType === "Creator" || sellerType === "Partner") return sellerType;
+  return "Starter";
+}
+
 export function TierBadge({ tier, size = "md", className }: TierBadgeProps) {
-  const config = tierConfig[tier] ?? tierConfig.starter;
+  const config = tierConfig[tier] ?? tierConfig.Starter;
   const IconComponent = config.icon;
 
   return (

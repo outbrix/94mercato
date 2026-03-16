@@ -26,7 +26,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
+import { TierBadge, resolveSellerTier, type SellerTier } from "@/components/seller/TierBadge";
 import { SubscriptionStatus } from "@/components/seller/SubscriptionStatus";
 
 interface Product {
@@ -65,8 +65,9 @@ const SellerDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [salesLoading, setSalesLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sellerTier, setSellerTier] = useState<SellerTier>("starter");
+  const [sellerTier, setSellerTier] = useState<SellerTier>("Starter");
   const [subscriptionExpiresAt, setSubscriptionExpiresAt] = useState<string | null>(null);
+  const [dynamicCommission, setDynamicCommission] = useState<number | null>(null);
 
   // Stripe Connect state
   const [stripeStatus, setStripeStatus] = useState<{
@@ -103,6 +104,9 @@ const SellerDashboard = () => {
         setSalesLoading(true);
         const response = await api.get('/orders/my-sales');
         setSales(response.data.sales || []);
+        if (response.data.commission_rate !== undefined) {
+          setDynamicCommission(response.data.commission_rate);
+        }
       } catch (err: unknown) {
         console.error('Error fetching sales:', err);
       } finally {
@@ -117,13 +121,13 @@ const SellerDashboard = () => {
   useEffect(() => {
     const fetchSellerTier = async () => {
       try {
-        const response = await api.get('/seller/profile');
-        const tier = response.data?.seller_tier || response.data?.tier || 'starter';
-        setSellerTier(tier as SellerTier);
+        const response = await api.get('/auth/me');
+        const tier = resolveSellerTier(response.data.seller_type || response.data.seller_tier || response.data.tier, response.data.role || response.data.seller_role);
+        setSellerTier(tier);
         setSubscriptionExpiresAt(response.data?.subscription_expires_at || null);
       } catch {
         // Default to starter if endpoint not available
-        setSellerTier('starter');
+        setSellerTier('Starter');
       }
     };
     fetchSellerTier();
@@ -228,6 +232,10 @@ const SellerDashboard = () => {
     }
   };
 
+  const currentCommissionRate = sellerTier === 'Starter' && dynamicCommission !== null
+    ? dynamicCommission
+    : getCommissionRate(sellerTier);
+
   return (
     <>
       <Helmet>
@@ -289,12 +297,12 @@ const SellerDashboard = () => {
                 <h2 className="font-serif text-xl font-medium">Recent Sales</h2>
                 <Badge
                   variant="outline"
-                  className={`text-xs ${sellerTier !== 'starter'
+                  className={`text-xs ${sellerTier !== 'Starter'
                     ? 'border-sapphire/30 bg-sapphire/10 text-sapphire'
                     : ''
                     }`}
                 >
-                  {getCommissionRate(sellerTier)}% Commission
+                  {currentCommissionRate}% Commission
                 </Badge>
               </div>
               <div className="overflow-x-auto">
@@ -315,7 +323,7 @@ const SellerDashboard = () => {
                         <th className="text-left py-3">Product</th>
                         <th className="text-left py-3">Buyer</th>
                         <th className="text-right py-3">Amount</th>
-                        <th className="text-right py-3">Commission ({getCommissionRate(sellerTier)}%)</th>
+                        <th className="text-right py-3">Commission ({currentCommissionRate}%)</th>
                         <th className="text-right py-3">Your Earnings</th>
                       </tr>
                     </thead>
@@ -448,7 +456,7 @@ const SellerDashboard = () => {
                 <SubscriptionStatus
                   tier={sellerTier}
                   subscriptionExpiresAt={subscriptionExpiresAt}
-                  onUpgrade={() => setSellerTier('creator_pro')}
+                  onUpgrade={() => setSellerTier('Creator')}
                 />
                 {/* Wallet / Earnings Summary */}
                 <div className="glass-card-elevated p-6">
@@ -659,7 +667,7 @@ const SellerDashboard = () => {
 
             <div className="mt-8 glass-card p-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Platform commission: <span className="font-medium text-foreground">{getCommissionRate(sellerTier)}%</span> per sale.{" "}
+                Platform commission: <span className="font-medium text-foreground">{currentCommissionRate}%</span> per sale.{" "}
                 Your earnings are automatically calculated after each transaction.{" "}
                 <Link to="/pricing" className="text-champagne hover:underline">
                   Learn more about fees

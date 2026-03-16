@@ -175,7 +175,7 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
             <span className="text-xs text-cream/50">
               {product.seller.name}
             </span>
-            {product.seller.tier && product.seller.tier !== 'starter' && (
+            {product.seller.tier && product.seller.tier !== 'Starter' && (
               <TierBadge tier={product.seller.tier} size="sm" />
             )}
           </div>

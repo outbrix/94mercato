@@ -5,7 +5,7 @@ import type { SellerTier } from "@/components/seller/TierBadge";
 const testimonials = [
   {
     name: "Aisha Rahman",
-    tier: "creator_partner" as SellerTier,
+    tier: "Partner" as SellerTier,
     initial: "A",
     gradient: "from-champagne/50 to-gold/20",
     rating: 5,
@@ -15,7 +15,7 @@ const testimonials = [
   },
   {
     name: "Marcus Chen",
-    tier: "creator_pro" as SellerTier,
+    tier: "Creator" as SellerTier,
     initial: "M",
     gradient: "from-sapphire/50 to-sapphire/10",
     rating: 5,
@@ -25,7 +25,7 @@ const testimonials = [
   },
   {
     name: "Priya Nair",
-    tier: "creator_pro" as SellerTier,
+    tier: "Creator" as SellerTier,
     initial: "P",
     gradient: "from-sapphire/30 to-champagne/15",
     rating: 5,

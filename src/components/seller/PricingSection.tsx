@@ -6,7 +6,7 @@ interface PricingSectionProps {
     onUpgrade?: () => void;
 }
 
-const tiers: SellerTier[] = ["starter", "creator_pro", "creator_partner"];
+const tiers: SellerTier[] = ["Starter", "Creator", "Partner"];
 
 export function PricingSection({ currentTier, onUpgrade }: PricingSectionProps) {
     return (

@@ -14,9 +14,10 @@ interface SubscriptionStatusProps {
 
 
 const tierLabel: Record<SellerTier, string> = {
-    starter: "Starter",
-    creator_pro: "Creator Pro",
-    creator_partner: "Creator Partnership",
+    Starter: "Starter",
+    Creator: "Creator Pro",
+    Partner: "Creator Partnership",
+    Admin: "Admin",
 };
 
 export function SubscriptionStatus({
@@ -26,7 +27,7 @@ export function SubscriptionStatus({
     className,
 }: SubscriptionStatusProps) {
     const commission = getCommissionRate(tier);
-    const isUpgradeable = tier === "starter";
+    const isUpgradeable = tier === "Starter";
 
     const formatDate = (dateStr: string) =>
         new Date(dateStr).toLocaleDateString("en-US", {
@@ -47,7 +48,7 @@ export function SubscriptionStatus({
             <div
                 className={cn(
                     "rounded-xl p-4 mb-4 border flex items-center gap-4",
-                    tier === "starter"
+                    tier === "Starter"
                         ? "bg-muted/30 border-border/50"
                         : "bg-sapphire/5 border-sapphire/20"
                 )}
@@ -55,13 +56,13 @@ export function SubscriptionStatus({
                 <div
                     className={cn(
                         "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
-                        tier === "starter" ? "bg-muted/50" : "bg-sapphire/15"
+                        tier === "Starter" ? "bg-muted/50" : "bg-sapphire/15"
                     )}
                 >
                     <Percent
                         className={cn(
                             "h-5 w-5",
-                            tier === "starter" ? "text-muted-foreground" : "text-sapphire"
+                            tier === "Starter" ? "text-muted-foreground" : "text-sapphire"
                         )}
                     />
                 </div>
@@ -72,7 +73,7 @@ export function SubscriptionStatus({
             </div>
 
             {/* Expiry (only for Creator Pro) */}
-            {tier === "creator_pro" && subscriptionExpiresAt && (
+            {tier === "Creator" && subscriptionExpiresAt && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
                     <Calendar className="h-4 w-4" />
                     <span>

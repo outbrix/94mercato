@@ -109,7 +109,7 @@ export default function AdminDashboard() {
     } catch (err: unknown) {
       toast({
         title: "Error",
-        description: err.response?.data?.message || "Failed to approve product.",
+        description: (err as any).response?.data?.message || "Failed to approve product.",
         variant: "destructive",
       });
     }
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
     } catch (err: unknown) {
       toast({
         title: "Error",
-        description: err.response?.data?.message || "Failed to reject product.",
+        description: (err as any).response?.data?.message || "Failed to reject product.",
         variant: "destructive",
       });
     }

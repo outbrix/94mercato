@@ -34,7 +34,7 @@ export function FeaturedCreators() {
                         is_verified: true,
                         product_count: 24,
                         total_sales: 3400,
-                        seller_tier: "creator_pro",
+                        seller_tier: "Creator",
                     },
                     {
                         display_name: "CodeMaster",
@@ -43,7 +43,7 @@ export function FeaturedCreators() {
                         is_verified: true,
                         product_count: 12,
                         total_sales: 12500,
-                        seller_tier: "creator_partner",
+                        seller_tier: "Partner",
                     },
                     {
                         display_name: "FontFoundry",
@@ -52,7 +52,7 @@ export function FeaturedCreators() {
                         is_verified: false,
                         product_count: 8,
                         total_sales: 856,
-                        seller_tier: "creator_pro",
+                        seller_tier: "Creator",
                     },
                     {
                         display_name: "StudioVibe",
@@ -61,7 +61,7 @@ export function FeaturedCreators() {
                         is_verified: true,
                         product_count: 31,
                         total_sales: 5200,
-                        seller_tier: "creator_pro",
+                        seller_tier: "Creator",
                     },
                 ]);
             } finally {
@@ -129,7 +129,7 @@ export function FeaturedCreators() {
                                     <p className="text-sm font-medium text-cream truncate group-hover:text-champagne transition-colors">
                                         {c.display_name}
                                     </p>
-                                    <TierBadge tier={c.seller_tier ?? "starter"} size="sm" />
+                                    <TierBadge tier={c.seller_tier ?? "Starter"} size="sm" />
                                 </div>
                             </div>
 

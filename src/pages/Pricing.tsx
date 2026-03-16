@@ -20,7 +20,7 @@ const comparisonFeatures = [
 const Pricing = () => {
     const [calcTier, setCalcTier] = useState<"starter" | "pro">("starter");
     const productPrice = 100;
-    const commission = getCommissionRate(calcTier === "starter" ? "starter" : "creator_pro");
+    const commission = getCommissionRate(calcTier === "starter" ? "Starter" : "Creator");
     // Under "Buyer Pays Fees" model (Phase 24), platform fee is NOT deducted from seller
     const processingFee = productPrice * 0.029 + 0.3; // Standard Stripe Fee
     const youReceive = productPrice - processingFee;
@@ -39,7 +39,7 @@ const Pricing = () => {
                     <main className="pt-16 pb-32">
                         {/* Tier Article */}
                         <div className="max-w-6xl mx-auto">
-                            <CreativePricing 
+                            <CreativePricing
                                 tag="Project Economics"
                                 title="Choose Your Tier"
                                 description="Simple, high-margin economics for the modern creator. No hidden costs. Just growth."
@@ -131,13 +131,13 @@ const Pricing = () => {
                         <section className="max-w-6xl mx-auto px-6 mt-20">
                             <div className="bg-charcoal text-cream p-10 md:p-16 rounded-[40px] animate-fade-in relative overflow-hidden">
                                 <h2 className="text-3xl md:text-5xl font-sans font-black tracking-tighter uppercase mb-6 leading-none">
-                                    Calculate <br/>Your Payout
+                                    Calculate <br />Your Payout
                                 </h2>
-                                
+
                                 <div className="grid md:grid-cols-2 gap-12 relative z-10">
                                     <div className="space-y-8">
                                         <div className="flex flex-wrap gap-4">
-                                            <button 
+                                            <button
                                                 onClick={() => setCalcTier("starter")}
                                                 className={cn(
                                                     "px-8 py-3 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase transition-all border border-cream/20",
@@ -146,7 +146,7 @@ const Pricing = () => {
                                             >
                                                 Starter (6%)
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => setCalcTier("pro")}
                                                 className={cn(
                                                     "px-8 py-3 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase transition-all border border-cream/20",
@@ -192,7 +192,7 @@ const Pricing = () => {
                         {/* Simple CTA */}
                         <footer className="max-w-[800px] mx-auto px-6 mt-32 text-center">
                             <h2 className="text-5xl md:text-8xl font-sans font-black tracking-tighter uppercase leading-[0.9] mb-12">
-                                Start Your <br/>Next Chapter
+                                Start Your <br />Next Chapter
                             </h2>
                             <div className="flex flex-wrap justify-center gap-6">
                                 <Link to="/sell" className="h-16 px-12 bg-charcoal text-cream text-[12px] font-bold tracking-[0.3em] uppercase rounded-full flex items-center hover:scale-105 transition-transform">
