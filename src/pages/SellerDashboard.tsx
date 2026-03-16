@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSettings } from "@/hooks/use-settings";
 import { formatPrice, CURRENCY_CONFIG } from "@/lib/utils";
 import { getCommissionRate } from "@/lib/commission";
+import { useCurrencyStore, type CurrencyCode } from "@/store/currencyStore";
 import {
   DollarSign,
   Package,
@@ -59,6 +60,7 @@ interface Sale {
 
 const SellerDashboard = () => {
   const { user } = useAuth();
+  const { currentCurrency, convert } = useCurrencyStore();
   const { commissionRate } = useSettings();
   const [products, setProducts] = useState<Product[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
@@ -426,13 +428,19 @@ const SellerDashboard = () => {
                               </Badge>
                             </td>
                             <td className="py-4 text-right text-sm">
-                              {formatPrice(product.price, product.currency)}
+                              {formatPrice(
+                                convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency), 
+                                currentCurrency
+                              )}
                             </td>
                             <td className="py-4 text-right text-sm">
                               {product.sales_count}
                             </td>
                             <td className="py-4 text-right text-sm font-medium text-champagne">
-                              {formatPrice(product.earnings, product.currency)}
+                              {formatPrice(
+                                convert(product.earnings, (product.currency || 'USD') as CurrencyCode, currentCurrency), 
+                                currentCurrency
+                              )}
                             </td>
                             <td className="py-4 text-right">
                               <Button variant="minimal" size="sm" asChild>
