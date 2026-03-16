@@ -6,6 +6,7 @@ import { SearchModal } from '@/components/ui/SearchModal';
 import { Search, ShoppingBag, Menu, X, User, LogIn, LogOut, Crown, LayoutDashboard, ArrowUpRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCartStore } from '@/store/cartStore';
+import { CurrencySwitcher } from './CurrencySwitcher';
 
 const Logo = () => (
   <Link to="/" className="flex items-center gap-2">
@@ -150,6 +151,7 @@ export const Header = () => {
           <Logo />
           <Navigation links={navLinks} />
           <div className="flex items-center gap-2">
+            <CurrencySwitcher />
             <HeaderActions onSearchClick={() => setSearchOpen(true)} />
             <Button
               variant="ghost"
