@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Helmet } from "react-helmet-async";
 import api from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
+import { useCurrencyStore, type CurrencyCode } from "@/store/currencyStore";
 import {
     Shield,
     Package,
@@ -47,6 +48,7 @@ interface Product {
 
 const SellerProfile = () => {
     const { displayName } = useParams<{ displayName: string }>();
+    const { currentCurrency, convert } = useCurrencyStore();
     const [seller, setSeller] = useState<Seller | null>(null);
     const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -250,7 +252,10 @@ const SellerProfile = () => {
                                                 <p className="text-sm text-cream/50 line-clamp-2">{product.description}</p>
                                             )}
                                             <p className="font-medium text-champagne">
-                                                {formatPrice(product.price, product.currency)}
+                                                {formatPrice(
+                                                    convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency), 
+                                                    currentCurrency
+                                                )}
                                             </p>
                                         </div>
                                     </Link>
