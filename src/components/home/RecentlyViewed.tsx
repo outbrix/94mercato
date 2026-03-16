@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { useRecentlyViewedStore } from "@/store/recentlyViewedStore";
 import { formatPrice } from "@/lib/utils";
+import { useCurrencyStore, type CurrencyCode } from "@/store/currencyStore";
 import { Clock, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function RecentlyViewed() {
     const { products, clearAll } = useRecentlyViewedStore();
+    const { currentCurrency, convert } = useCurrencyStore();
 
     if (products.length === 0) {
         return null;
@@ -59,7 +61,10 @@ export function RecentlyViewed() {
                                     {product.category}
                                 </p>
                                 <p className="text-sm font-medium text-champagne">
-                                    {formatPrice(product.price, product.currency)}
+                                    {formatPrice(
+                                        convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency), 
+                                        currentCurrency
+                                    )}
                                 </p>
                             </div>
                         </Link>

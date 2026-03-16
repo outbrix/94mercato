@@ -11,6 +11,7 @@ import {
     Tag
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { useCurrencyStore, type CurrencyCode } from "@/store/currencyStore";
 import api from "@/lib/api";
 
 interface DealProduct {
@@ -28,6 +29,7 @@ interface DealProduct {
 }
 
 export function FeaturedDeals() {
+    const { currentCurrency, convert } = useCurrencyStore();
     const [deals, setDeals] = useState<DealProduct[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [timeLeft, setTimeLeft] = useState<string>("");
@@ -213,10 +215,16 @@ export function FeaturedDeals() {
                                 {/* Price */}
                                 <div className="flex items-center gap-3">
                                     <span className="text-lg font-bold text-champagne">
-                                        {formatPrice(deal.discountedPrice, deal.currency)}
+                                        {formatPrice(
+                                            convert(deal.discountedPrice, (deal.currency || 'USD') as CurrencyCode, currentCurrency), 
+                                            currentCurrency
+                                        )}
                                     </span>
                                     <span className="text-sm text-muted-foreground line-through">
-                                        {formatPrice(deal.originalPrice, deal.currency)}
+                                        {formatPrice(
+                                            convert(deal.originalPrice, (deal.currency || 'USD') as CurrencyCode, currentCurrency), 
+                                            currentCurrency
+                                        )}
                                     </span>
                                 </div>
 
