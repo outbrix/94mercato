@@ -20,6 +20,7 @@ import { formatPrice } from "@/lib/utils";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { PromoCodeInput } from "@/components/checkout/PromoCodeInput";
+import FuzzyText from "@/components/ui/FuzzyText";
 
 const BASE_MARKET_FEE_PERCENT = 6; // Standard 6% fee paid by buyer
 const FLASH_SALE_FEE_PERCENT = 2.5; // Reduced 2.5% fee during Flash Sales
@@ -171,14 +172,23 @@ const Cart = () => {
                     <div className="container-luxury px-4">
                         {/* Header */}
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
-                            <div className="space-y-2">
-                                <h1 className="text-4xl md:text-6xl font-serif text-cream tracking-tight animate-in slide-in-from-left duration-700">
-                                    Your <span className="text-champagne">Collection</span>
-                                </h1>
-                                <p className="text-sm md:text-base text-cream/40 font-medium tracking-wide uppercase">
+                            <div className="space-y-4">
+                                <FuzzyText 
+                                    baseIntensity={0.08}
+                                    hoverIntensity={0.25}
+                                    enableHover
+                                    fontSize="clamp(2.5rem, 8vw, 5rem)"
+                                    fontWeight={900}
+                                    fontFamily="Cinzel"
+                                    gradient={["#846733", "#dfc5a4", "#846733"]}
+                                    className="animate-in slide-in-from-left duration-700"
+                                >
+                                    YOUR COLLECTION
+                                </FuzzyText>
+                                <p className="text-sm md:text-base text-cream/40 font-black tracking-[0.3em] uppercase animate-in slide-in-from-left duration-1000">
                                     {items.length === 0
                                         ? "Inventory is empty"
-                                        : `${items.length} exquisite item${items.length > 1 ? "s" : ""} selected`}
+                                        : `${items.length} exquisite artifact${items.length > 1 ? "s" : ""} secured`}
                                 </p>
                             </div>
                             {items.length > 0 && (
