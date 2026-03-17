@@ -58,9 +58,14 @@ const Cart = () => {
 
     const totalBeforeFees = subtotal - discount;
     
-    // Traditional Model (Phase 24: Seller Pays Fees)
-    // No extra fee added to the buyer's total
-    const total = totalBeforeFees;
+    // Stripe Processing Fee (2.9% + 30 cents)
+    // Formula: (Total + 30) / (0.971) - Total
+    const processingFee = totalBeforeFees > 0 
+        ? ((totalBeforeFees + 30) / (1 - 0.029)) - totalBeforeFees
+        : 0;
+    
+    // Total including marketplace fees (if any) and processing fees
+    const total = totalBeforeFees + processingFee;
 
     // Helper to format based on globally selected currency
     const formatDisplayPrice = (valInCents: number, fromCurrency: string = 'USD') => {
@@ -306,7 +311,8 @@ const Cart = () => {
                                             <div className="h-2 w-2 rounded-full bg-champagne animate-pulse-slow shadow-[0_0_10px_rgba(196,163,115,0.5)]" />
                                         </div>
 
-                                        {/* Summary Lines */}                                        <div className="space-y-5">
+                                        {/* Summary Lines */}
+                                        <div className="space-y-5">
                                             <div className="flex justify-between items-center group transition-all duration-300 hover:translate-x-1">
                                                 <span className="text-xs text-cream/40 uppercase tracking-widest font-bold">Subtotal</span>
                                                 <span className="text-cream font-mono text-base">{formatDisplayPrice(subtotal)}</span>
@@ -318,6 +324,14 @@ const Cart = () => {
                                                     <span className="font-mono">-{formatDisplayPrice(discount)}</span>
                                                 </div>
                                             )}
+
+                                            <div className="flex justify-between items-center group transition-all duration-300 hover:translate-x-1">
+                                                <div className="flex flex-col">
+                                                    <span className="text-xs text-cream/40 uppercase tracking-widest font-bold">Processing Fee</span>
+                                                    <span className="text-[8px] text-cream/20 uppercase tracking-tighter">Stripe (2.9% + 30¢)</span>
+                                                </div>
+                                                <span className="text-cream font-mono text-base">{formatDisplayPrice(processingFee)}</span>
+                                            </div>
                                             
                                         </div>
 

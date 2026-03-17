@@ -18,9 +18,12 @@ const comparisonFeatures = [
 ];
 
 const Pricing = () => {
-    const [calcTier, setCalcTier] = useState<"starter" | "pro">("starter");
+    const [calcTier, setCalcTier] = useState<"starter" | "pro" | "partner">("starter");
     const productPrice = 100;
-    const commission = getCommissionRate(calcTier === "starter" ? "Starter" : "Creator");
+    const commission = getCommissionRate(
+        calcTier === "starter" ? "Starter" : 
+        calcTier === "pro" ? "Creator" : "Partner"
+    );
     // Marketplace commission is paid by the seller
     const commissionAmount = productPrice * (commission / 100);
     // Stripe processing is covered by the buyer
@@ -157,6 +160,15 @@ const Pricing = () => {
                                             >
                                                 Creator Pro (3%)
                                             </button>
+                                            <button
+                                                onClick={() => setCalcTier("partner")}
+                                                className={cn(
+                                                    "px-8 py-3 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase transition-all border border-cream/20",
+                                                    calcTier === "partner" ? "bg-gold text-charcoal border-gold" : "hover:border-cream/50"
+                                                )}
+                                            >
+                                                Partner (2%)
+                                            </button>
                                         </div>
 
                                         <p className="text-[10px] font-bold uppercase tracking-widest opacity-30 leading-relaxed max-w-xs">
@@ -171,7 +183,7 @@ const Pricing = () => {
                                                 <span>${productPrice.toFixed(2)}</span>
                                             </div>
                                             <div className="flex justify-between text-sm italic opacity-60 font-serif items-center">
-                                                <span>Stripe Processing</span>
+                                                <span>Processing Fee</span>
                                                 <span className="text-emerald-400 text-[10px] font-black uppercase tracking-widest bg-emerald-400/10 px-2 py-0.5 rounded">Paid by Buyer</span>
                                             </div>
                                             <div className="flex justify-between text-sm italic opacity-60 font-serif">
