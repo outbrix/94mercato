@@ -20,6 +20,7 @@ import {
     Loader2,
     Eye,
 } from "lucide-react";
+import { CategorySelector } from "@/components/products/CategorySelector";
 
 // Currency options with flags
 const CURRENCIES = Object.entries(CURRENCY_CONFIG).map(([code, config]) => ({
@@ -343,21 +344,10 @@ const ProductEdit = () => {
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="category">Category</Label>
-                                        <select
-                                            id="category"
+                                        <CategorySelector 
                                             value={formData.category}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, category: e.target.value })
-                                            }
-                                            className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
-                                        >
-                                            <option>Templates</option>
-                                            <option>UI Kits</option>
-                                            <option>Courses</option>
-                                            <option>Mockups</option>
-                                            <option>Icons</option>
-                                            <option>Fonts</option>
-                                        </select>
+                                            onValueChange={(val) => setFormData({ ...formData, category: val })}
+                                        />
                                     </div>
                                 </div>
 
