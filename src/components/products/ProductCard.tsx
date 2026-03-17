@@ -4,10 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, ShoppingCart, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
 import { toast } from "sonner";
 import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
 import { useCurrencyStore, type CurrencyCode } from "@/store/currencyStore";
 import { formatPrice as formatPriceUtils } from "@/lib/utils";
+import { Heart } from "lucide-react";
 
 interface ProductCardProps {
   product: {
@@ -40,6 +42,7 @@ const badgeVariants: Record<string, string> = {
 
 export function ProductCard({ product, className, style }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
+  const { toggleItem, isInWishlist } = useWishlistStore();
   const { currentCurrency, convert } = useCurrencyStore();
 
   const displayPrice = convert(
@@ -53,7 +56,7 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation if card is wrapped in Link
+    e.preventDefault();
     e.stopPropagation();
 
     addItem({
@@ -69,58 +72,93 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
     });
   };
 
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    toggleItem({
+      id: product.id,
+      name: product.title,
+      price: product.price,
+      image: product.image,
+      slug: product.slug,
+    });
+
+    const isNowInWishlist = !isInWishlist(product.id);
+    toast.success(isNowInWishlist ? "Added to wishlist" : "Removed from wishlist", {
+      description: isNowInWishlist
+        ? `${product.title} has been added to your wishlist.`
+        : `${product.title} has been removed from your wishlist.`,
+    });
+  };
+
+  const isLiked = isInWishlist(product.id);
+
   return (
     <article
       className={cn(
-        "group bg-midnight-light/50 backdrop-blur-xl border border-sapphire/20 rounded-xl overflow-hidden transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-sapphire hover:border-sapphire/40",
+        "group bg-card/40 backdrop-blur-xl border border-border/50 rounded-2xl overflow-hidden transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-sapphire/10 hover:border-sapphire/30",
         className
       )}
       style={style}
     >
-      {/* Image container */}
-      <div className="relative aspect-square overflow-hidden bg-midnight">
+      <div className="relative aspect-[4/3] overflow-hidden bg-secondary/30">
         <img
           src={product.image}
           alt={product.title}
           loading="lazy"
-          decoding="async"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
 
-        {/* Badge */}
-        {product.badge && (
-          <div className="absolute top-4 left-4">
+        {/* Status Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          {product.badge && (
             <Badge
-              variant="outline"
+              variant="secondary"
               className={cn(
-                "text-xs font-medium tracking-wide backdrop-blur-sm",
-                badgeVariants[product.badge] || badgeVariants.New
+                "text-[10px] px-2 py-0.5 font-bold uppercase tracking-wider backdrop-blur-md border-transparent shadow-sm",
+                badgeVariants[product.badge] || "bg-white/90 text-black"
               )}
             >
               {product.badge}
             </Badge>
+          )}
+          {product.sales > 50 && (
+             <Badge className="bg-amber-500 text-white text-[10px] px-2 py-0.5 border-none shadow-sm">
+               Bestseller
+             </Badge>
+          )}
+        </div>
+
+        {/* Price Tag Overlay */}
+        <div className="absolute bottom-3 left-3">
+          <div className="px-3 py-1.5 bg-black/80 backdrop-blur-md text-white rounded-full text-sm font-bold shadow-lg border border-white/10">
+            {formatPrice(displayPrice, currentCurrency)}
           </div>
-        )}
+        </div>
 
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-midnight/80 via-midnight/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-        {/* Quick actions */}
-        <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
+        {/* Hover Actions */}
+        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        
+        <div className="absolute top-3 right-3 translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
           <Button
             size="icon"
-            variant="midnight"
-            className="rounded-full"
-            asChild
+            variant="ghost"
+            className={cn(
+              "h-10 w-10 rounded-full backdrop-blur-md border border-white/10 transition-all",
+              isLiked ? "bg-red-500/20 text-red-500 border-red-500/40" : "bg-black/40 text-white hover:bg-black/60"
+            )}
+            onClick={handleToggleWishlist}
           >
-            <Link to={`/products/${product.slug}`}>
-              <Eye className="h-4 w-4" />
-            </Link>
+            <Heart className={cn("h-5 w-5", isLiked && "fill-current")} />
           </Button>
+        </div>
+
+        <div className="absolute bottom-3 right-3 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
           <Button
             size="icon"
             variant="sapphire"
-            className="rounded-full"
+            className="h-10 w-10 rounded-full shadow-xl"
             onClick={handleAddToCart}
           >
             <ShoppingCart className="h-4 w-4" />
@@ -128,69 +166,50 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-5 space-y-4 bg-midnight-light/30">
-        {/* Category & Rating & Sales */}
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-cream/50 tracking-wide uppercase">
+      <div className="p-4 space-y-3">
+        {/* Category & Rating */}
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
             {product.category}
           </span>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 text-champagne">
-              <Star className="h-3 w-3 fill-current" />
-              <span className="text-cream">{product.rating}</span>
-            </div>
-            {product.sales > 0 && (
-              <span className="text-cream/50">
-                {product.sales} {product.sales === 1 ? 'sale' : 'sales'}
-              </span>
-            )}
+          <div className="flex items-center gap-1 text-champagne bg-champagne/5 px-1.5 py-0.5 rounded-md">
+            <Star className="h-3 w-3 fill-current" />
+            <span className="text-xs font-bold">{product.rating}</span>
           </div>
         </div>
 
-        {/* Title */}
-        <Link to={`/products/${product.slug}`}>
-          <h3 className="font-serif text-lg font-medium leading-tight text-cream hover:text-champagne transition-colors">
+        <Link to={`/products/${product.slug}`} className="block">
+          <h3 className="font-serif text-lg font-medium leading-tight hover:text-sapphire transition-colors line-clamp-1 after:absolute after:inset-0 after:z-10">
             {product.title}
           </h3>
         </Link>
 
-        {/* Description */}
-        <p className="text-sm text-cream/50 line-clamp-2">
-          {product.description}
-        </p>
-
-        {/* Footer */}
-        <div className="flex items-center justify-between pt-2 border-t border-sapphire/20">
-          {/* Seller */}
-          <div className="flex items-center gap-2 flex-wrap">
+        {/* Seller Info */}
+        <div className="flex items-center justify-between pt-2 border-t border-border/40">
+          <div className="flex items-center gap-2">
             {product.seller.avatar ? (
               <img
                 src={product.seller.avatar}
                 alt={product.seller.name}
-                loading="lazy"
-                decoding="async"
-                className="w-6 h-6 rounded-full bg-midnight border border-sapphire/30 object-cover"
+                className="w-5 h-5 rounded-full bg-secondary object-cover"
               />
             ) : (
-              <div className="w-6 h-6 rounded-full bg-midnight border border-sapphire/30 flex items-center justify-center">
-                <span className="text-xs text-cream/50">{product.seller.name.charAt(0).toUpperCase()}</span>
+              <div className="w-5 h-5 rounded-full bg-secondary flex items-center justify-center text-[10px] font-bold">
+                {product.seller.name.charAt(0)}
               </div>
             )}
-            <span className="text-xs text-cream/50">
-              {product.seller.name}
-            </span>
+            <span className="text-xs text-muted-foreground font-medium">{product.seller.name}</span>
             {product.seller.tier && product.seller.tier !== 'Starter' && (
               <TierBadge tier={product.seller.tier} size="sm" />
             )}
           </div>
-
-          {/* Price */}
-          <p className="font-medium text-champagne">
-            {formatPrice(displayPrice, currentCurrency)}
-          </p>
+          {product.sales > 0 && (
+            <span className="text-[10px] text-muted-foreground/60 font-medium italic">
+              {product.sales} sales
+            </span>
+          )}
         </div>
       </div>
     </article>
   );
-}
+}

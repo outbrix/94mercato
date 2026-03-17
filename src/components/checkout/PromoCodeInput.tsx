@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tag, Check, X, Loader2, Percent } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface PromoCodeInputProps {
     onApply: (
@@ -69,38 +70,44 @@ export function PromoCodeInput({
 
     if (appliedCode) {
         return (
-            <div className="flex items-center justify-between p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
-                <div className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-green-500" />
-                    <span className="text-sm font-medium">{appliedCode}</span>
-                    <Badge variant="outline" className="bg-green-500/20 text-green-500 border-green-500/30">
-                        {discountType === "percentage"
-                            ? `-${appliedDiscount}%`
-                            : `-₹${appliedDiscount}`}
-                    </Badge>
+            <div className="animate-in fade-in slide-in-from-top-2 duration-500">
+                <div className="flex items-center justify-between p-4 bg-white/[0.03] border border-champagne/20 rounded-2xl backdrop-blur-md">
+                    <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-full bg-champagne/10 flex items-center justify-center">
+                            <Check className="h-4 w-4 text-champagne" />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-champagne leading-none mb-1">Privilege Applied</p>
+                            <span className="text-sm font-serif text-cream">{appliedCode}</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Badge variant="outline" className="bg-champagne text-midnight border-none font-bold text-[10px] px-2">
+                            {discountType === "percentage"
+                                ? `-${appliedDiscount}%`
+                                : `-₹${appliedDiscount}`}
+                        </Badge>
+                        <button
+                            onClick={onRemove}
+                            className="p-1.5 text-cream/20 hover:text-destructive transition-colors"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                    </div>
                 </div>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onRemove}
-                    className="text-muted-foreground hover:text-foreground"
-                >
-                    <X className="h-4 w-4" />
-                </Button>
             </div>
         );
     }
 
     return (
-        <div className="space-y-2">
-            <Label htmlFor="promo-code" className="text-sm flex items-center gap-2">
-                <Tag className="h-4 w-4" />
-                Promo Code
+        <div className="space-y-3">
+            <Label htmlFor="promo-code" className="text-[10px] font-black uppercase tracking-[0.2em] text-cream/40 px-1">
+                Promotional Code
             </Label>
-            <div className="flex gap-2">
+            <div className="relative group">
                 <Input
                     id="promo-code"
-                    placeholder="Enter code"
+                    placeholder="ENTER CODE"
                     value={code}
                     onChange={(e) => {
                         setCode(e.target.value.toUpperCase());
@@ -108,21 +115,35 @@ export function PromoCodeInput({
                     }}
                     onKeyDown={handleKeyDown}
                     disabled={disabled || isValidating}
-                    className={error ? "border-red-500" : ""}
-                />
-                <Button
-                    variant="luxury-outline"
-                    onClick={handleApply}
-                    disabled={disabled || isValidating || !code.trim()}
-                >
-                    {isValidating ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                        <Percent className="h-4 w-4" />
+                    className={cn(
+                        "h-14 bg-white/[0.02] border-white/5 rounded-2xl pl-12 pr-20 text-cream placeholder:text-cream/10 font-mono tracking-widest transition-all",
+                        "focus:ring-0 focus:border-champagne/30 focus:bg-white/[0.04]",
+                        error && "border-destructive/50 focus:border-destructive/60"
                     )}
-                </Button>
+                />
+                <Tag className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-cream/20 group-focus-within:text-champagne/40 transition-colors" />
+                
+                <div className="absolute right-2 top-2 bottom-2">
+                    <Button
+                        variant="luxury"
+                        size="sm"
+                        onClick={handleApply}
+                        disabled={disabled || isValidating || !code.trim()}
+                        className="h-full rounded-xl px-4 text-[10px] font-black tracking-widest uppercase"
+                    >
+                        {isValidating ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                            "Apply"
+                        )}
+                    </Button>
+                </div>
             </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {error && (
+                <p className="text-[10px] font-bold text-destructive uppercase tracking-widest px-1 animate-in fade-in duration-300">
+                    {error}
+                </p>
+            )}
         </div>
     );
 }

@@ -13,19 +13,25 @@ import {
   Clock,
   Check,
   ChevronRight,
+  ChevronLeft,
   Loader2,
   Edit,
   AlertTriangle,
   Plus,
   Minus,
   RefreshCw,
+  Star,
+  Zap,
+  ArrowRight,
+  ShieldCheck,
+  Eye,
 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useRecentlyViewedStore } from "@/store/recentlyViewedStore";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/lib/api";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, cn } from "@/lib/utils";
 import { useCurrencyStore, type CurrencyCode } from "@/store/currencyStore";
 import { toast } from "sonner";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -293,350 +299,297 @@ const ProductDetail = () => {
       <Helmet>
         <title>{product.title} — 94mercato</title>
         <meta name="description" content={product.description} />
-        <meta property="og:title" content={product.title} />
-        <meta property="og:description" content={product.description} />
-        {displayImage && <meta property="og:image" content={displayImage} />}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Product",
-            "name": product.title,
-            "description": product.description,
-            "image": displayImage || undefined,
-            "category": product.category,
-            "brand": {
-              "@type": "Brand",
-              "name": product.seller_name
-            },
-            "offers": {
-              "@type": "Offer",
-              "url": `https://94mercato.com/products/${product.slug}`,
-              "priceCurrency": product.currency || "INR",
-              "price": product.price,
-              "availability": isPublished
-                ? "https://schema.org/InStock"
-                : "https://schema.org/OutOfStock",
-              "seller": {
-                "@type": "Organization",
-                "name": product.seller_name
-              }
-            }
-          })}
-        </script>
       </Helmet>
       <Layout>
-        {/* Owner/Status Banner - pt-20 for fixed header offset */}
+        {/* Banner for owners/preview */}
         {isOwner && !isPublished && (
-          <div className="pt-20 bg-amber-500/20 border-b border-amber-500/30">
-            <div className="container-luxury py-3 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-amber-600">
-                <AlertTriangle className="h-4 w-4" />
-                <span className="text-sm font-medium">
-                  This product is <span className="capitalize">{product.status}</span> and not visible to customers
-                </span>
+          <div className="pt-20 bg-amber-500/10 border-b border-amber-500/20">
+            <div className="container-luxury py-2 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-amber-600 text-xs">
+                <AlertTriangle className="h-3 w-3" />
+                <span>Product draft — not visible to customers</span>
               </div>
               <Button variant="luxury-outline" size="sm" asChild>
-                <Link to={`/dashboard/edit/${product.id}`}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit Product
-                </Link>
+                <Link to={`/dashboard/edit/${product.id}`}>Edit</Link>
               </Button>
             </div>
           </div>
         )}
 
-        {/* Breadcrumb - only add pt-24 if banner is not showing */}
-        <nav className={`${(isOwner && !isPublished) ? 'pt-4' : 'pt-24'} pb-4 border-b border-border bg-stone/20`}>
+        <div className="pt-24 pb-20">
           <div className="container-luxury">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Link to="/" className="hover:text-foreground transition-colors">
-                  Home
-                </Link>
-                <ChevronRight className="h-4 w-4" />
-                <Link to="/products" className="hover:text-foreground transition-colors">
-                  Products
-                </Link>
-                <ChevronRight className="h-4 w-4" />
-                <span className="text-foreground">{product.title}</span>
+            {/* Breadcrumbs */}
+            <nav className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-8">
+              <Link to="/products" className="hover:text-foreground transition-colors">Marketplace</Link>
+              <ChevronRight className="h-3 w-3" />
+              <Link to={`/products?category=${product.category}`} className="hover:text-foreground transition-colors">{product.category}</Link>
+              <ChevronRight className="h-3 w-3" />
+              <span className="text-foreground">{product.title}</span>
+            </nav>
+
+            <div className="grid grid-cols-1 lg:grid-cols-[80px,1fr,400px] gap-8 xl:gap-12 items-start">
+              
+              {/* Zone 1: Vertical Thumbnails (Desktop) */}
+              <div className="hidden lg:flex flex-col gap-3">
+                {allImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImageIndex(idx)}
+                    className={cn(
+                      "relative aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300",
+                      selectedImageIndex === idx 
+                        ? "border-sapphire shadow-lg scale-105" 
+                        : "border-transparent hover:border-border/60 opacity-60 hover:opacity-100"
+                    )}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
               </div>
 
-              {/* Edit button for owner (visible on published products too) */}
-              {isOwner && isPublished && (
-                <Button variant="luxury-outline" size="sm" asChild>
-                  <Link to={`/dashboard/edit/${product.id}`}>
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit Product
-                  </Link>
-                </Button>
-              )}
-            </div>
-          </div>
-        </nav>
+              {/* Zone 2: Main Image Center */}
+              <div className="space-y-6">
+                <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden bg-secondary/30 group shadow-2xl border border-white/5">
+                  <img
+                    src={displayImage}
+                    alt={product.title}
+                    className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105"
+                  />
+                  
+                  {/* Status Badges Overlay */}
+                  <div className="absolute top-6 left-6 flex flex-col gap-2">
+                    {product.badge && (
+                      <Badge variant="default" className="text-[10px] font-black uppercase tracking-widest px-3 py-1 backdrop-blur-md">
+                        {product.badge}
+                      </Badge>
+                    )}
+                  </div>
 
-        {/* Product content */}
-        <section className="section-padding">
-          <div className="container-luxury">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-              {/* Left - Images */}
-              <div className="space-y-4">
-                <div className="aspect-square rounded-xl overflow-hidden bg-stone">
-                  {displayImage ? (
-                    <img
-                      src={displayImage}
-                      alt={product.title}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                      No image available
+                  {/* Mobile Thumbnails (Overlay bottom) */}
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-2 bg-black/40 backdrop-blur-md rounded-full lg:hidden">
+                    {allImages.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedImageIndex(idx)}
+                        className={cn(
+                          "w-2 h-2 rounded-full transition-all",
+                          selectedImageIndex === idx ? "w-6 bg-white" : "bg-white/40"
+                        )}
+                      />
+                    ))}
+                  </div>
+
+                   {/* Arrows Overlay */}
+                   {allImages.length > 1 && (
+                    <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                       <Button 
+                        variant="midnight" 
+                        size="icon" 
+                        className="rounded-full h-12 w-12"
+                        onClick={() => setSelectedImageIndex(prev => (prev > 0 ? prev - 1 : allImages.length - 1))}
+                       >
+                         <ChevronLeft className="h-6 w-6" />
+                       </Button>
+                       <Button 
+                        variant="midnight" 
+                        size="icon" 
+                        className="rounded-full h-12 w-12"
+                        onClick={() => setSelectedImageIndex(prev => (prev < allImages.length - 1 ? prev + 1 : 0))}
+                       >
+                         <ChevronRight className="h-6 w-6" />
+                       </Button>
                     </div>
                   )}
                 </div>
 
-                {/* Gallery thumbnails */}
-                {allImages.length > 1 && (
-                  <div className="grid grid-cols-4 gap-2">
-                    {allImages.slice(0, 4).map((img, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setSelectedImageIndex(idx)}
-                        className={`aspect-square rounded-lg overflow-hidden bg-secondary transition-all duration-200 ${selectedImageIndex === idx
-                          ? 'ring-2 ring-champagne ring-offset-2 ring-offset-background'
-                          : 'hover:opacity-80'
-                          }`}
-                      >
-                        <img
-                          src={img}
-                          alt={`${product.title} ${idx + 1}`}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {product.badge && (
-                  <Badge
-                    variant="outline"
-                    className="bg-champagne/20 text-foreground border-champagne/30"
-                  >
-                    {product.badge}
-                  </Badge>
-                )}
-              </div>
-
-              {/* Right - Info */}
-              <div className="space-y-8">
-                {/* Header */}
-                <div className="space-y-4">
-                  <span className="text-sm text-muted-foreground tracking-widest uppercase">
-                    {product.category}
-                  </span>
-                  <h1 className="heading-large">{product.title}</h1>
-                  <p className="text-muted-foreground text-lg">
-                    {product.description}
-                  </p>
-                </div>
-
-                {/* Price & CTA */}
-                <div className="space-y-4">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-serif font-medium">
-                      {formatPrice(
-                        convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency), 
-                        currentCurrency
-                      )}
-                    </span>
-                  </div>
-
-                  {/* Quantity Selector */}
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-muted-foreground">Quantity:</span>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="luxury-outline"
-                        size="icon"
-                        className="h-10 w-10"
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        disabled={quantity <= 1}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="w-12 text-center font-medium text-lg">{quantity}</span>
-                      <Button
-                        variant="luxury-outline"
-                        size="icon"
-                        className="h-10 w-10"
-                        onClick={() => setQuantity(quantity + 1)}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
+                {/* Description Section (Desktop) */}
+                <div className="hidden lg:block space-y-12 mt-12">
+                  <div>
+                    <h2 className="text-xl font-serif mb-6 flex items-center gap-2">
+                      <span className="w-8 h-[1px] bg-sapphire" />
+                      Artifact Details
+                    </h2>
+                    <div className="prose prose-invert max-w-none text-muted-foreground/90 leading-relaxed font-light whitespace-pre-wrap">
+                      {product.full_description || product.description}
                     </div>
                   </div>
 
-                  <div className="flex gap-3">
-                    <Button
-                      variant="luxury"
-                      size="xl"
-                      className="flex-1"
-                      onClick={handleAddToCart}
-                      disabled={!isPublished && !isOwner}
-                    >
-                      <ShoppingCart className="h-5 w-5 mr-2" />
-                      Add to Cart{quantity > 1 ? ` (${quantity})` : ''}
-                    </Button>
-                    <Button
-                      variant="luxury-outline"
-                      size="icon"
-                      className={`h-14 w-14 transition-colors ${inWishlist ? 'bg-red-500/20 border-red-500/50 text-red-500' : ''}`}
-                      onClick={handleToggleWishlist}
-                      title={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-                    >
-                      <Heart className={`h-5 w-5 ${inWishlist ? 'fill-current' : ''}`} />
-                    </Button>
-                    <Button
-                      variant="luxury-outline"
-                      size="icon"
-                      className="h-14 w-14"
-                      onClick={handleShare}
-                      title="Share this product"
-                    >
-                      <Share2 className="h-5 w-5" />
-                    </Button>
+                  {/* Features */}
+                  {features.length > 0 && (
+                    <div className="space-y-4">
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-champagne">Included Features</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {features.map((feature, idx) => (
+                          <div key={idx} className="px-5 py-3 bg-secondary/20 rounded-2xl border border-border/40 text-xs font-bold flex items-center gap-3">
+                            <div className="w-5 h-5 rounded-full bg-sapphire/20 flex items-center justify-center">
+                              <Check className="h-3 w-3 text-sapphire" />
+                            </div>
+                            {feature}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Zone 3: Sticky Sidebar */}
+              <aside className="lg:sticky lg:top-28 space-y-8">
+                <div className="p-8 bg-card/40 backdrop-blur-xl border border-border/50 rounded-[2.5rem] shadow-2xl shadow-sapphire/5 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-sapphire/5 rounded-full -mr-16 -mt-16 blur-3xl" />
+                  
+                  <div className="space-y-6 relative z-10">
+                    <div className="flex items-center justify-between font-black">
+                      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{product.category}</span>
+                      <div className="flex items-center gap-1.5 text-champagne">
+                        <Star className="h-4 w-4 fill-current" />
+                        <span>4.8</span>
+                      </div>
+                    </div>
+
+                    <h1 className="text-3xl font-serif leading-tight">{product.title}</h1>
+
+                    <div className="flex items-end gap-3 pt-2">
+                      <span className="text-4xl font-sans font-black tracking-tighter">
+                         {formatPrice(convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency), currentCurrency)}
+                      </span>
+                    </div>
+
+                    <div className="space-y-3 pt-6">
+                      <Button
+                        variant="luxury"
+                        size="xl"
+                        className="w-full h-16 text-lg font-black uppercase tracking-[0.1em] rounded-2xl shadow-xl shadow-sapphire/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        onClick={handleAddToCart}
+                        disabled={!isPublished && !isOwner}
+                      >
+                        <ShoppingCart className="mr-3 h-5 w-5" />
+                        Acquire Artifact
+                      </Button>
+                      
+                      <div className="grid grid-cols-2 gap-3">
+                        <Button 
+                          variant="luxury-outline" 
+                          className={cn("h-12 rounded-xl text-[10px] font-black uppercase tracking-widest", inWishlist && "bg-rose-500/10 text-rose-500 border-rose-500/20")}
+                          onClick={handleToggleWishlist}
+                        >
+                          <Heart className={cn("mr-2 h-4 w-4", inWishlist && "fill-current")} />
+                          Wishlist
+                        </Button>
+                        <Button variant="luxury-outline" className="h-12 rounded-xl text-[10px] font-black uppercase tracking-widest" onClick={handleShare}>
+                           <Share2 className="mr-2 h-4 w-4" />
+                           Share
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="pt-8 border-t border-border/40 space-y-4">
+                       <div className="flex items-center gap-3 text-xs text-muted-foreground font-bold">
+                          <div className="w-8 h-8 rounded-full bg-sapphire/10 flex items-center justify-center">
+                            <Shield className="h-4 w-4 text-sapphire" />
+                          </div>
+                          Secure Payment via Stripe
+                       </div>
+                       <div className="flex items-center gap-3 text-xs text-muted-foreground font-bold">
+                          <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                            <Zap className="h-4 w-4 text-emerald-400" />
+                          </div>
+                          Instant Forge Delivery
+                       </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* What's included / Features */}
-                {features.length > 0 && (
-                  <div className="space-y-4 p-6 rounded-xl bg-secondary/30">
-                    <h3 className="font-medium">Features</h3>
-                    <ul className="space-y-3">
-                      {features.map((item: string, idx: number) => (
-                        <li key={idx} className="flex items-center gap-3 text-sm">
-                          <Check className="h-4 w-4 text-champagne" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Seller info */}
-                <div className="flex items-center justify-between p-6 rounded-xl border border-border">
+                {/* Seller Info Card */}
+                <div onClick={() => window.open(`/seller/${encodeURIComponent(product.seller_name)}`, '_blank')} className="p-6 bg-secondary/10 rounded-[2rem] border border-border/40 flex items-center justify-between group cursor-pointer hover:bg-secondary/20 transition-all">
                   <div className="flex items-center gap-4">
-                    {product.seller_avatar ? (
-                      <img
-                        src={product.seller_avatar}
-                        alt={product.seller_name}
-                        className="w-12 h-12 rounded-full bg-secondary object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
-                        <span className="text-lg font-medium">{product.seller_name?.charAt(0)}</span>
-                      </div>
-                    )}
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{product.seller_name}</span>
-                        {product.seller_is_verified && (
-                          <Shield className="h-4 w-4 text-champagne" />
-                        )}
-                        <TierBadge tier={resolveSellerTier(product.seller_tier, product.seller_role)} size="sm" />
-                      </div>
-                      {product.seller_is_verified ? (
-                        <p className="text-sm text-muted-foreground">Verified Seller</p>
+                    <div className="relative">
+                       {product.seller_avatar ? (
+                        <img src={product.seller_avatar} alt={product.seller_name} className="w-12 h-12 rounded-full object-cover ring-2 ring-background shadow-lg" />
                       ) : (
-                        <p className="text-sm text-muted-foreground">Seller</p>
+                        <div className="w-12 h-12 rounded-full bg-sapphire/10 flex items-center justify-center text-lg font-serif font-black text-sapphire ring-2 ring-background shadow-lg">
+                          {product.seller_name?.charAt(0)}
+                        </div>
                       )}
+                      <div className="absolute -bottom-1 -right-1">
+                         <TierBadge tier={resolveSellerTier(product.seller_tier, product.seller_role)} size="sm" className="shadow-md" />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">Crafted By</p>
+                      <h4 className="text-sm font-serif font-bold group-hover:text-sapphire transition-colors">{product.seller_name}</h4>
                     </div>
                   </div>
-                  <Button
-                    variant="luxury-outline"
-                    size="sm"
-                    onClick={() => window.open(`/seller/${encodeURIComponent(product.seller_name)}`, '_blank')}
-                  >
-                    View Profile
-                  </Button>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
                 </div>
-
-                {/* Trust badges */}
-                <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4" />
-                    Secure Payment
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Download className="h-4 w-4" />
-                    Instant Download
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    24/7 Support
-                  </div>
-                </div>
-
-                {/* Social Share */}
-                <div className="pt-4 border-t border-border">
-                  <SocialShare
-                    url={`https://94mercato.com/products/${product.slug}`}
-                    title={product.title}
-                    description={product.description}
-                  />
-                </div>
-              </div>
+              </aside>
             </div>
 
-            {/* Full Description */}
-            {product.full_description && (
-              <div className="mt-16 pt-16 border-t border-border">
-                <h2 className="heading-medium mb-6">Description</h2>
-                <div className="prose prose-neutral max-w-none">
-                  <pre className="whitespace-pre-wrap font-sans text-muted-foreground">
-                    {product.full_description}
-                  </pre>
+            {/* Mobile (Simplified) */}
+            <div className="lg:hidden mt-20 space-y-12 pt-12 border-t border-border/40">
+               <div>
+                  <h2 className="text-2xl font-serif mb-6">Artifact Details</h2>
+                  <div className="prose prose-invert text-sm font-light text-muted-foreground whitespace-pre-wrap">
+                    {product.full_description || product.description}
+                  </div>
+               </div>
+               {features.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-champagne">Included Features</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {features.map((feature, idx) => (
+                      <div key={idx} className="px-3 py-1.5 bg-secondary/30 rounded-full border border-border/40 text-[10px] font-medium">
+                        {feature}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Communal Trust & Social */}
+            <div className="mt-32 space-y-32">
+              <div className="flex flex-col md:flex-row gap-12 pt-20 border-t border-border/40">
+                <div className="md:w-1/3 space-y-6">
+                  <h2 className="text-4xl font-serif">Community Trust</h2>
+                  <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
+                    Read unedited feedback from the collectors' collective who have acquired this artifact.
+                  </p>
+                  <div className="flex items-center gap-4 p-6 bg-card/40 rounded-3xl border border-border/50">
+                    <span className="text-5xl font-serif font-black text-champagne">4.8</span>
+                    <div>
+                      <div className="flex items-center mb-1">
+                        {[1,2,3,4,5].map(i => <Star key={i} className="h-4 w-4 fill-champagne text-champagne" />)}
+                      </div>
+                      <span className="text-[10px] uppercase font-black text-muted-foreground/60 tracking-widest">Platform Average</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="md:w-2/3">
+                  <ReviewSection productId={product.id} productSlug={product.slug} />
                 </div>
               </div>
-            )}
 
-            {/* Reviews Section */}
-            <ReviewSection productId={product.id} productSlug={product.slug} />
-
-            {/* Related Products */}
-            {relatedProducts.length > 0 && (
-              <div className="mt-16 pt-16 border-t border-border">
-                <div className="flex items-center justify-between mb-8">
-                  <h2 className="heading-medium">Related Products</h2>
-                  <Button variant="luxury-outline" size="sm" asChild>
-                    <Link to={`/products?category=${encodeURIComponent(product.category)}`}>
-                      View All
-                    </Link>
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {relatedProducts.map((relatedProduct) => (
-                    <ProductCard key={relatedProduct.id} product={relatedProduct} />
-                  ))}
-                </div>
+              {/* Related Discovery */}
+              <div className="space-y-12">
+                 <div className="flex items-end justify-between">
+                    <div>
+                      <h2 className="text-4xl font-serif mb-3">You might also <span className="italic text-sapphire">treasure</span></h2>
+                      <p className="text-muted-foreground text-sm">Similar artifacts unearthed by other curators.</p>
+                    </div>
+                    <Button variant="luxury-outline" asChild className="hidden sm:flex rounded-full px-6">
+                      <Link to="/products">View All Discoveries <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                    </Button>
+                 </div>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                   {relatedProducts.map((p) => (
+                     <ProductCard key={p.id} product={p as any} />
+                   ))}
+                 </div>
               </div>
-            )}
-
-            {/* Tags */}
-            {tags.length > 0 && (
-              <div className="mt-12 flex items-center gap-3 flex-wrap">
-                <span className="text-sm text-muted-foreground">Tags:</span>
-                {tags.map((tag: string) => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
+            </div>
           </div>
-        </section>
+        </div>
       </Layout>
     </>
   );

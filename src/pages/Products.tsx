@@ -6,18 +6,21 @@ import { SemanticSearchBar } from "@/components/products/SemanticSearchBar";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import {
-  SlidersHorizontal,
   Loader2,
   LayoutGrid,
   List,
   ArrowUpDown,
   ChevronDown,
+  Search,
+  Filter
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import api from "@/lib/api";
 import { resolveSellerTier } from "@/components/seller/TierBadge";
 import type { SellerTier } from "@/components/seller/TierBadge";
 
-const categories = [
+// Initial categories to ensure UI is not empty before fetch
+const INITIAL_CATEGORIES = [
   "All",
   "Templates",
   "UI Kits",
@@ -78,17 +81,27 @@ const Products = () => {
   const initialCategory = searchParams.get("category") || "All";
 
   const [searchQuery, setSearchQuery] = useState(initialSearch);
-  const [selectedCategory, setSelectedCategory] = useState(
-    categories.includes(initialCategory) ? initialCategory : "All"
-  );
   const [products, setProducts] = useState<ReturnType<typeof mapProduct>[]>(
     []
   );
+  const [categories, setCategories] = useState<string[]>(INITIAL_CATEGORIES);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("newest");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showSortMenu, setShowSortMenu] = useState(false);
+
+  // Update categories dynamically from products
+  useEffect(() => {
+    if (products.length > 0) {
+      const uniqueCategories = Array.from(
+        new Set(products.map((p) => p.category))
+      ).filter(Boolean) as string[];
+      
+      setCategories(["All", ...uniqueCategories.sort()]);
+    }
+  }, [products]);
 
   // Update URL when search or category changes
   useEffect(() => {
@@ -169,165 +182,151 @@ const Products = () => {
         />
       </Helmet>
       <Layout>
-        {/* Hero section */}
-        <section className="pt-24 md:pt-32 pb-12 bg-gradient-to-b from-midnight via-midnight-light/50 to-background relative overflow-hidden">
-          <div className="absolute top-1/3 left-1/4 w-[50vw] h-[40vh] bg-sapphire/15 rounded-full blur-[120px]" />
-          <div className="container-luxury relative z-10">
-            <div className="max-w-2xl">
-              <span className="text-xs tracking-widest uppercase text-champagne mb-3 block">
-                Marketplace
-              </span>
-              <h1 className="heading-large mb-4 text-cream">
-                Browse Products
-              </h1>
-              <p className="text-cream/60 text-lg">
-                Discover premium digital products from our curated
-                marketplace of talented creators.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Filters bar */}
-        <section className="py-6 border-b border-border sticky top-20 z-40 bg-background/80 backdrop-blur-xl">
-          <div className="container-luxury">
-            <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-              {/* Search */}
+        {/* Hero section - Gumroad Inspired */}
+        <section className="pt-32 pb-16 bg-gradient-to-b from-background via-background/95 to-background relative overflow-hidden border-b border-border/40">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[40vh] bg-sapphire/5 rounded-full blur-[120px] -z-10" />
+          
+          <div className="container-luxury flex flex-col items-center text-center">
+             <span className="text-[10px] font-black tracking-[0.3em] uppercase text-champagne mb-4 animate-fade-in">
+              The Digital Marketplace
+            </span>
+            <h1 className="text-4xl md:text-6xl font-sans font-black tracking-tighter uppercase leading-none mb-8 max-w-4xl animate-fade-up">
+              Find your next <span className="text-transparent bg-clip-text bg-gradient-to-r from-sapphire to-champagne">creative edge</span>
+            </h1>
+            
+            <div className="w-full max-w-2xl mx-auto mb-12 animate-fade-up relative z-40" style={{ animationDelay: '100ms' }}>
               <SemanticSearchBar
                 value={searchQuery}
                 onChange={setSearchQuery}
-                className="w-full md:w-96"
+                className="shadow-2xl shadow-sapphire/5"
               />
-
-              {/* Right controls */}
-              <div className="flex items-center gap-3 w-full md:w-auto">
-                {/* Sort dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => setShowSortMenu(!showSortMenu)}
-                    className="flex items-center gap-2 px-3 py-2 text-sm border border-border rounded-lg hover:bg-secondary/50 transition-colors"
-                  >
-                    <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-                    <span className="hidden sm:inline">
-                      {sortOptions.find((s) => s.value === sortBy)?.label}
-                    </span>
-                    <ChevronDown className="h-3 w-3 text-muted-foreground" />
-                  </button>
-                  {showSortMenu && (
-                    <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-border rounded-xl shadow-float overflow-hidden z-50">
-                      {sortOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          onClick={() => {
-                            setSortBy(opt.value);
-                            setShowSortMenu(false);
-                          }}
-                          className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${sortBy === opt.value
-                            ? "bg-sapphire/10 text-sapphire font-medium"
-                            : "hover:bg-secondary/50 text-muted-foreground"
-                            }`}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* View toggle */}
-                <div className="flex items-center border border-border rounded-lg overflow-hidden">
-                  <button
-                    onClick={() => setViewMode("grid")}
-                    className={`p-2 transition-colors ${viewMode === "grid"
-                      ? "bg-sapphire/10 text-sapphire"
-                      : "text-muted-foreground hover:bg-secondary/50"
-                      }`}
-                  >
-                    <LayoutGrid className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode("list")}
-                    className={`p-2 transition-colors border-l border-border ${viewMode === "list"
-                      ? "bg-sapphire/10 text-sapphire"
-                      : "text-muted-foreground hover:bg-secondary/50"
-                      }`}
-                  >
-                    <List className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
             </div>
 
-            {/* Category chips */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 mt-4 scrollbar-hide">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`whitespace-nowrap px-4 py-2 text-sm rounded-full border transition-all ${selectedCategory === category
-                    ? "bg-champagne text-midnight border-champagne font-medium"
-                    : "border-border text-muted-foreground hover:border-champagne/50 hover:text-champagne"
-                    }`}
-                >
-                  {category}
-                  {categoryCounts[category] > 0 && (
-                    <span
-                      className={`ml-1.5 text-xs ${selectedCategory === category
-                        ? "text-midnight/70"
-                        : "text-muted-foreground/70"
-                        }`}
-                    >
-                      {categoryCounts[category]}
-                    </span>
-                  )}
-                </button>
-              ))}
+            {/* Category Nav - Horizontal Scroll bar style */}
+            <div className="w-full max-w-5xl mx-auto overflow-hidden relative animate-fade-up z-10" style={{ animationDelay: '200ms' }}>
+               <div className="flex items-center justify-center gap-2 overflow-x-auto pb-4 no-scrollbar px-4">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={cn(
+                      "whitespace-nowrap px-6 py-2.5 text-xs font-black uppercase tracking-[0.1em] rounded-full border transition-all duration-300",
+                      selectedCategory === category
+                        ? "bg-foreground text-background border-foreground shadow-lg scale-105"
+                        : "border-border/50 text-muted-foreground hover:border-foreground hover:text-foreground hover:bg-foreground/5"
+                    )}
+                  >
+                    {category}
+                    {categoryCounts[category] > 0 && (
+                      <span className={cn(
+                        "ml-2 opacity-50",
+                        selectedCategory === category ? "text-background/70" : "text-muted-foreground"
+                      )}>
+                        {categoryCounts[category]}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Products */}
-        <section className="section-padding">
-          <div className="container-luxury">
-            {/* Results count */}
-            <div className="flex items-center justify-between mb-8">
-              <p className="text-muted-foreground text-sm">
-                {isLoading
-                  ? "Loading..."
-                  : `Showing ${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""}`}
+        {/* Filters & Grid Sticky Bar */}
+        <div className="sticky top-16 z-30 bg-background/80 backdrop-blur-md border-b border-border/40">
+          <div className="container-luxury py-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+               <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                {isLoading ? "Loading marketplace..." : `${filteredProducts.length} Results Found`}
               </p>
             </div>
 
-            {/* Loading */}
-            {isLoading && (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="h-8 w-8 animate-spin text-champagne" />
-              </div>
-            )}
-
-            {/* Error */}
-            {error && !isLoading && (
-              <div className="text-center py-20">
-                <p className="text-xl text-muted-foreground mb-4">
-                  {error}
-                </p>
-                <Button
-                  variant="luxury-outline"
-                  onClick={() => window.location.reload()}
+            <div className="flex items-center gap-2">
+              {/* Sort Menu */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowSortMenu(!showSortMenu)}
+                  className="flex items-center gap-2 px-4 py-2 text-[10px] font-black uppercase tracking-widest border border-border/60 rounded-full hover:bg-secondary/50 transition-all"
                 >
-                  Try Again
-                </Button>
+                  <ArrowUpDown className="h-3 w-3" />
+                  {sortOptions.find((s) => s.value === sortBy)?.label}
+                  <ChevronDown className="h-2 w-2" />
+                </button>
+                
+                {showSortMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border/80 rounded-2xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+                    {sortOptions.map((opt) => (
+                      <button
+                        key={opt.value}
+                        onClick={() => {
+                          setSortBy(opt.value);
+                          setShowSortMenu(false);
+                        }}
+                        className={cn(
+                          "w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all",
+                          sortBy === opt.value
+                            ? "bg-sapphire text-white shadow-lg"
+                            : "hover:bg-secondary/80 text-muted-foreground"
+                        )}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
 
-            {/* Grid / List */}
-            {!isLoading && !error && filteredProducts.length > 0 ? (
+              {/* View Switches */}
+              <div className="hidden sm:flex items-center p-1 bg-secondary/30 rounded-full border border-border/40">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={cn(
+                    "p-1.5 rounded-full transition-all",
+                    viewMode === "grid" ? "bg-white text-black shadow-sm" : "text-muted-foreground"
+                  )}
+                >
+                  <LayoutGrid className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={cn(
+                    "p-1.5 rounded-full transition-all",
+                    viewMode === "list" ? "bg-white text-black shadow-sm" : "text-muted-foreground"
+                  )}
+                >
+                  <List className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Product Grid */}
+        <section className="py-12 min-h-[60vh]">
+          <div className="container-luxury">
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-32 gap-4">
+                <Loader2 className="h-10 w-10 animate-spin text-sapphire" />
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground animate-pulse">
+                  Querying the forge...
+                </p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-32 max-w-md mx-auto">
+                 <h3 className="text-2xl font-serif mb-4">Misfire in the marketplace</h3>
+                 <p className="text-muted-foreground mb-8 text-sm">{error}</p>
+                 <Button variant="luxury" onClick={() => window.location.reload()}>
+                   Try Again
+                 </Button>
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <div
-                className={
-                  viewMode === "grid"
-                    ? "grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-                    : "grid grid-cols-1 gap-4"
-                }
+                className={cn(
+                  "grid gap-6 lg:gap-8",
+                  viewMode === "grid" 
+                    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
+                    : "grid-cols-1 max-w-4xl mx-auto"
+                )}
               >
                 {filteredProducts.map((product, index) => (
                   <ProductCard
@@ -339,23 +338,24 @@ const Products = () => {
                 ))}
               </div>
             ) : (
-              !isLoading &&
-              !error && (
-                <div className="text-center py-20">
-                  <p className="text-xl text-muted-foreground mb-4">
-                    No products found
-                  </p>
-                  <Button
-                    variant="luxury-outline"
-                    onClick={() => {
-                      setSearchQuery("");
-                      setSelectedCategory("All");
-                    }}
-                  >
-                    Clear filters
-                  </Button>
+              <div className="text-center py-32 max-w-sm mx-auto">
+                <div className="w-20 h-20 bg-secondary/30 rounded-full flex items-center justify-center mx-auto mb-6 text-muted-foreground/30">
+                  <Search className="h-8 w-8" />
                 </div>
-              )
+                <h3 className="text-xl font-serif mb-2">No digital artifacts found</h3>
+                <p className="text-sm text-muted-foreground mb-8">
+                  Your current filters didn't return any results. Try broadening your search.
+                </p>
+                <Button
+                  variant="luxury-outline"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("All");
+                  }}
+                >
+                  Clear all filters
+                </Button>
+              </div>
             )}
           </div>
         </section>

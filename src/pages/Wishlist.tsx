@@ -1,114 +1,101 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Heart, ShoppingCart, Trash2, ArrowLeft } from "lucide-react";
+import { Heart, ShoppingBag, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWishlistStore } from "@/store/wishlistStore";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { Layout } from "@/components/layout/Layout";
+import { ProductCard } from "@/components/products/ProductCard";
+import { toast } from "sonner";
 
 const Wishlist = () => {
-    const { items, removeItem, clearWishlist } = useWishlistStore();
+    const { items, clearWishlist } = useWishlistStore();
 
     return (
         <>
             <Helmet>
-                <title>My Wishlist | 94mercato</title>
-                <meta name="description" content="View and manage your saved products" />
+                <title>Treasury (Wishlist) — Mercato94</title>
+                <meta name="description" content="View and manage your saved high-performance digital artifacts." />
             </Helmet>
-            <Header />
-            <main className="min-h-screen bg-background pt-24 pb-16">
-                <div className="container-wide">
-                    {/* Header */}
-                    <div className="flex items-center justify-between mb-8">
-                        <div>
-                            <h1 className="heading-large flex items-center gap-3">
-                                <Heart className="h-8 w-8 text-champagne fill-champagne" />
-                                My Wishlist
-                            </h1>
-                            <p className="text-muted-foreground mt-2">
-                                {items.length} {items.length === 1 ? "item" : "items"} saved
-                            </p>
-                        </div>
-                        {items.length > 0 && (
-                            <Button
-                                variant="ghost"
-                                onClick={clearWishlist}
-                                className="text-muted-foreground hover:text-destructive"
-                            >
-                                Clear All
-                            </Button>
-                        )}
-                    </div>
-
-                    {/* Wishlist Items */}
-                    {items.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {items.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className="group relative bg-card rounded-xl border border-border overflow-hidden hover:border-champagne/50 transition-all duration-300"
+            <Layout>
+                <section className="pt-28 md:pt-36 pb-24 min-h-screen bg-midnight">
+                    <div className="container-luxury px-4">
+                        {/* Header */}
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
+                            <div className="space-y-2">
+                                <h1 className="text-4xl md:text-6xl font-serif text-cream tracking-tight animate-in slide-in-from-left duration-700">
+                                    Your <span className="text-champagne">Treasury</span>
+                                </h1>
+                                <p className="text-sm md:text-base text-cream/40 font-medium tracking-wide uppercase">
+                                    {items.length === 0
+                                        ? "No artifacts secured"
+                                        : `${items.length} exquisite artifact${items.length > 1 ? "s" : ""} saved`}
+                                </p>
+                            </div>
+                            {items.length > 0 && (
+                                <button
+                                    onClick={() => {
+                                        clearWishlist();
+                                        toast.success("Treasury cleared");
+                                    }}
+                                    className="text-[10px] font-black tracking-widest uppercase text-cream/20 hover:text-destructive transition-colors text-left md:text-right"
                                 >
-                                    {/* Product Image */}
-                                    <Link to={`/products/${item.slug}`} className="block aspect-[4/3] overflow-hidden">
-                                        <img
-                                            src={item.image}
-                                            alt={item.name}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                            loading="lazy"
-                                        />
-                                    </Link>
+                                    Empty Treasury
+                                </button>
+                            )}
+                        </div>
 
-                                    {/* Remove Button */}
-                                    <button
-                                        onClick={() => removeItem(item.id)}
-                                        className="absolute top-3 right-3 p-2 rounded-full bg-background/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-white"
-                                        aria-label="Remove from wishlist"
+                        {/* Wishlist Items */}
+                        {items.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                                {items.map((item, index) => (
+                                    <div 
+                                        key={item.id}
+                                        className="animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both"
+                                        style={{ animationDelay: `${index * 100}ms` }}
                                     >
-                                        <Trash2 className="h-4 w-4" />
-                                    </button>
-
-                                    {/* Product Info */}
-                                    <div className="p-4">
-                                        <Link to={`/products/${item.slug}`}>
-                                            <h3 className="font-medium text-foreground group-hover:text-champagne transition-colors line-clamp-2">
-                                                {item.name}
-                                            </h3>
-                                        </Link>
-                                        <div className="flex items-center justify-between mt-3">
-                                            <span className="text-lg font-semibold text-champagne">
-                                                ${item.price.toFixed(2)}
-                                            </span>
-                                            <Button size="sm" variant="luxury" asChild>
-                                                <Link to={`/products/${item.slug}`}>
-                                                    <ShoppingCart className="h-4 w-4 mr-2" />
-                                                    View
-                                                </Link>
-                                            </Button>
-                                        </div>
+                                        <ProductCard 
+                                            product={{
+                                                id: item.id,
+                                                title: item.name,
+                                                slug: item.slug,
+                                                description: "", // Hidden in card anyway
+                                                price: item.price,
+                                                currency: "USD", // Wishlist items should ideally store currency
+                                                seller: { name: "Artifact Creator", avatar: "" },
+                                                image: item.image,
+                                                category: "Curated Selection",
+                                                rating: 4.8,
+                                                sales: 0
+                                            }} 
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center py-32 text-center animate-in fade-in zoom-in duration-1000">
+                                <div className="relative group mb-10">
+                                    <div className="absolute inset-0 bg-red-500/10 rounded-full blur-3xl group-hover:bg-red-500/20 transition-all duration-700" />
+                                    <div className="relative w-32 h-32 rounded-full border border-white/10 bg-midnight-light/50 flex items-center justify-center backdrop-blur-xl">
+                                        <Heart className="h-12 w-12 text-red-500/40" />
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="flex flex-col items-center justify-center py-20 text-center">
-                            <div className="w-20 h-20 rounded-full bg-secondary/50 flex items-center justify-center mb-6">
-                                <Heart className="h-10 w-10 text-muted-foreground" />
+                                <h2 className="text-3xl font-serif text-cream mb-4">
+                                    Your treasury is empty
+                                </h2>
+                                <p className="text-cream/50 mb-12 max-w-sm leading-relaxed">
+                                    Discover exceptional digital artifacts and secure them in your personal treasury for future acquisition.
+                                </p>
+                                <Button variant="luxury" size="lg" className="rounded-full px-10 h-14" asChild>
+                                    <Link to="/products">
+                                        Exploration
+                                        <ArrowRight className="ml-3 h-5 w-5" />
+                                    </Link>
+                                </Button>
                             </div>
-                            <h2 className="text-xl font-medium mb-2">Your wishlist is empty</h2>
-                            <p className="text-muted-foreground mb-6 max-w-md">
-                                Save your favorite products to your wishlist and they'll appear here for easy access.
-                            </p>
-                            <Button variant="luxury" asChild>
-                                <Link to="/products">
-                                    <ArrowLeft className="h-4 w-4 mr-2" />
-                                    Browse Products
-                                </Link>
-                            </Button>
-                        </div>
-                    )}
-                </div>
-            </main>
-            <Footer />
+                        )}
+                    </div>
+                </section>
+            </Layout>
         </>
     );
 };

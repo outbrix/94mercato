@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;700;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -52,6 +52,12 @@
     --taupe: 220 10% 55%;
     --cream: 40 40% 97%;
     --surface: 220 20% 97%;
+    
+    /* Gen Z Cool Accents */
+    --neon-cyan: 180 100% 50%;
+    --neon-purple: 270 100% 60%;
+    --neon-green: 145 100% 50%;
+    --cyber-black: 220 40% 2%;
     
     /* Glassmorphism */
     --glass-bg: 220 20% 98% / 0.8;
@@ -372,11 +378,57 @@
   }
 }
 
-.animate-float {
-  animation: float 5s ease-in-out infinite;
-}
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    10% { transform: translate(-2px, 2px); }
+    20% { transform: translate(-2px, -2px); }
+    30% { transform: translate(2px, 2px); }
+    40% { transform: translate(2px, -2px); }
+    50% { transform: translate(-1px, 1px); }
+    60% { transform: translate(-1px, -1px); }
+    70% { transform: translate(1px, 1px); }
+    80% { transform: translate(1px, -1px); }
+    100% { transform: translate(0); }
+  }
 
-nav > a.text-black {
-  background-image: none !important;
-  color: hsl(var(--ink)) !important;
-}
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes marquee-vertical {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+
+  .animate-glitch {
+    animation: glitch 0.2s infinite;
+    animation-play-state: paused;
+  }
+
+  .group:hover .animate-glitch {
+    animation-play-state: running;
+  }
+
+  .neo-shadow {
+    box-shadow: 4px 4px 0px 0px #000;
+  }
+
+  .neo-shadow-acid {
+    box-shadow: 4px 4px 0px 0px #dfff00;
+  }
+
+  .acid-gradient {
+    background: linear-gradient(90deg, #dfff00 0%, #ff00ff 100%);
+  }
+
+  .marquee-content {
+    display: flex;
+    animation: marquee 10s linear infinite;
+  }
+
+  .marquee-vertical-content {
+    display: flex;
+    flex-direction: column;
+    animation: marquee-vertical 5s linear infinite;
+  }

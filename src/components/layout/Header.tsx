@@ -3,33 +3,28 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SearchModal } from '@/components/ui/SearchModal';
-import { Search, ShoppingBag, Menu, X, User, LogIn, LogOut, Crown, LayoutDashboard, ArrowUpRight } from 'lucide-react';
+import { Search, ShoppingBag, Menu, X, User, LogIn, LogOut, Crown, LayoutDashboard, ArrowUpRight, Heart } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCartStore } from '@/store/cartStore';
+import { useWishlistStore } from '@/store/wishlistStore';
 import { CurrencySwitcher } from './CurrencySwitcher';
+import FuzzyText from '@/components/ui/FuzzyText';
 
 const Logo = () => (
-  <Link to="/" className="flex items-center gap-2">
-    <svg
-      className="h-8 w-auto"
-      width="34"
-      height="34"
-      viewBox="0 0 34 34"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+  <Link to="/" className="group flex items-center pr-4 border-r border-white/10 hover:border-transparent transition-colors duration-300">
+    <FuzzyText 
+      baseIntensity={0.02}
+      hoverIntensity={0.08}
+      fuzzRange={8}
+      enableHover
+      fontSize="1.8rem"
+      fontWeight={900}
+      fontFamily="Cinzel"
+      gradient={["#846733", "#dfc5a4", "#846733"]} // Deep gold to Champagne to Deep gold
+      className="tracking-[-0.05em]"
     >
-      <rect width="34" height="34" rx="8" fill="url(#paint0_linear_1_2)" />
-      <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fontFamily="'Playfair Display', serif" fontSize="18" fill="white">94</text>
-      <defs>
-        <linearGradient id="paint0_linear_1_2" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#A68B6E" />
-          <stop offset="1" stopColor="#7A634B" />
-        </linearGradient>
-      </defs>
-    </svg>
-    <span className="font-serif text-xl font-bold text-cream">
-      94<span className="text-champagne">mercato</span>
-    </span>
+      94MERCATO
+    </FuzzyText>
   </Link>
 );
 
@@ -54,8 +49,11 @@ const Navigation = ({ links }) => (
 
 const HeaderActions = ({ onSearchClick }: { onSearchClick: () => void }) => {
   const { user, logout } = useAuth();
-  const { items } = useCartStore();
-  const totalItems = items.reduce((total, item) => total + item.quantity, 0);
+  const { items: cartItems } = useCartStore();
+  const { items: wishlistItems } = useWishlistStore();
+  
+  const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const totalWishlistItems = wishlistItems.length;
 
   return (
     <div className="flex items-center gap-3">
@@ -67,11 +65,21 @@ const HeaderActions = ({ onSearchClick }: { onSearchClick: () => void }) => {
       >
         <Search className="h-5 w-5" />
       </Button>
+      
+      <Link to="/wishlist">
+        <Button variant="ghost" size="icon" className="relative text-cream/70 hover:text-cream hover:bg-sapphire/10">
+          <Heart className="h-5 w-5" />
+          {totalWishlistItems > 0 &&
+            <Badge className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs bg-red-500 text-white border-none">{totalWishlistItems}</Badge>
+          }
+        </Button>
+      </Link>
+
       <Link to="/cart">
         <Button variant="ghost" size="icon" className="relative text-cream/70 hover:text-cream hover:bg-sapphire/10">
           <ShoppingBag className="h-5 w-5" />
-          {totalItems > 0 &&
-            <Badge className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs bg-champagne text-black">{totalItems}</Badge>
+          {totalCartItems > 0 &&
+            <Badge className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs bg-champagne text-black">{totalCartItems}</Badge>
           }
         </Button>
       </Link>
