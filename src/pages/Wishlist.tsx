@@ -22,12 +22,12 @@ const Wishlist = () => {
                     <div className="container-luxury px-4">
                         {/* Header */}
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 md:mb-20">
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <FuzzyText 
                                     baseIntensity={0.08}
                                     hoverIntensity={0.25}
                                     enableHover
-                                    fontSize="clamp(2.5rem, 8vw, 5rem)"
+                                    fontSize="clamp(1.8rem, 8vw, 4.5rem)"
                                     fontWeight={900}
                                     fontFamily="Cinzel"
                                     gradient={["#846733", "#dfc5a4", "#846733"]}
@@ -35,7 +35,7 @@ const Wishlist = () => {
                                 >
                                     THE TREASURY
                                 </FuzzyText>
-                                <p className="text-sm md:text-base text-cream/40 font-black tracking-[0.3em] uppercase animate-in slide-in-from-left duration-1000">
+                                <p className="text-[10px] md:text-sm text-cream/40 font-black tracking-[0.2em] md:tracking-[0.3em] uppercase animate-in slide-in-from-left duration-1000">
                                     {items.length === 0
                                         ? "No artifacts secured"
                                         : `${items.length} exquisite artifact${items.length > 1 ? "s" : ""} saved`}
@@ -56,7 +56,7 @@ const Wishlist = () => {
 
                         {/* Wishlist Items */}
                         {items.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                                 {items.map((item, index) => (
                                     <div 
                                         key={item.id}
