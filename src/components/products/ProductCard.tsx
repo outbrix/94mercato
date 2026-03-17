@@ -85,6 +85,12 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
     });
 
     const isNowInWishlist = !isInWishlist(product.id);
+    
+    // Trigger animation
+    const btn = e.currentTarget as HTMLButtonElement;
+    btn.classList.add('animate-heart-pop');
+    setTimeout(() => btn.classList.remove('animate-heart-pop'), 400);
+
     toast.success(isNowInWishlist ? "Added to wishlist" : "Removed from wishlist", {
       description: isNowInWishlist
         ? `${product.title} has been added to your wishlist.`
