@@ -8,7 +8,7 @@ export default function License() {
         <title>License Agreement — 94mercato</title>
         <meta
           name="description"
-          content="Understand the license terms for digital products purchased on 94mercato. Learn about Standard and Extended license rights and restrictions."
+          content="Read out Digital Product License Agreement. Understand the rules concerning personal use, commercial use, AI restrictions, and redistribution limits on purchased files."
         />
         <link rel="canonical" href="https://94mercato.com/license" />
       </Helmet>
@@ -27,48 +27,41 @@ export default function License() {
           <div className="container-luxury">
             <div className="max-w-3xl mx-auto prose prose-invert">
               <p className="text-muted-foreground text-lg leading-relaxed">
-                This License Agreement is a legal agreement between you and 94mercato for the digital products you purchase on our website. By purchasing and downloading our products, you agree to be bound by the terms of this agreement.
+                This Digital Product License Agreement ("License Agreement") governs all purchases of digital products ("Products") on the 94mercato Platform. All purchases are licenses, not sales. Purchasing a Product does not transfer title, ownership, or intellectual property rights to the Buyer.
               </p>
 
-              <h2 className="heading-medium text-2xl mt-12 mb-4">1. Standard License</h2>
+              <h2 className="heading-medium text-2xl mt-12 mb-4">1. DEFAULT LICENSE — PERSONAL USE ONLY</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                The Standard License grants you the following rights:
+                Unless the Seller's product page explicitly states a broader license, every Product sold on 94mercato is licensed under the following default terms:
               </p>
-              <ul className="space-y-3 text-muted-foreground list-disc pl-6">
-                <li>Use of the product for personal, non-commercial projects.</li>
-                <li>Use of the product for one (1) commercial project.</li>
+              <ul className="space-y-2 text-muted-foreground list-disc pl-6">
+                <li><strong className="text-foreground">Personal Projects:</strong> You may use the Product for non-commercial projects.</li>
+                <li><strong className="text-foreground">No Resale/Redistribution:</strong> You may not share, resell, or transfer the Product to any third party.</li>
+                <li><strong className="text-foreground">No Sublicensing:</strong> You may not incorporate the Product into goods or assets you sell to others.</li>
+                <li><strong className="text-foreground">No Public Downloads:</strong> You may not make the Product publicly available for download on other marketplaces.</li>
               </ul>
 
-              <h2 className="heading-medium text-2xl mt-12 mb-4">2. Extended License</h2>
+              <h2 className="heading-medium text-2xl mt-12 mb-4">2. COMMERCIAL & EXTENDED LICENSES</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                The Extended License grants you the following rights:
+                If the Seller explicitly grants a <strong className="text-foreground">commercial license</strong> on the product page, you may use the Product in client work, paid services, and revenue-generating applications. Unless explicitly approved by the Seller, commercial licenses do not grant rights to resell or redistribute the original source files.
               </p>
-              <ul className="space-y-3 text-muted-foreground list-disc pl-6">
-                <li>Use of the product for personal, non-commercial projects.</li>
-                <li>Use of the product for unlimited commercial projects.</li>
-              </ul>
 
-              <h2 className="heading-medium text-2xl mt-12 mb-4">3. Prohibited Uses</h2>
+              <h2 className="heading-medium text-2xl mt-12 mb-4">3. AI-GENERATED CONTENT</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Under both licenses, you are strictly prohibited from:
+                Products that are AI-generated or AI-assisted are permitted on 94mercato, provided they comply with applicable laws and do not infringe third-party rights. Sellers must disclose this status in descriptions.
               </p>
-              <ul className="space-y-3 text-muted-foreground list-disc pl-6">
-                <li>Redistributing, reselling, or sharing the product, either for free or for profit.</li>
-                <li>Including the product in a larger package for resale.</li>
-                <li>Claiming ownership of the product.</li>
-              </ul>
-
-              <h2 className="heading-medium text-2xl mt-12 mb-4">4. Intellectual Property</h2>
               <p className="text-muted-foreground leading-relaxed">
-                All digital products on this website are the intellectual property of 94mercato or the respective creators. This license grants you the right to use the products, but it does not transfer ownership.
+                <strong className="text-foreground">AI Training Prohibition:</strong> Unless granted express permission, buyers may not use purchased Products to train, fine-tune, or develop artificial intelligence or machine learning models.
               </p>
 
-              <h2 className="heading-medium text-2xl mt-12 mb-4">Contact Us</h2>
+              <h2 className="heading-medium text-2xl mt-12 mb-4">4. LICENSE TERMINATION</h2>
               <p className="text-muted-foreground leading-relaxed">
-                If you have any questions about this License Agreement, please contact us at{" "}
-                <a href="mailto:support@94mercato.com" className="text-champagne hover:text-champagne/80 transition-colors">
-                  support@94mercato.com
-                </a>.
+                Your license terminates automatically if you breach any provision of this agreement, engage in unauthorized redistribution, or violate platform policies. Upon termination, you must cease all use of the Product and destroy all copies.
+              </p>
+
+              <h2 className="heading-medium text-2xl mt-12 mb-4">Contact</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                For licensing inquiries: <a href="mailto:support@94mercato.com" className="text-champagne">support@94mercato.com</a>
               </p>
             </div>
           </div>

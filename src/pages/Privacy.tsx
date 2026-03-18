@@ -8,7 +8,7 @@ export default function Privacy() {
         <title>Privacy Policy — 94mercato</title>
         <meta
           name="description"
-          content="Read 94mercato's Privacy Policy. Learn how we collect, use, and protect your personal information on our digital marketplace."
+          content="Read the Privacy Policy for 94mercato. Learn how we collect, use, and protect your personal data for our digital marketplace."
         />
         <link rel="canonical" href="https://94mercato.com/privacy" />
       </Helmet>
@@ -27,89 +27,58 @@ export default function Privacy() {
           <div className="container-luxury">
             <div className="max-w-3xl mx-auto prose prose-invert">
               <p className="text-muted-foreground text-lg leading-relaxed">
-                This Privacy Policy describes how 94mercato ("we," "us," or "our") collects, uses, and discloses your personal information when you use our website, products, and services.
+                This Privacy Policy explains how <strong className="text-foreground">Outbrix US LLC</strong> ("Company," "we," "us," or "our"), operator of the 94mercato platform ("Platform"), collects, uses, discloses, and protects personal data from users worldwide, including our obligations under the GDPR (EEA/UK) and CCPA/CPRA (California).
               </p>
 
-              <h2 className="heading-medium text-2xl mt-12 mb-4">1. Information We Collect</h2>
+              <h2 className="heading-medium text-2xl mt-12 mb-4">1. DATA WE COLLECT</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                We may collect the following types of personal information from you:
+                We collect information you provide directly to us, automatically via using our services, or from third-party services like Stripe.
               </p>
-              <ul className="space-y-3 text-muted-foreground list-disc pl-6">
-                <li>Contact information, such as your name, email address, and phone number.</li>
-                <li>Demographic information, such as your age, gender, and location.</li>
-                <li>Usage information, such as your IP address, browser type, and operating system.</li>
-                <li>Information you provide to us, such as when you contact us for support or participate in surveys.</li>
+              
+              <h3 className="font-serif text-lg font-medium text-foreground mt-8 mb-3">Direct Collection</h3>
+              <ul className="space-y-2 text-muted-foreground list-disc pl-6">
+                <li><strong className="text-foreground">Account Data:</strong> Name, email address, username.</li>
+                <li><strong className="text-foreground">Profile Data:</strong> Bio, avatar, store description.</li>
+                <li><strong className="text-foreground">Transaction Data:</strong> Purchase history, download Logs.</li>
+                <li><strong className="text-foreground">Seller Data:</strong> Payout details (via Stripe Connect).</li>
               </ul>
 
-              <h2 className="heading-medium text-2xl mt-12 mb-4">2. How We Use Your Information</h2>
+              <h2 className="heading-medium text-2xl mt-12 mb-4">2. LEGAL BASIS FOR PROCESSING (GDPR)</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                We may use your personal information for the following purposes:
+                For users in the EEA/UK, our lawful bases include:
               </p>
-              <ul className="space-y-3 text-muted-foreground list-disc pl-6">
-                <li>To provide and improve our products and services.</li>
-                <li>To personalize your experience on our platform.</li>
-                <li>To communicate with you about our products, services, and promotions.</li>
-                <li>To respond to your inquiries and provide customer support.</li>
-                <li>To protect the security and integrity of our platform.</li>
+              <ul className="space-y-2 text-muted-foreground list-disc pl-6">
+                <li><strong className="text-foreground">Contract (Art. 6(1)(b)):</strong> Running your account, processing purchases and payouts.</li>
+                <li><strong className="text-foreground">Legitimate Interests (Art. 6(1)(f)):</strong> Fraud prevention, troubleshooting, general analytics.</li>
+                <li><strong className="text-foreground">Legal Obligation (Art. 6(1)(c)):</strong> Tax records, sanctions screening.</li>
               </ul>
 
-              <h2 className="heading-medium text-2xl mt-12 mb-4">3. Information Sharing and Disclosure</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                We may share your personal information with third-party service providers who assist us in operating our platform and providing our services. We may also disclose your information if required by law or to protect our rights or the rights of others.
-              </p>
-
-              <h2 className="heading-medium text-2xl mt-12 mb-4">4. Data Security</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                We take reasonable measures to protect your personal information from unauthorized access, use, or disclosure. However, no method of transmission over the internet or electronic storage is 100% secure.
-              </p>
-
-              <h2 className="heading-medium text-2xl mt-12 mb-4">5. Your Choices</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                You may opt-out of receiving promotional communications from us by following the instructions in those communications. You may also access, update, or delete your personal information by contacting us.
-              </p>
-
-              <h2 className="heading-medium text-2xl mt-12 mb-4">6. Your Rights Under GDPR (EU/UK Users)</h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                If you are located in the European Economic Area (EEA) or the United Kingdom, you have certain data protection rights under the General Data Protection Regulation (GDPR). These include:
-              </p>
-              <ul className="space-y-3 text-muted-foreground list-disc pl-6">
-                <li>
-                  <strong className="text-foreground">Right of Access:</strong> You have the right to request copies of your personal data.
-                </li>
-                <li>
-                  <strong className="text-foreground">Right to Rectification:</strong> You have the right to request that we correct any information you believe is inaccurate or complete information you believe is incomplete.
-                </li>
-                <li>
-                  <strong className="text-foreground">Right to Erasure:</strong> You have the right to request that we erase your personal data, under certain conditions.
-                </li>
-                <li>
-                  <strong className="text-foreground">Right to Restrict Processing:</strong> You have the right to request that we restrict the processing of your personal data, under certain conditions.
-                </li>
-                <li>
-                  <strong className="text-foreground">Right to Data Portability:</strong> You have the right to request that we transfer the data we have collected to another organization, or directly to you, under certain conditions.
-                </li>
-                <li>
-                  <strong className="text-foreground">Right to Object:</strong> You have the right to object to our processing of your personal data, under certain conditions.
-                </li>
+              <h2 className="heading-medium text-2xl mt-12 mb-4">3. HOW WE USE YOUR DATA</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4"> We use collected data to:</p>
+              <ul className="space-y-2 text-muted-foreground list-disc pl-6">
+                <li>Secure your account and prevent fraudulent purchases;</li>
+                <li>Facilitate product distribution and payouts with Stripe;</li>
+                <li>Conduct pre-publication reviews of Seller listings;</li>
+                <li>Analyze traffic logs to improve platform stability and performance.</li>
               </ul>
+
+              <h2 className="heading-medium text-2xl mt-12 mb-4">4. DATA SHARING</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                We share personal data with processors only for operations, e.g., <strong className="text-foreground">Stripe, Inc.</strong> (payments), and <strong className="text-foreground">Google LLC</strong> (Analytics). We do not sell your personal data.
+              </p>
+
+              <h2 className="heading-medium text-2xl mt-12 mb-4">5. YOUR RIGHTS (GDPR / CCPA)</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Depending on your location, you have rights of:
+              </p>
+              <ul className="space-y-2 text-muted-foreground list-disc pl-6">
+                <li><strong className="text-foreground">Access & Rectification:</strong> Review/edit account details.</li>
+                <li><strong className="text-foreground">Erasure:</strong> Request deletion (subject to legal retentions).</li>
+                <li><strong className="text-foreground">Objection/Restriction:</strong> Direct processing opt-out choices.</li>
+              </ul>
+
               <p className="text-muted-foreground leading-relaxed mt-4">
-                To exercise any of these rights, please contact us at{" "}
-                <a href="mailto:privacy@94mercato.com" className="text-champagne hover:text-champagne/80 transition-colors">
-                  privacy@94mercato.com
-                </a>. We will respond to your request within 30 days.
-              </p>
-
-              <h2 className="heading-medium text-2xl mt-12 mb-4">7. Data Retention</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                We retain your personal data only for as long as necessary to fulfill the purposes for which it was collected, including to satisfy any legal, accounting, or reporting requirements. For sellers, we retain transaction records for 7 years for tax and legal compliance purposes.
-              </p>
-
-              <h2 className="heading-medium text-2xl mt-12 mb-4">Contact Us</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                If you have any questions about this Privacy Policy, please contact us at{" "}
-                <a href="mailto:support@94mercato.com" className="text-champagne hover:text-champagne/80 transition-colors">
-                  support@94mercato.com
-                </a>.
+                For data requests, email us at <a href="mailto:privacy@94mercato.com" className="text-champagne">privacy@94mercato.com</a>.
               </p>
             </div>
           </div>

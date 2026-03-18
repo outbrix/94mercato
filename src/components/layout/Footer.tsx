@@ -25,6 +25,7 @@ const footerLinks = {
     { name: "Refund Policy", href: "/refund" },
     { name: "License Agreement", href: "/license" },
     { name: "Cookie Policy", href: "/cookie" },
+    { name: "Acceptable Use", href: "/acceptable-use" },
   ],
 };
 

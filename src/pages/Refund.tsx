@@ -8,7 +8,7 @@ export default function Refund() {
         <title>Refund Policy — 94mercato</title>
         <meta
           name="description"
-          content="Understand 94mercato's refund policy for digital products. Learn when refunds may be granted and how to request one."
+          content="Read the Refund & Cancellation Policy for 94mercato. Understand our rules for digital goods and EU Consumer rights waivers."
         />
         <link rel="canonical" href="https://94mercato.com/refund" />
       </Helmet>
@@ -27,49 +27,39 @@ export default function Refund() {
           <div className="container-luxury">
             <div className="max-w-3xl mx-auto prose prose-invert">
               <p className="text-muted-foreground text-lg leading-relaxed">
-                Due to the digital nature of our products, which are available for immediate download upon purchase, we generally do not offer refunds. Once a product has been purchased and downloaded, it cannot be "returned."
+                All products sold on <strong className="text-foreground">94mercato</strong> are digital goods delivered electronically. Due to the nature of digital offerings which are instantly accessible, <strong className="text-foreground">all sales are final by default</strong>. By completing a purchase, you acknowledge and agree that access to downloads constitutes full delivery of goods.
               </p>
 
-              <h2 className="heading-medium text-2xl mt-12 mb-4">1. When a Refund May Be Granted</h2>
+              <h2 className="heading-medium text-2xl mt-12 mb-4">1. EU / EEA CONSUMER RIGHTS WAIVER</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                We believe in our products and strive for customer satisfaction. We will grant refunds under the following circumstances:
+                For users in the European Union or European Economic Area: under EU Consumer Rights Directive 2011/83/EU, consumers ordinarily have a 14-day right of withdrawal for digital content. However, this right does not apply where:
               </p>
-              <ul className="space-y-3 text-muted-foreground list-disc pl-6">
-                <li>
-                  <strong className="text-foreground">Technical Issues:</strong> If a digital file is corrupt and we are unable to provide you with a working version within 48 hours.
-                </li>
-                <li>
-                  <strong className="text-foreground">Incorrect Product:</strong> If you received a different product than the one you purchased.
-                </li>
-                <li>
-                  <strong className="text-foreground">Misleading Description:</strong> If the product was materially not as described in the product listing.
-                </li>
+              <ul className="space-y-2 text-muted-foreground list-decimal pl-6">
+                <li>Delivery has begun with the consumer's prior express consent; and</li>
+                <li>The consumer has acknowledged that the right of withdrawal is lost once performance has begun.</li>
               </ul>
               <p className="text-muted-foreground leading-relaxed mt-4">
-                We do not issue refunds for reasons such as changing your mind, not having the correct software to open the file (when specified in the description), or if you bought the item by mistake (unless it's an accidental duplicate purchase).
+                By purchasing on 94mercato, you consent to the immediate commencement of delivery and waive your withdrawal right upon download or access.
               </p>
 
-              <h2 className="heading-medium text-2xl mt-12 mb-4">2. How to Request a Refund</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                To request a refund, please contact our support team at{" "}
-                <a href="mailto:support@94mercato.com" className="text-champagne hover:text-champagne/80 transition-colors">
-                  support@94mercato.com
-                </a>{" "}
-                within 14 days of your purchase. Please include your order number, a description of the issue, and any relevant screenshots. Our team will review your request and get back to you.
+              <h2 className="heading-medium text-2xl mt-12 mb-4">2. EXCEPTIONS — WHEN A REFUND MAY BE ISSUED</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                A refund may be granted at the Company's sole discretion in the following limited circumstances:
+              </p>
+              <ul className="space-y-2 text-muted-foreground list-disc pl-6">
+                <li><strong className="text-foreground">Corrupt/Fundamentally Broken File:</strong> Where a Seller fails to resolve within 5 business days.</li>
+                <li><strong className="text-foreground">Materially Different Description:</strong> Subject to evidence verification.</li>
+                <li><strong className="text-foreground">Duplicate Billing Errors:</strong> System duplicate charges.</li>
+              </ul>
+
+              <h2 className="heading-medium text-2xl mt-12 mb-4">3. CHARGEBACK POLICY</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Filing a chargeback with your bank or card issuer without first contacting 94mercato support constitutes a violation of these Terms and may result in permanent suspension of account access.
               </p>
 
-              <h2 className="heading-medium text-2xl mt-12 mb-4">For Customers in the EU & UK</h2>
+              <h2 className="heading-medium text-2xl mt-12 mb-4">4. DISPUTE PROCESS</h2>
               <p className="text-muted-foreground leading-relaxed">
-                By purchasing a digital product from our store, you consent to its immediate download and delivery, and you acknowledge that you thereby waive your 14-day right of withdrawal.
-              </p>
-
-              <h2 className="heading-medium text-2xl mt-12 mb-4">Contact Us</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Your satisfaction is important to us. If you have any issues or questions, please don't hesitate to reach out to us at{" "}
-                <a href="mailto:support@94mercato.com" className="text-champagne hover:text-champagne/80 transition-colors">
-                  support@94mercato.com
-                </a>{" "}
-                before requesting a refund. We are here to help.
+                To request a refund review, email <a href="mailto:support@94mercato.com" className="text-champagne">support@94mercato.com</a> within <strong className="text-foreground">7 days</strong> of purchase with your order ID, a description of the issue, and supporting evidence. Our team will review and determine the outcome.
               </p>
             </div>
           </div>

@@ -22,7 +22,7 @@ export function Categories() {
         const counts = response.data; // Array of { name, count }
         
         setCategories(prev => prev.map(cat => {
-          const found = counts.find((c: any) => c.name === cat.name);
+          const found = counts.find((c: any) => c.name?.toLowerCase() === cat.name.toLowerCase());
           return { ...cat, count: found ? parseInt(found.count) : 0 };
         }));
       } catch (e) {
@@ -65,7 +65,7 @@ export function Categories() {
                 {cat.name}
               </span>
               <span className="text-xs text-cream/30 ml-1 tabular-nums">
-                {cat.count === 0 ? "0" : `${cat.count}+`}
+                {cat.count}
               </span>
             </Link>
           ))}
