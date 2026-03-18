@@ -48,8 +48,10 @@ export function resolveSellerTier(
   sellerType?: string | null,
   role?: string | null
 ): SellerTier {
-  if (role === "admin") return "Admin";
-  if (sellerType === "Creator" || sellerType === "Partner") return sellerType;
+  if (role && role.toLowerCase() === "admin") return "Admin";
+  const type = sellerType?.toLowerCase();
+  if (type === "creator") return "Creator";
+  if (type === "partner") return "Partner";
   return "Starter";
 }
 

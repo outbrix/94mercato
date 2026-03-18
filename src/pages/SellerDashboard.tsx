@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import api from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSettings } from "@/hooks/use-settings";
@@ -59,7 +59,8 @@ interface Sale {
 }
 
 const SellerDashboard = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { currentCurrency, convert } = useCurrencyStore();
   const { commissionRate } = useSettings();
   const [products, setProducts] = useState<Product[]>([]);
@@ -134,6 +135,33 @@ const SellerDashboard = () => {
     };
     fetchSellerTier();
   }, []);
+
+  // Verify Stripe Subscription Upgrades synchronously
+  useEffect(() => {
+    const upgradeSuccess = searchParams.get('upgrade_success');
+    const sessionId = searchParams.get('session_id');
+
+    if (upgradeSuccess === 'true' && sessionId) {
+      const verifyUpgrade = async () => {
+        try {
+          // Clear URL params
+          setSearchParams(new URLSearchParams());
+
+          await api.post('/subscription/verify', { sessionId });
+          await refreshUser();
+
+          toast({
+            title: "🎉 Plan Upgraded!",
+            description: "Your account is now a Creator Pro! Enjoy your new commission rate.",
+          });
+        } catch (error) {
+          console.error('Failed to verify upgrade', error);
+        }
+      };
+
+      verifyUpgrade();
+    }
+  }, [searchParams, setSearchParams, refreshUser]);
 
   // Check Stripe connection status
   useEffect(() => {
@@ -429,7 +457,7 @@ const SellerDashboard = () => {
                             </td>
                             <td className="py-4 text-right text-sm">
                               {formatPrice(
-                                convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency), 
+                                convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency),
                                 currentCurrency
                               )}
                             </td>
@@ -438,7 +466,7 @@ const SellerDashboard = () => {
                             </td>
                             <td className="py-4 text-right text-sm font-medium text-champagne">
                               {formatPrice(
-                                convert(product.earnings, (product.currency || 'USD') as CurrencyCode, currentCurrency), 
+                                convert(product.earnings, (product.currency || 'USD') as CurrencyCode, currentCurrency),
                                 currentCurrency
                               )}
                             </td>

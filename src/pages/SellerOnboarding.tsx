@@ -38,6 +38,8 @@ import {
   RefreshCw,
   CheckCircle2,
 } from "lucide-react";
+import { resolveSellerTier, type SellerTier } from "@/components/seller/TierBadge";
+import { getCommissionRate } from "@/lib/commission";
 
 const steps = [
   { id: 1, title: "Profile", icon: User },
@@ -57,11 +59,16 @@ const CURRENCIES = [
 ];
 
 const SellerOnboarding = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, refreshUser } = useAuth();
-  const { commissionRate } = useSettings();
+  const { commissionRate: defaultCommission } = useSettings();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [sellerTier, setSellerTier] = useState<SellerTier>("Starter");
+  const currentCommissionRate = sellerTier === 'Starter' && defaultCommission !== null
+    ? Number(defaultCommission)
+    : getCommissionRate(sellerTier);
 
   // Security: Allowed MIME types for digital product uploads
   const ALLOWED_MIMES = [
@@ -120,6 +127,8 @@ const navigate = useNavigate();
         setIsLoadingProfile(true);
         const response = await api.get('/auth/me');
         const profile = response.data;
+        const tier = resolveSellerTier(profile.seller_type || profile.seller_tier || profile.tier, profile.role || profile.seller_role);
+        setSellerTier(tier);
         setFormData(prev => ({
           ...prev,
           displayName: profile.display_name || profile.name || '',
@@ -612,9 +621,9 @@ const navigate = useNavigate();
                           <DollarSign className="h-5 w-5 text-champagne" />
                         </div>
                         <div>
-                          <p className="font-medium">Platform Commission: {commissionRate}%</p>
+                          <p className="font-medium">Platform Commission: {currentCommissionRate}%</p>
                           <p className="text-sm text-muted-foreground">
-                            You keep {100 - Number(commissionRate)}% of every sale
+                            You keep {100 - Number(currentCommissionRate)}% of every sale
                           </p>
                         </div>
                       </div>
@@ -624,12 +633,12 @@ const navigate = useNavigate();
                           <span>$100</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Platform fee ({commissionRate}%):</span>
-                          <span className="text-taupe">-${Number(commissionRate)}</span>
+                          <span>Platform fee ({currentCommissionRate}%):</span>
+                          <span className="text-taupe">-${Number(currentCommissionRate)}</span>
                         </div>
                         <div className="flex justify-between font-medium pt-2 border-t border-border">
                           <span>Your earnings:</span>
-                          <span className="text-champagne">${100 - Number(commissionRate)}</span>
+                          <span className="text-champagne">${100 - Number(currentCommissionRate)}</span>
                         </div>
                       </div>
                     </div>

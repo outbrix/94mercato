@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, X, Check, Loader2 } from "lucide-react";
 import api from "@/lib/api";
@@ -24,7 +25,7 @@ export function UpgradeButton({
         setIsLoading(true);
         try {
             const response = await api.post("/subscription/upgrade");
-            
+
             if (response.data.checkoutUrl) {
                 window.location.href = response.data.checkoutUrl;
                 return;
@@ -63,7 +64,7 @@ export function UpgradeButton({
             </Button>
 
             {/* Modal */}
-            {showModal && (
+            {showModal && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     {/* Backdrop */}
                     <div
@@ -139,7 +140,8 @@ export function UpgradeButton({
                             Cancel anytime. Billed monthly.
                         </p>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </>
     );
