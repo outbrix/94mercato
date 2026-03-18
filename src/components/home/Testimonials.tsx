@@ -29,7 +29,28 @@ export function Testimonials() {
     fetchTestimonials();
   }, []);
 
-  if (testimonials.length === 0) return null;
+  if (testimonials.length === 0) {
+    return (
+      <section className="py-20 md:py-28 relative overflow-hidden">
+        <div className="absolute inset-0 bg-midnight" />
+        <div className="container-luxury relative z-10 text-center">
+          <p className="text-xs tracking-widest uppercase text-champagne mb-4">Don't take our word for it</p>
+          <h2 className="font-serif text-3xl md:text-4xl font-medium text-cream leading-tight mb-5">
+            Creators love selling on 94mercato
+          </h2>
+          <p className="text-cream/40 text-base mb-8 max-w-md mx-auto leading-relaxed">
+            No reviews yet — be the first to share your experience with the community.
+          </p>
+          <a
+            href="/products"
+            className="inline-flex items-center gap-2 text-sm text-champagne border border-champagne/30 px-6 py-3 rounded-full hover:bg-champagne/10 transition-colors font-medium"
+          >
+            Explore products &amp; leave a review
+          </a>
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="py-20 md:py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-midnight" />

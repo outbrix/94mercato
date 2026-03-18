@@ -17,6 +17,8 @@ interface BackendProduct {
   images: string[];
   seller_name: string;
   seller_avatar: string | null;
+  rating?: number | null;
+  sales_count?: number;
 }
 
 const mapProduct = (product: BackendProduct) => ({
@@ -34,8 +36,8 @@ const mapProduct = (product: BackendProduct) => ({
     product.thumbnail_url || (product.images && product.images[0]) || "",
   badge: product.badge || undefined,
   category: product.category || "Templates",
-  rating: 4.8,
-  sales: 0,
+  rating: Number(product.rating) || 0,
+  sales: Number(product.sales_count) || 0,
 });
 
 export default function FeaturedProducts() {
