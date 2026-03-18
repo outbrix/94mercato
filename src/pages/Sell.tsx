@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { CreativePricing } from "@/components/ui/creative-pricing";
 import { FlashSaleBanner } from "@/components/ui/FlashSaleBanner";
-import { MARKET_STATS } from "@/lib/market-stats";
+import api from "@/lib/api";
 
 // ─── Marketplace Pulse Background ──────────────────────────────────
 const MarketPulse = () => (
@@ -37,7 +37,7 @@ const MarketPulse = () => (
 );
 
 // ─── Dashboard Preview Mockup ──────────────────────────────────────
-const DashboardPreview = () => (
+const DashboardPreview = ({ totalCreators }: { totalCreators: number }) => (
     <div className="relative w-full max-w-4xl mx-auto mt-16 group">
         {/* Glow behind the dashboard */}
         <div className="absolute -inset-4 bg-sapphire/20 blur-[100px] rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
@@ -58,10 +58,10 @@ const DashboardPreview = () => (
                 <div className="md:col-span-5 space-y-6">
                     <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
                         <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-2">Available Balance</p>
-                        <h3 className="text-4xl font-sans font-black text-cream">₹{((MARKET_STATS.DISTRIBUTED_REVENUE_LAKHS / 12) * 1.5).toFixed(2)}L</h3>
+                        <h3 className="text-4xl font-sans font-black text-cream">$0.00</h3>
                         <div className="mt-4 flex items-center gap-2 text-emerald-400 text-xs font-bold">
                             <TrendingUp className="w-3 h-3" />
-                            <span>+{MARKET_STATS.WEEKLY_GROWTH_PERCENT}% this week</span>
+                            <span>Live from your store</span>
                         </div>
                     </div>
                     <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
@@ -75,7 +75,7 @@ const DashboardPreview = () => (
                             </div>
                             <div>
                                 <p className="text-sm font-bold text-cream">Modern SaaS UI Kit</p>
-                                <p className="text-xs text-white/20">Sold for ₹2,499</p>
+                                <p className="text-xs text-white/20">Sold for $49.00</p>
                             </div>
                         </div>
                     </div>
@@ -86,7 +86,7 @@ const DashboardPreview = () => (
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Revenue Growth</p>
-                            <h4 className="text-xl font-bold text-cream">March Performance</h4>
+                            <h4 className="text-xl font-bold text-cream">Your Performance</h4>
                         </div>
                         <LineChart className="w-5 h-5 text-champagne/40" />
                     </div>
@@ -114,7 +114,7 @@ const DashboardPreview = () => (
                     </svg>
 
                     <div className="absolute bottom-6 right-6 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest animate-pulse">
-                        Scaling Active
+                        {totalCreators > 0 ? `${totalCreators.toLocaleString()} Creators` : 'Scaling Active'}
                     </div>
                 </div>
             </div>
@@ -143,8 +143,36 @@ const CategoryCard = ({ title, icon: Icon, count, trending = false }: { title: s
 
 // ─── Main Page ──────────────────────────────────────────────────────
 const Sell = () => {
-  const starterRate = TIER_COMMISSION.starter;
+  const starterRate = TIER_COMMISSION.Starter;
   const sellerKeepPercentage = 100 - starterRate;
+
+  const [globalStats, setGlobalStats] = useState({ TOTAL_CREATORS: 0, TOTAL_PRODUCTS: 0, LOWEST_FEE: 2.0, COUNTRIES_SERVED: 45 });
+  const [categoryStats, setCategoryStats] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, catRes] = await Promise.all([
+          api.get('/stats/global'),
+          api.get('/stats/categories'),
+        ]);
+        setGlobalStats(prev => ({ ...prev, ...statsRes.data }));
+        const catMap: Record<string, number> = {};
+        (catRes.data || []).forEach((c: { name: string; count: string }) => {
+          catMap[c.name] = parseInt(c.count) || 0;
+        });
+        setCategoryStats(catMap);
+      } catch (e) {
+        console.error('Failed to fetch sell page stats', e);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const getCatCount = (names: string[]): string => {
+    const total = names.reduce((sum, n) => sum + (categoryStats[n] || 0), 0);
+    return total > 0 ? total.toLocaleString() : '0';
+  };
 
   return (
     <>
@@ -152,7 +180,7 @@ const Sell = () => {
         <title>Sell Digital Assets — 94mercato | High-Performance Marketplace</title>
         <meta
           name="description"
-          content={`Monetize your creative assets. Join over ${MARKET_STATS.TOTAL_CREATORS} specialized creators keeping ${sellerKeepPercentage}% of every sale.`}
+          content={`Monetize your creative assets. Join over ${globalStats.TOTAL_CREATORS} specialized creators keeping ${sellerKeepPercentage}% of every sale.`}
         />
       </Helmet>
 
@@ -166,7 +194,9 @@ const Sell = () => {
             <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 mb-8 animate-fade-up">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-[10px] font-black tracking-[0.2em] uppercase text-cream/80">
-                Network Liquidity: ₹{MARKET_STATS.DISTRIBUTED_REVENUE_LAKHS}L Distributed
+                {globalStats.TOTAL_CREATORS > 0
+                  ? `${globalStats.TOTAL_CREATORS.toLocaleString()} Creators — $0 to Start`
+                  : 'Network Live — $0 to Start'}
               </span>
             </div>
 
@@ -197,7 +227,7 @@ const Sell = () => {
               </Link>
             </div>
 
-            <DashboardPreview />
+            <DashboardPreview totalCreators={globalStats.TOTAL_CREATORS} />
           </div>
         </section>
 
@@ -218,7 +248,7 @@ const Sell = () => {
                 <div className="p-10 rounded-2xl bg-white/[0.02] border border-white/[0.05] group">
                     <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-4">Scale Support</p>
                     <h3 className="text-5xl font-sans font-black text-cream mb-4 tracking-tighter">Global</h3>
-                    <p className="text-sm text-cream/40 leading-relaxed font-medium">Sell to assets developers in {MARKET_STATS.COUNTRIES_SERVED}+ countries. One dashboard to rule every transaction across borders.</p>
+                    <p className="text-sm text-cream/40 leading-relaxed font-medium">Sell to asset developers in {globalStats.COUNTRIES_SERVED}+ countries. One dashboard to rule every transaction across borders.</p>
                 </div>
             </div>
           </div>
@@ -238,10 +268,10 @@ const Sell = () => {
 
             <div className="container-luxury">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <CategoryCard title="UI & Layout Kits" icon={Layers} count={MARKET_STATS.CATEGORIES.UI_KITS.toLocaleString()} trending />
-                    <CategoryCard title="3D Models" icon={Box} count={MARKET_STATS.CATEGORIES.MODELS_3D.toLocaleString()} />
-                    <CategoryCard title="SaaS Templates" icon={MousePointer2} count={MARKET_STATS.CATEGORIES.SAAS_TEMPLATES.toLocaleString()} trending />
-                    <CategoryCard title="Icon Systems" icon={ImageIcon} count={MARKET_STATS.CATEGORIES.ICON_SYSTEMS.toLocaleString()} />
+                    <CategoryCard title="UI & Layout Kits" icon={Layers} count={getCatCount(['UI Kits', 'UI & Layout Kits'])} trending />
+                    <CategoryCard title="3D Models" icon={Box} count={getCatCount(['3D Models', '3D'])} />
+                    <CategoryCard title="SaaS Templates" icon={MousePointer2} count={getCatCount(['Templates', 'SaaS Templates'])} trending />
+                    <CategoryCard title="Icon Systems" icon={ImageIcon} count={getCatCount(['Icons', 'Icon Systems'])} />
                 </div>
             </div>
         </section>

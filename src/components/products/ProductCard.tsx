@@ -186,10 +186,12 @@ export function ProductCard({ product, className, style, viewMode = "grid" }: Pr
           <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
             {product.category}
           </span>
-          <div className="flex items-center gap-1 text-champagne bg-champagne/5 px-1.5 py-0.5 rounded-md">
-            <Star className="h-3 w-3 fill-current" />
-            <span className="text-xs font-bold">{product.rating}</span>
-          </div>
+          {product.rating > 0 && (
+            <div className="flex items-center gap-1 text-champagne bg-champagne/5 px-1.5 py-0.5 rounded-md">
+              <Star className="h-3 w-3 fill-current" />
+              <span className="text-xs font-bold">{Number(product.rating).toFixed(1)}</span>
+            </div>
+          )}
         </div>
 
         <Link to={`/products/${product.slug}`} className="block">

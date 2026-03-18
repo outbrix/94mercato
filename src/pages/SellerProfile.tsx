@@ -240,10 +240,12 @@ const SellerProfile = () => {
                                                 <span className="text-cream/50 tracking-wide uppercase">
                                                     {product.category || "Product"}
                                                 </span>
-                                                <div className="flex items-center gap-1 text-champagne">
-                                                    <Star className="h-3 w-3 fill-current" />
-                                                    <span className="text-cream">4.8</span>
-                                                </div>
+                                                {(product as any).rating ? (
+                                                    <div className="flex items-center gap-1 text-champagne">
+                                                        <Star className="h-3 w-3 fill-current" />
+                                                        <span className="text-cream">{Number((product as any).rating).toFixed(1)}</span>
+                                                    </div>
+                                                ) : null}
                                             </div>
                                             <h3 className="font-serif text-lg font-medium text-cream group-hover:text-champagne transition-colors">
                                                 {product.title}

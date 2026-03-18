@@ -60,6 +60,9 @@ interface Product {
   seller_is_verified: boolean;
   seller_tier?: string;
   seller_role?: string;
+  rating: number | null;
+  review_count: number;
+  sales_count: number;
 }
 
 interface RelatedProduct {
@@ -130,13 +133,13 @@ const ProductDetail = () => {
             slug: p.slug,
             description: p.description || '',
             price: p.price,
-            currency: p.currency || 'INR',
+            currency: p.currency || 'USD',
             seller: { name: p.seller_name || 'Unknown', avatar: p.seller_avatar || '' },
             image: p.thumbnail_url || p.images?.[0] || '',
             badge: p.badge,
             category: p.category,
-            rating: 4.8,
-            sales: Math.floor(Math.random() * 100) + 10,
+            rating: Number(p.rating) || 0,
+            sales: Number(p.sales_count) || 0,
           }));
         setRelatedProducts(related);
       } catch (err) {
@@ -458,7 +461,10 @@ const ProductDetail = () => {
                       <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{product.category}</span>
                       <div className="flex items-center gap-1.5 text-champagne">
                         <Star className="h-4 w-4 fill-current" />
-                        <span>4.8</span>
+                        <span>{product.rating ? Number(product.rating).toFixed(1) : "—"}</span>
+                        {product.review_count > 0 && (
+                          <span className="text-[10px] text-muted-foreground">({product.review_count})</span>
+                        )}
                       </div>
                     </div>
 
@@ -577,15 +583,26 @@ const ProductDetail = () => {
                   <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
                     Read unedited feedback from the collectors' collective who have acquired this artifact.
                   </p>
-                  <div className="flex items-center gap-4 p-6 bg-card/40 rounded-3xl border border-border/50">
-                    <span className="text-5xl font-serif font-black text-champagne">4.8</span>
-                    <div>
-                      <div className="flex items-center mb-1">
-                        {[1,2,3,4,5].map(i => <Star key={i} className="h-4 w-4 fill-champagne text-champagne" />)}
+                <div className="flex items-center gap-4 p-6 bg-card/40 rounded-3xl border border-border/50">
+                    {product.rating ? (
+                      <>
+                        <span className="text-5xl font-serif font-black text-champagne">{Number(product.rating).toFixed(1)}</span>
+                        <div>
+                          <div className="flex items-center mb-1">
+                            {[1,2,3,4,5].map(i => <Star key={i} className={`h-4 w-4 ${i <= Math.round(Number(product.rating)) ? 'fill-champagne text-champagne' : 'text-muted-foreground'}`} />)}
+                          </div>
+                          <span className="text-[10px] uppercase font-black text-muted-foreground/60 tracking-widest">
+                            {product.review_count} {product.review_count === 1 ? 'Review' : 'Reviews'}
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center w-full">
+                        <Star className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+                        <span className="text-xs text-muted-foreground">No reviews yet</span>
                       </div>
-                      <span className="text-[10px] uppercase font-black text-muted-foreground/60 tracking-widest">Platform Average</span>
-                    </div>
-                  </div>
+                    )}
+                </div>
                 </div>
                 <div className="md:w-2/3">
                   <ReviewSection productId={product.id} productSlug={product.slug} />

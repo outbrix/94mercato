@@ -60,11 +60,11 @@ const Wishlist = () => {
                                                 slug: item.slug,
                                                 description: "", // Hidden in card anyway
                                                 price: item.price,
-                                                currency: "USD", // Wishlist items should ideally store currency
+                                                currency: "USD",
                                                 seller: { name: "94M Verified Seller", avatar: "" },
                                                 image: item.image,
                                                 category: "Curated Selection",
-                                                rating: 4.8,
+                                                rating: 0,
                                                 sales: 0
                                             }} 
                                         />

@@ -52,6 +52,9 @@ interface BackendProduct {
   seller_avatar: string | null;
   seller_tier?: string;
   seller_role?: string;
+  rating?: number | null;
+  review_count?: number;
+  sales_count?: number;
 }
 
 // Map backend product to ProductCard format
@@ -71,8 +74,8 @@ const mapProduct = (product: BackendProduct) => ({
     product.thumbnail_url || (product.images && product.images[0]) || "",
   badge: product.badge || undefined,
   category: product.category || "Templates",
-  rating: 4.8,
-  sales: 0,
+  rating: Number(product.rating) || 0,
+  sales: Number(product.sales_count) || 0,
 });
 
 const Products = () => {
