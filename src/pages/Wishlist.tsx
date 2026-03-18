@@ -6,7 +6,6 @@ import { useWishlistStore } from "@/store/wishlistStore";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/products/ProductCard";
 import { toast } from "sonner";
-import FuzzyText from "@/components/ui/FuzzyText";
 
 const Wishlist = () => {
     const { items, clearWishlist } = useWishlistStore();
@@ -14,8 +13,8 @@ const Wishlist = () => {
     return (
         <>
             <Helmet>
-                <title>Treasury (Wishlist) — Mercato94</title>
-                <meta name="description" content="View and manage your saved high-performance digital artifacts." />
+                <title>Wishlist — Mercato94</title>
+                <meta name="description" content="View and manage your saved products." />
             </Helmet>
             <Layout>
                 <section className="pt-28 md:pt-36 pb-24 min-h-screen bg-midnight">
@@ -23,33 +22,24 @@ const Wishlist = () => {
                         {/* Header */}
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 md:mb-20">
                             <div className="space-y-3">
-                                <FuzzyText 
-                                    baseIntensity={0.08}
-                                    hoverIntensity={0.25}
-                                    enableHover
-                                    fontSize="clamp(1.8rem, 8vw, 4.5rem)"
-                                    fontWeight={900}
-                                    fontFamily="Cinzel"
-                                    gradient={["#846733", "#dfc5a4", "#846733"]}
-                                    className="animate-in slide-in-from-left duration-700"
-                                >
-                                    THE TREASURY
-                                </FuzzyText>
+                                <h1 className="text-4xl md:text-6xl font-serif text-cream animate-in slide-in-from-left duration-700 uppercase tracking-widest">
+                                    WISHLIST
+                                </h1>
                                 <p className="text-[10px] md:text-sm text-cream/40 font-black tracking-[0.2em] md:tracking-[0.3em] uppercase animate-in slide-in-from-left duration-1000">
                                     {items.length === 0
-                                        ? "No artifacts secured"
-                                        : `${items.length} exquisite artifact${items.length > 1 ? "s" : ""} saved`}
+                                        ? "Your wishlist is empty"
+                                        : `${items.length} item${items.length > 1 ? "s" : ""} saved`}
                                 </p>
                             </div>
                             {items.length > 0 && (
                                 <button
                                     onClick={() => {
                                         clearWishlist();
-                                        toast.success("Treasury cleared");
+                                        toast.success("Wishlist cleared");
                                     }}
                                     className="text-[10px] font-black tracking-widest uppercase text-cream/20 hover:text-destructive transition-colors text-left md:text-right"
                                 >
-                                    Empty Treasury
+                                    Empty Wishlist
                                 </button>
                             )}
                         </div>
@@ -71,7 +61,7 @@ const Wishlist = () => {
                                                 description: "", // Hidden in card anyway
                                                 price: item.price,
                                                 currency: "USD", // Wishlist items should ideally store currency
-                                                seller: { name: "Artifact Creator", avatar: "" },
+                                                seller: { name: "94M Verified Seller", avatar: "" },
                                                 image: item.image,
                                                 category: "Curated Selection",
                                                 rating: 4.8,
@@ -90,14 +80,14 @@ const Wishlist = () => {
                                     </div>
                                 </div>
                                 <h2 className="text-3xl font-serif text-cream mb-4">
-                                    Your treasury is empty
+                                    Your wishlist is empty
                                 </h2>
                                 <p className="text-cream/50 mb-12 max-w-sm leading-relaxed">
-                                    Discover exceptional digital artifacts and secure them in your personal treasury for future acquisition.
+                                    Discover exceptional digital products and save them here to purchase later.
                                 </p>
                                 <Button variant="luxury" size="lg" className="rounded-full px-10 h-14" asChild>
                                     <Link to="/products">
-                                        Exploration
+                                        Browse Products
                                         <ArrowRight className="ml-3 h-5 w-5" />
                                     </Link>
                                 </Button>

@@ -1,41 +1,35 @@
+import { useState, useEffect } from "react";
 import { Star, ArrowRight } from "lucide-react";
-import { TierBadge } from "@/components/seller/TierBadge";
-import type { SellerTier } from "@/components/seller/TierBadge";
+import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
+import api from "@/lib/api";
 
-const testimonials = [
-  {
-    name: "Aisha Rahman",
-    tier: "Partner" as SellerTier,
-    initial: "A",
-    gradient: "from-champagne/50 to-gold/20",
-    rating: 5,
-    highlight: "₹12.4L Payout Last Quarter",
-    quote:
-      "94mercato is the first platform that feels like an actual partner. Converting my shop was seamless, and the 2.0% partner fee is unbeatable in the industry.",
-  },
-  {
-    name: "Marcus Chen",
-    tier: "Creator" as SellerTier,
-    initial: "M",
-    gradient: "from-sapphire/50 to-sapphire/10",
-    rating: 5,
-    highlight: "94% Growth in 60 Days",
-    quote:
-      "The Creator Pro tier paid for itself in my first product launch. The homepage featuring alone drove more traffic than my entire Instagram following.",
-  },
-  {
-    name: "Priya Nair",
-    tier: "Creator" as SellerTier,
-    initial: "P",
-    gradient: "from-sapphire/30 to-champagne/15",
-    rating: 5,
-    highlight: "890+ sales and growing",
-    quote:
-      "I was skeptical about paying for a plan, but Creator Pro paid for itself in my first week. The analytics alone are worth it.",
-  },
+const gradients = [
+  "from-champagne/50 to-gold/20",
+  "from-sapphire/50 to-sapphire/10",
+  "from-sapphire/30 to-champagne/15"
 ];
 
 export function Testimonials() {
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await api.get("/testimonials");
+        const mapped = response.data.map((t: any, i: number) => ({
+          ...t,
+          gradient: gradients[i % gradients.length],
+          highlight: t.is_verified ? "Verified Customer" : "Satisfied Buyer"
+        }));
+        setTestimonials(mapped);
+      } catch (e) {
+        console.error("Failed to fetch testimonials", e);
+      }
+    };
+    fetchTestimonials();
+  }, []);
+
+  if (testimonials.length === 0) return null;
   return (
     <section className="py-20 md:py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-midnight" />

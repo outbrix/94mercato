@@ -316,8 +316,17 @@ const ProductDetail = () => {
           </div>
         )}
 
-        <div className="pt-24 pb-20">
-          <div className="container-luxury">
+        <div className="relative pt-24 pb-20 overflow-hidden">
+          {/* Dynamic Ambient Background - Enhanced Visibility */}
+          <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+            <div 
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-[140%] h-[140%] bg-cover bg-center opacity-[0.12] blur-[120px] scale-110 animate-in fade-in duration-1000"
+              style={{ backgroundImage: `url(${displayImage})` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-background via-background/20 to-background" />
+          </div>
+
+          <div className="container-luxury relative">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-8">
               <Link to="/products" className="hover:text-foreground transition-colors">Marketplace</Link>
@@ -366,6 +375,13 @@ const ProductDetail = () => {
                   </div>
 
                   {/* Mobile Thumbnails (Overlay bottom) */}
+                  {/* Verified Selection Badge */}
+                  <div className="absolute bottom-8 left-8 flex items-center gap-2 px-3 py-2 bg-midnight/60 backdrop-blur-xl border border-white/10 rounded-full opacity-80 group-hover:opacity-100 transition-opacity duration-500 lg:flex hidden">
+                    <ShieldCheck className="w-4 h-4 text-sapphire" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.1em] text-white/90">Verified Selection</span>
+                  </div>
+
+                  {/* Mobile Thumbnails (Overlay bottom) */}
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-2 bg-black/40 backdrop-blur-md rounded-full lg:hidden">
                     {allImages.map((_, idx) => (
                       <button
@@ -402,12 +418,11 @@ const ProductDetail = () => {
                   )}
                 </div>
 
-                {/* Description Section (Desktop) */}
-                <div className="hidden lg:block space-y-12 mt-12">
+                <div className="hidden lg:block space-y-12 mt-12 animate-in fade-in slide-in-from-bottom-8 duration-1000" style={{ animationDelay: '400ms' }}>
                   <div>
                     <h2 className="text-xl font-serif mb-6 flex items-center gap-2">
                       <span className="w-8 h-[1px] bg-sapphire" />
-                      Artifact Details
+                      Product Details
                     </h2>
                     <div className="prose prose-invert max-w-none text-muted-foreground/90 leading-relaxed font-light whitespace-pre-wrap">
                       {product.full_description || product.description}
@@ -434,9 +449,9 @@ const ProductDetail = () => {
               </div>
 
               {/* Zone 3: Sticky Sidebar */}
-              <aside className="lg:sticky lg:top-28 space-y-8">
-                <div className="p-8 bg-card/40 backdrop-blur-xl border border-border/50 rounded-[2.5rem] shadow-2xl shadow-sapphire/5 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-sapphire/5 rounded-full -mr-16 -mt-16 blur-3xl" />
+              <aside className="lg:sticky lg:top-28 space-y-8 animate-in fade-in slide-in-from-right-8 duration-1000" style={{ animationDelay: '200ms' }}>
+                <div className="p-8 bg-midnight/30 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-sapphire/10 rounded-full -mr-24 -mt-24 blur-3xl animate-pulse" />
                   
                   <div className="space-y-6 relative z-10">
                     <div className="flex items-center justify-between font-black">
@@ -447,10 +462,16 @@ const ProductDetail = () => {
                       </div>
                     </div>
 
-                    <h1 className="text-3xl font-serif leading-tight">{product.title}</h1>
+                    <div className="relative">
+                      <h1 className="text-3xl lg:text-4xl font-serif leading-tight tracking-tight mb-2">{product.title}</h1>
+                      <div className="flex items-center gap-2 mb-4">
+                        <Badge variant="outline" className="text-[8px] border-sapphire/30 text-sapphire px-2">94M Verified</Badge>
+                        <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-400 px-2 font-bold tracking-tight">Premium Selection</Badge>
+                      </div>
+                    </div>
 
                     <div className="flex items-end gap-3 pt-2">
-                      <span className="text-4xl font-sans font-black tracking-tighter">
+                      <span className="text-3xl lg:text-4xl font-sans font-black tracking-tighter">
                          {formatPrice(convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency), currentCurrency)}
                       </span>
                     </div>
@@ -459,12 +480,13 @@ const ProductDetail = () => {
                       <Button
                         variant="luxury"
                         size="xl"
-                        className="w-full h-16 text-lg font-black uppercase tracking-[0.1em] rounded-2xl shadow-xl shadow-sapphire/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        className="w-full h-16 text-lg font-black uppercase tracking-[0.1em] rounded-2xl shadow-2xl shadow-sapphire/20 transition-all hover:scale-[1.02] active:scale-[0.98] group relative overflow-hidden"
                         onClick={handleAddToCart}
                         disabled={!isPublished && !isOwner}
                       >
-                        <ShoppingCart className="mr-3 h-5 w-5" />
-                        Acquire Artifact
+                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
+                        <ShoppingCart className="mr-3 h-5 w-5 transition-transform group-hover:-translate-y-1" />
+                        Add to Cart
                       </Button>
                       
                       <div className="grid grid-cols-2 gap-3">
@@ -488,13 +510,13 @@ const ProductDetail = () => {
                           <div className="w-8 h-8 rounded-full bg-sapphire/10 flex items-center justify-center">
                             <Shield className="h-4 w-4 text-sapphire" />
                           </div>
-                          Secure Payment via Stripe
+                          Secure Checkout
                        </div>
                        <div className="flex items-center gap-3 text-xs text-muted-foreground font-bold">
                           <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
                             <Zap className="h-4 w-4 text-emerald-400" />
                           </div>
-                          Instant Forge Delivery
+                          Instant Digital Delivery
                        </div>
                     </div>
                   </div>
@@ -551,7 +573,7 @@ const ProductDetail = () => {
             <div className="mt-32 space-y-32">
               <div className="flex flex-col md:flex-row gap-12 pt-20 border-t border-border/40">
                 <div className="md:w-1/3 space-y-6">
-                  <h2 className="text-4xl font-serif">Community Trust</h2>
+                  <h2 className="text-3xl lg:text-4xl font-serif">Community Trust</h2>
                   <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
                     Read unedited feedback from the collectors' collective who have acquired this artifact.
                   </p>
@@ -570,15 +592,15 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              {/* Related Discovery */}
-              <div className="space-y-12">
+              {/* Related Products */}
+              <div className="space-y-12 animate-in fade-in slide-in-from-bottom-12 duration-1000">
                  <div className="flex items-end justify-between">
                     <div>
-                      <h2 className="text-4xl font-serif mb-3">You might also <span className="italic text-sapphire">treasure</span></h2>
-                      <p className="text-muted-foreground text-sm">Similar artifacts unearthed by other curators.</p>
+                      <h2 className="text-3xl lg:text-4xl font-serif mb-3">You might also <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-sapphire to-champagne">like</span></h2>
+                      <p className="text-muted-foreground text-sm">Products frequently viewed together with this item.</p>
                     </div>
-                    <Button variant="luxury-outline" asChild className="hidden sm:flex rounded-full px-6">
-                      <Link to="/products">View All Discoveries <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                    <Button variant="luxury-outline" asChild className="hidden sm:flex rounded-full px-6 group transition-all hover:pr-8">
+                      <Link to="/products" className="flex items-center">View All <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-2" /></Link>
                     </Button>
                  </div>
                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

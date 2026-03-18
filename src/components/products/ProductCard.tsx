@@ -32,6 +32,7 @@ interface ProductCardProps {
   };
   className?: string;
   style?: React.CSSProperties;
+  viewMode?: "grid" | "list";
 }
 
 const badgeVariants: Record<string, string> = {
@@ -40,7 +41,7 @@ const badgeVariants: Record<string, string> = {
   Bestseller: "bg-gold/20 text-gold border-gold/30",
 };
 
-export function ProductCard({ product, className, style }: ProductCardProps) {
+export function ProductCard({ product, className, style, viewMode = "grid" }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const { toggleItem, isInWishlist } = useWishlistStore();
   const { currentCurrency, convert } = useCurrencyStore();
@@ -104,11 +105,15 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
     <article
       className={cn(
         "group bg-card/40 backdrop-blur-xl border border-border/50 rounded-2xl overflow-hidden transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-sapphire/10 hover:border-sapphire/30",
+        viewMode === "list" ? "flex flex-col sm:flex-row" : "flex flex-col",
         className
       )}
       style={style}
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-secondary/30">
+      <div className={cn(
+        "relative overflow-hidden bg-secondary/30",
+        viewMode === "list" ? "aspect-video sm:aspect-[4/3] sm:w-[35%] shrink-0 border-r border-white/5" : "aspect-[4/3] w-full"
+      )}>
         <img
           src={product.image}
           alt={product.title}
@@ -172,7 +177,10 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
         </div>
       </div>
 
-      <div className="p-4 space-y-3">
+      <div className={cn(
+        "p-4 sm:p-6 space-y-4",
+        viewMode === "list" ? "flex-1 flex flex-col justify-center" : "space-y-3"
+      )}>
         {/* Category & Rating */}
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">

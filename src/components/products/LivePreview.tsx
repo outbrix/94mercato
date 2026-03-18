@@ -73,7 +73,7 @@ export function LivePreview({
             <DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
             <DialogContent
                 className={`${isFullscreen
-                        ? "max-w-[100vw] max-h-[100vh] w-screen h-screen m-0 rounded-none"
+                        ? "max-w-[100vw] max-h-[100svh] w-screen h-[100svh] m-0 rounded-none"
                         : "max-w-6xl w-[95vw] h-[85vh]"
                     } flex flex-col p-0 gap-0 bg-background/95 backdrop-blur-xl`}
             >

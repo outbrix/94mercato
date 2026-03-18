@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Play } from "lucide-react";
 import { Link } from "react-router-dom";
-import { MARKET_STATS } from "@/lib/market-stats";
+import api from "@/lib/api";
 
 function useCountUp(target: number, duration = 1500, start = false) {
   const [count, setCount] = useState(0);
@@ -22,6 +22,7 @@ function useCountUp(target: number, duration = 1500, start = false) {
 
 export function Hero() {
   const [animated, setAnimated] = useState(false);
+  const [stats, setStats] = useState({ TOTAL_CREATORS: 0, TOTAL_PRODUCTS: 0, LOWEST_FEE: 2.0 });
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,11 +33,22 @@ export function Hero() {
       { threshold: 0.2 }
     );
     if (ref.current) observer.observe(ref.current);
+
+    const fetchStats = async () => {
+      try {
+        const response = await api.get('/stats/global');
+        setStats(response.data);
+      } catch (e) {
+        console.error("Failed to fetch global stats", e);
+      }
+    };
+    fetchStats();
+
     return () => observer.disconnect();
   }, []);
 
-  const creators = useCountUp(MARKET_STATS.TOTAL_CREATORS, 1800, animated);
-  const products = useCountUp(MARKET_STATS.TOTAL_PRODUCTS, 1800, animated);
+  const creators = useCountUp(stats.TOTAL_CREATORS, 1800, animated);
+  const products = useCountUp(stats.TOTAL_PRODUCTS, 1800, animated);
 
   return (
     <section
@@ -89,7 +101,7 @@ export function Hero() {
           <p className="text-xl md:text-2xl text-cream/50 max-w-2xl mt-8 leading-relaxed font-light animate-fade-up delay-200">
             94mercato is where creators sell templates, courses, fonts, and digital
             products directly to their audience — with{" "}
-            <span className="text-champagne font-medium">as low as {MARKET_STATS.LOWEST_FEE}% fees</span>.
+            <span className="text-champagne font-medium">as low as {stats.LOWEST_FEE}% fees</span>.
           </p>
 
           {/* ─── CTA row ─── */}
@@ -124,7 +136,7 @@ export function Hero() {
             <div className="w-px h-12 bg-cream/10" />
             <div>
               <p className="text-3xl md:text-4xl font-serif font-semibold text-champagne">
-                {MARKET_STATS.LOWEST_FEE}%
+                {stats.LOWEST_FEE}%
               </p>
               <p className="text-xs text-cream/40 mt-1 uppercase tracking-wider">
                 Lowest commission

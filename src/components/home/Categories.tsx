@@ -1,16 +1,37 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
+import api from "@/lib/api";
 
-const categories = [
-  { name: "Templates", emoji: "📐", count: "450+", href: "/products?category=Templates" },
-  { name: "UI Kits", emoji: "🎨", count: "320+", href: "/products?category=UI Kits" },
-  { name: "Courses", emoji: "🎓", count: "180+", href: "/products?category=Courses" },
-  { name: "Mockups", emoji: "📱", count: "290+", href: "/products?category=Mockups" },
-  { name: "Fonts", emoji: "✍️", count: "150+", href: "/products?category=Fonts" },
-  { name: "Icons", emoji: "✨", count: "520+", href: "/products?category=Icons" },
+const defaultCategories = [
+  { name: "Templates", emoji: "📐", count: 0, href: "/products?category=Templates" },
+  { name: "UI Kits", emoji: "🎨", count: 0, href: "/products?category=UI Kits" },
+  { name: "Courses", emoji: "🎓", count: 0, href: "/products?category=Courses" },
+  { name: "Mockups", emoji: "📱", count: 0, href: "/products?category=Mockups" },
+  { name: "Fonts", emoji: "✍️", count: 0, href: "/products?category=Fonts" },
+  { name: "Icons", emoji: "✨", count: 0, href: "/products?category=Icons" },
 ];
 
 export function Categories() {
+  const [categories, setCategories] = useState(defaultCategories);
+
+  useEffect(() => {
+    const fetchCategoryStats = async () => {
+      try {
+        const response = await api.get('/stats/categories');
+        const counts = response.data; // Array of { name, count }
+        
+        setCategories(prev => prev.map(cat => {
+          const found = counts.find((c: any) => c.name === cat.name);
+          return { ...cat, count: found ? parseInt(found.count) : 0 };
+        }));
+      } catch (e) {
+        console.error("Failed to fetch category stats", e);
+      }
+    };
+    fetchCategoryStats();
+  }, []);
+
   return (
     <section className="py-20 md:py-28 relative overflow-hidden">
       {/* Seamless gradient from the section above */}
@@ -44,7 +65,7 @@ export function Categories() {
                 {cat.name}
               </span>
               <span className="text-xs text-cream/30 ml-1 tabular-nums">
-                {cat.count}
+                {cat.count === 0 ? "0" : `${cat.count}+`}
               </span>
             </Link>
           ))}

@@ -124,7 +124,7 @@ export function generateLicenseHTML(license: LicenseData): string {
       background: #1a1a1a; 
       color: #fff; 
       padding: 40px;
-      min-height: 100vh;
+      min-height: 100svh;
     }
     .certificate {
       max-width: 800px;

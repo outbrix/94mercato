@@ -159,7 +159,7 @@ export const Header = () => {
           <Logo />
           <Navigation links={navLinks} />
           <div className="flex items-center gap-1 md:gap-2">
-            <div className="hidden xs:block">
+            <div className="hidden sm:block">
               <CurrencySwitcher />
             </div>
             <HeaderActions onSearchClick={() => setSearchOpen(true)} />
@@ -179,8 +179,8 @@ export const Header = () => {
           <div
             className="fixed inset-0 top-0 z-[60] bg-midnight/95 backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-300 lg:hidden"
           >
-            <div className="container-luxury h-full flex flex-col pt-24 pb-12">
-              <div className="flex justify-between items-center mb-12">
+            <div className="container-luxury h-full flex flex-col pt-20 pb-8">
+              <div className="flex justify-between items-center mb-8">
                 <Logo />
                 <Button
                   variant="ghost"
@@ -192,45 +192,52 @@ export const Header = () => {
                 </Button>
               </div>
 
-              <div className="flex-1 space-y-2 overflow-y-auto">
+              <div className="flex-1 space-y-1 overflow-y-auto">
                 {navLinks.map((link, i) => (
                   <Link
                     key={link.to}
                     to={link.to}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="group flex items-center justify-between py-6 border-b border-white/5"
+                    className="group flex items-center justify-between py-4 border-b border-white/5"
                   >
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4">
                       <span className="text-[10px] font-mono text-champagne/40">0{i + 1}</span>
-                      <span className="text-3xl font-sans font-black text-cream uppercase tracking-tighter group-active:text-champagne transition-colors">
+                      <span className="text-2xl font-sans font-black text-cream uppercase tracking-tighter group-active:text-champagne transition-colors">
                         {link.label}
                       </span>
                     </div>
-                    <ArrowUpRight className="w-6 h-6 text-cream/20 group-hover:text-champagne transition-colors" />
+                    <ArrowUpRight className="w-5 h-5 text-cream/20 group-hover:text-champagne transition-colors" />
                   </Link>
                 ))}
               </div>
 
-              <div className="pt-12 mt-auto border-t border-white/10 flex items-center justify-between">
+              <div className="pt-8 mt-auto border-t border-white/10 flex items-center justify-between">
                 {!user ? (
                    <Link 
                     to="/login" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-4 px-8 py-4 bg-champagne text-midnight font-black text-xs tracking-widest uppercase rounded-full"
+                    className="flex items-center gap-3 px-6 py-3 bg-champagne text-midnight font-black text-xs tracking-widest uppercase rounded-full"
                    >
                      Login / Join
                    </Link>
                 ) : (
-                  <div className="flex items-center gap-4">
-                    <img src={user.avatar_url || ""} alt="" className="w-10 h-10 rounded-full border border-white/10" />
+                  <div className="flex items-center gap-3">
+                    <img src={user.avatar_url || ""} alt="" className="w-8 h-8 rounded-full border border-white/10" />
                     <div>
                       <p className="text-sm font-bold text-cream">{user.display_name}</p>
                       <button onClick={logout} className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-white">Sign Out</button>
                     </div>
                   </div>
                 )}
-                <div className="flex gap-4">
-                   <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                <div className="flex items-center gap-4">
+                   <CurrencySwitcher />
+                   <div 
+                      className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 cursor-pointer hover:bg-white/10 transition-colors"
+                      onClick={() => {
+                        setSearchOpen(true);
+                        setMobileMenuOpen(false);
+                      }}
+                   >
                       <Search className="w-4 h-4 text-cream/50" />
                    </div>
                 </div>

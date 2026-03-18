@@ -20,7 +20,6 @@ import { formatPrice } from "@/lib/utils";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { PromoCodeInput } from "@/components/checkout/PromoCodeInput";
-import FuzzyText from "@/components/ui/FuzzyText";
 
 const BASE_MARKET_FEE_PERCENT = 6; // Standard 6% fee paid by buyer
 const FLASH_SALE_FEE_PERCENT = 2.5; // Reduced 2.5% fee during Flash Sales
@@ -173,33 +172,24 @@ const Cart = () => {
                         {/* Header */}
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
                             <div className="space-y-3">
-                                <FuzzyText 
-                                    baseIntensity={0.08}
-                                    hoverIntensity={0.25}
-                                    enableHover
-                                    fontSize="clamp(1.8rem, 8vw, 4.5rem)"
-                                    fontWeight={900}
-                                    fontFamily="Cinzel"
-                                    gradient={["#846733", "#dfc5a4", "#846733"]}
-                                    className="animate-in slide-in-from-left duration-700"
-                                >
-                                    YOUR COLLECTION
-                                </FuzzyText>
+                                <h1 className="text-4xl md:text-6xl font-serif text-cream animate-in slide-in-from-left duration-700 uppercase tracking-widest">
+                                    YOUR CART
+                                </h1>
                                 <p className="text-[10px] md:text-sm text-cream/40 font-black tracking-[0.2em] md:tracking-[0.3em] uppercase animate-in slide-in-from-left duration-1000">
                                     {items.length === 0
-                                        ? "Inventory is empty"
-                                        : `${items.length} exquisite artifact${items.length > 1 ? "s" : ""} secured`}
+                                        ? "Your cart is empty"
+                                        : `${items.length} item${items.length > 1 ? "s" : ""} in your cart`}
                                 </p>
                             </div>
                             {items.length > 0 && (
                                 <button
                                     onClick={() => {
                                         clearCart();
-                                        toast.success("Collection cleared");
+                                        toast.success("Cart cleared");
                                     }}
                                     className="text-[10px] font-black tracking-widest uppercase text-cream/20 hover:text-destructive transition-colors text-left md:text-right"
                                 >
-                                    Empty Container
+                                    Clear Cart
                                 </button>
                             )}
                         </div>
@@ -214,14 +204,14 @@ const Cart = () => {
                                     </div>
                                 </div>
                                 <h2 className="text-3xl font-serif text-cream mb-4">
-                                    Your collection awaits
+                                    Your cart is empty
                                 </h2>
                                 <p className="text-cream/50 mb-12 max-w-sm leading-relaxed">
-                                    Begin your journey by discovering our curated selection of high-performance digital assets.
+                                    Discover our curated selection of high-quality digital products and add them to your cart.
                                 </p>
                                 <Button variant="luxury" size="lg" className="rounded-full px-10 h-14" asChild>
                                     <Link to="/products">
-                                        Exploration
+                                        Browse Products
                                         <ArrowRight className="ml-3 h-5 w-5" />
                                     </Link>
                                 </Button>
@@ -276,7 +266,7 @@ const Cart = () => {
                                                         </p>
                                                         <div className="h-4 w-px bg-white/10 hidden md:block" />
                                                         <p className="text-cream/30 uppercase tracking-widest text-[10px] font-black">
-                                                            High Performance Asset
+                                                            Verified Digital Product
                                                         </p>
                                                     </div>
                                                 </div>
@@ -330,7 +320,7 @@ const Cart = () => {
                                             
                                             {appliedPromo && (
                                                 <div className="flex justify-between items-center text-green-400 group transition-all duration-300 hover:translate-x-1">
-                                                    <span className="text-xs uppercase tracking-widest font-bold">Privilege ({appliedPromo.code})</span>
+                                                    <span className="text-xs uppercase tracking-widest font-bold">Discount ({appliedPromo.code})</span>
                                                     <span className="font-mono">-{formatDisplayPrice(discount)}</span>
                                                 </div>
                                             )}
@@ -360,8 +350,8 @@ const Cart = () => {
                                         <div className="pt-8 border-t border-white/10">
                                             <div className="flex justify-between items-end mb-8">
                                                 <div className="space-y-1">
-                                                    <span className="text-[10px] text-cream/20 uppercase tracking-widest font-black block">Total Investment</span>
-                                                    <span className="text-[8px] text-champagne/40 uppercase tracking-[0.2em]">Live Conversion</span>
+                                                    <span className="text-[10px] text-cream/20 uppercase tracking-widest font-black block">Order Total</span>
+                                                    <span className="text-[8px] text-champagne/40 uppercase tracking-[0.2em]">Estimated Total</span>
                                                 </div>
                                                 <span className="text-4xl md:text-5xl font-serif text-champagne leading-none drop-shadow-[0_0_15px_rgba(196,163,115,0.2)]">
                                                     {formatDisplayPrice(total)}
@@ -382,11 +372,11 @@ const Cart = () => {
                                                 {isCheckingOut ? (
                                                     <>
                                                         <Loader2 className="h-5 w-5 mr-3 animate-spin" />
-                                                        Authorizing...
+                                                        Processing...
                                                     </>
                                                 ) : (
                                                     <>
-                                                        Initiate Transaction
+                                                        Checkout Now
                                                         <ArrowRight className="h-5 w-5 ml-3" />
                                                     </>
                                                 )}

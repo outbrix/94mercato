@@ -25,45 +25,9 @@ export function FeaturedCreators() {
                 const response = await api.get("/auth/sellers?sort=popular&limit=6");
                 const data = response.data.sellers || response.data || [];
                 setCreators(data.slice(0, 6));
-            } catch {
-                setCreators([
-                    {
-                        display_name: "DesignPro",
-                        avatar_url: null,
-                        bio: "Premium UI/UX templates & design systems for modern teams",
-                        is_verified: true,
-                        product_count: 24,
-                        total_sales: 3400,
-                        seller_tier: "Creator",
-                    },
-                    {
-                        display_name: "CodeMaster",
-                        avatar_url: null,
-                        bio: "Full-stack courses and production-grade code templates",
-                        is_verified: true,
-                        product_count: 12,
-                        total_sales: 12500,
-                        seller_tier: "Partner",
-                    },
-                    {
-                        display_name: "FontFoundry",
-                        avatar_url: null,
-                        bio: "Custom typefaces and font families for modern brands",
-                        is_verified: false,
-                        product_count: 8,
-                        total_sales: 856,
-                        seller_tier: "Creator",
-                    },
-                    {
-                        display_name: "StudioVibe",
-                        avatar_url: null,
-                        bio: "Realistic device mockups & branding presentation kits",
-                        is_verified: true,
-                        product_count: 31,
-                        total_sales: 5200,
-                        seller_tier: "Creator",
-                    },
-                ]);
+            } catch (error) {
+                console.error("Failed to fetch top creators", error);
+                setCreators([]);
             } finally {
                 setIsLoading(false);
             }
@@ -102,12 +66,12 @@ export function FeaturedCreators() {
                 </div>
 
                 {/* Horizontal scroll row — not a static grid */}
-                <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 snap-x snap-mandatory" style={{ scrollbarWidth: "none" }}>
+                <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 snap-x snap-mandatory" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
                     {creators.map((c, i) => (
                         <Link
                             key={c.display_name}
                             to={`/seller/${encodeURIComponent(c.display_name)}`}
-                            className="group flex-shrink-0 w-[260px] snap-start p-5 rounded-2xl border border-cream/8 bg-cream/[0.02] hover:bg-cream/[0.05] hover:border-cream/15 transition-all duration-300 animate-fade-up"
+                            className="group flex-shrink-0 w-[85vw] sm:w-[260px] snap-start p-5 rounded-2xl border border-cream/8 bg-cream/[0.02] hover:bg-cream/[0.05] hover:border-cream/15 transition-all duration-300 animate-fade-up"
                             style={{ animationDelay: `${i * 80}ms` }}
                         >
                             {/* Avatar + name */}

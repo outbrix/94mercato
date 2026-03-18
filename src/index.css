@@ -247,17 +247,21 @@
   
   .heading-display {
     font-family: 'Playfair Display', serif;
-    @apply text-4xl md:text-6xl lg:text-7xl font-medium tracking-tight leading-tight;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.1;
+    @apply font-medium tracking-tight;
   }
   
   .heading-large {
     font-family: 'Playfair Display', serif;
-    @apply text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight;
+    font-size: clamp(2rem, 5vw, 3.75rem);
+    @apply font-medium tracking-tight;
   }
   
   .heading-medium {
     font-family: 'Playfair Display', serif;
-    @apply text-2xl md:text-3xl font-medium tracking-tight;
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    @apply font-medium tracking-tight;
   }
   
   /* Gradient text */
@@ -278,11 +282,14 @@
 @layer utilities {
   /* Spacing utilities for luxury layouts */
   .section-padding {
-    @apply py-16 md:py-24 lg:py-28;
+    padding-top: clamp(4rem, 8vw, 7rem);
+    padding-bottom: clamp(4rem, 8vw, 7rem);
   }
   
   .container-luxury {
-    @apply max-w-7xl mx-auto px-4 md:px-6 lg:px-8;
+    @apply max-w-7xl mx-auto;
+    padding-left: clamp(1rem, 5vw, 2rem);
+    padding-right: clamp(1rem, 5vw, 2rem);
   }
   
   /* Text utilities */
