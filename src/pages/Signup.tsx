@@ -11,6 +11,7 @@ import { Eye, EyeOff, CheckCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getErrorMessage } from "@/types/api";
 import { useSettings } from "@/hooks/use-settings";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,9 +23,32 @@ const Signup = () => {
     password: "",
     isSeller: false,
   });
-  const { signup } = useAuth();
+  const { signup, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const { commissionRate } = useSettings();
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const user = await loginWithGoogle(tokenResponse.access_token);
+        
+        // Redirect based on role
+        if (user.role === 'admin') {
+          navigate("/admin");
+        } else if (user.role === 'seller') {
+          navigate("/dashboard");
+        } else {
+          // Buyers go to home page
+          navigate("/purchases");
+        }
+      } catch (err: unknown) {
+        setError(getErrorMessage(err));
+      }
+    },
+    onError: () => {
+      setError("Google signup failed");
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -215,7 +239,13 @@ const Signup = () => {
                 </div>
 
                 <div className="relative group">
-                  <Button variant="outline" className="w-full opacity-60" size="lg" disabled>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    size="lg"
+                    onClick={() => handleGoogleLogin()}
+                    type="button"
+                  >
                     <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                       <path
                         fill="currentColor"
@@ -236,9 +266,6 @@ const Signup = () => {
                     </svg>
                     Continue with Google
                   </Button>
-                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 text-xs bg-secondary rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    Coming soon
-                  </span>
                 </div>
 
                 <p className="text-center text-sm text-muted-foreground mt-8">
