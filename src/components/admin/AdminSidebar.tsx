@@ -20,6 +20,7 @@ const adminNavItems = [
   { name: "Users", href: "/admin/users", icon: Users },
   { name: "Products", href: "/admin/products", icon: Package },
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { name: "Earnings", href: "/admin/earnings", icon: Wallet },
   { name: "Payouts", href: "/admin/payouts", icon: Wallet },
   { name: "Disputes", href: "/admin/disputes", icon: AlertTriangle },
   { name: "Settings", href: "/admin/settings", icon: Settings },
