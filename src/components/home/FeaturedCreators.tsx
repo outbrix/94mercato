@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Package, Loader2 } from "lucide-react";
-import { TierBadge, type SellerTier } from "@/components/seller/TierBadge";
+import { TierBadge, resolveSellerTier, type SellerTier } from "@/components/seller/TierBadge";
 import api from "@/lib/api";
 
 interface FeaturedCreator {
@@ -11,7 +11,8 @@ interface FeaturedCreator {
     is_verified: boolean;
     product_count: number;
     total_sales: number;
-    seller_tier?: SellerTier;
+    seller_type?: SellerTier | string;
+    role?: string;
 }
 
 export function FeaturedCreators() {
@@ -85,7 +86,7 @@ export function FeaturedCreators() {
                                 ) : (
                                     <div className="w-11 h-11 rounded-full bg-gradient-to-br from-sapphire/30 to-champagne/20 flex items-center justify-center border border-cream/10">
                                         <span className="text-base font-serif font-medium text-cream">
-                                            {c.display_name.charAt(0)}
+                                            {(c.display_name || 'Seller').charAt(0).toUpperCase()}
                                         </span>
                                     </div>
                                 )}
@@ -93,7 +94,7 @@ export function FeaturedCreators() {
                                     <p className="text-sm font-medium text-cream truncate group-hover:text-champagne transition-colors">
                                         {c.display_name}
                                     </p>
-                                    <TierBadge tier={c.seller_tier ?? "Starter"} size="sm" />
+                                    <TierBadge tier={resolveSellerTier(c.seller_type, c.role)} size="sm" />
                                 </div>
                             </div>
 
