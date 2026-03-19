@@ -69,6 +69,7 @@ const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
 const AdminProducts = lazy(() => import("./pages/admin/AdminProducts"));
 const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
 const AdminPayouts = lazy(() => import("./pages/admin/AdminPayouts"));
+const AdminEarnings = lazy(() => import("./pages/admin/AdminEarnings"));
 const AdminDisputes = lazy(() => import("./pages/admin/AdminDisputes"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 const AdminLogs = lazy(() => import("./pages/admin/AdminLogs"));
@@ -206,6 +207,14 @@ const App = () => (
                       element={
                         <RequireAdmin>
                           <AdminPayouts />
+                        </RequireAdmin>
+                      }
+                    />
+                    <Route
+                      path="/admin/earnings"
+                      element={
+                        <RequireAdmin>
+                          <AdminEarnings />
                         </RequireAdmin>
                       }
                     />
