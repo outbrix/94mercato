@@ -21,7 +21,7 @@ export default function Privacy() {
               <p className="text-muted-foreground">Last Updated: {new Date().toLocaleDateString()}</p>
               <p className="text-muted-foreground mt-2">Data Controller: Outbrix US LLC</p>
               <p className="text-muted-foreground">Registered Address: Sheridan, Wyoming, USA</p>
-              <p className="text-muted-foreground">Contact: <a href="mailto:privacy@94mercato.com" className="text-champagne hover:underline">privacy@94mercato.com</a></p>
+              <p className="text-muted-foreground">Contact: <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a></p>
             </div>
           </div>
         </section>
@@ -362,7 +362,7 @@ export default function Privacy() {
                 <li>Non-discrimination for exercising privacy rights</li>
               </ul>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                To exercise your rights, contact us at: <a href="mailto:privacy@94mercato.com" className="text-champagne hover:underline">privacy@94mercato.com</a>
+                To exercise your rights, contact us at: <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a>
               </p>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 We will respond to verified requests within <strong className="text-foreground">30 days</strong> (GDPR) or <strong className="text-foreground">45 days</strong> (CCPA).
@@ -370,7 +370,7 @@ export default function Privacy() {
 
               <h2 className="heading-medium text-2xl mt-12 mb-4">11. CHILDREN'S PRIVACY</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                The Platform is intended for users who are <strong className="text-foreground">at least 18 years old</strong>. We do not knowingly collect personal data from minors. If we discover that we have collected data from a user under 18, we will delete it immediately. If you believe a minor has registered, please contact <a href="mailto:privacy@94mercato.com" className="text-champagne hover:underline">privacy@94mercato.com</a>.
+                The Platform is intended for users who are <strong className="text-foreground">at least 18 years old</strong>. We do not knowingly collect personal data from minors. If we discover that we have collected data from a user under 18, we will delete it immediately. If you believe a minor has registered, please contact <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a>.
               </p>
 
               <h2 className="heading-medium text-2xl mt-12 mb-4">12. CHANGES TO THIS POLICY</h2>

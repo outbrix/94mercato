@@ -71,7 +71,7 @@ const Press = () => {
                                 </p>
 
                                 <a
-                                    href="mailto:press@94mercato.com"
+                                    href="mailto:support@94mercato.com"
                                     className="inline-flex items-center gap-2 text-champagne hover:underline"
                                 >
                                     <Mail className="h-4 w-4" />
@@ -123,11 +123,11 @@ const Press = () => {
                                     For press inquiries, interviews, or additional information, please contact:
                                 </p>
                                 <a
-                                    href="mailto:press@94mercato.com"
+                                    href="mailto:support@94mercato.com"
                                     className="inline-flex items-center gap-2 text-champagne hover:underline text-lg"
                                 >
                                     <Mail className="h-5 w-5" />
-                                    press@94mercato.com
+                                    support@94mercato.com
                                 </a>
                             </div>
                         </div>

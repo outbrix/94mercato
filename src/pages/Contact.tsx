@@ -17,14 +17,14 @@ const channels = [
     icon: MessageSquare,
     label: "Sellers",
     description: "Commission, payouts, and partnerships.",
-    email: "sellers@94mercato.com",
+    email: "support@94mercato.com",
     accent: "champagne",
   },
   {
     icon: Mail,
     label: "Press",
     description: "Media inquiries and press kits.",
-    email: "press@94mercato.com",
+    email: "support@94mercato.com",
     accent: "cream",
   },
 ];

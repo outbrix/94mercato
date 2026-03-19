@@ -177,7 +177,7 @@ export default function Terms() {
                 The Company complies with the Digital Millennium Copyright Act (DMCA). If you believe content on the Platform infringes your copyright, please submit a DMCA takedown notice to:
               </p>
               <ul className="space-y-2 text-muted-foreground list-disc pl-6 mb-4">
-                <li><strong className="text-foreground">Email:</strong> <a href="mailto:legal@94mercato.com" className="text-champagne hover:underline">legal@94mercato.com</a></li>
+                <li><strong className="text-foreground">Email:</strong> <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a></li>
                 <li><strong className="text-foreground">Subject:</strong> DMCA Takedown Notice</li>
               </ul>
               <p className="text-muted-foreground leading-relaxed mb-4">
@@ -273,7 +273,7 @@ export default function Terms() {
 
               <h3 className="font-serif text-lg font-medium text-foreground mt-8 mb-3">13.4 Opt-Out Right</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                You may opt out of this arbitration agreement by notifying us in writing within <strong className="text-foreground">30 days</strong> of first accepting these Terms, at <a href="mailto:legal@94mercato.com" className="text-champagne hover:underline">legal@94mercato.com</a>. Opting out does not affect any other provision of these Terms.
+                You may opt out of this arbitration agreement by notifying us in writing within <strong className="text-foreground">30 days</strong> of first accepting these Terms, at <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a>. Opting out does not affect any other provision of these Terms.
               </p>
 
               <h3 className="font-serif text-lg font-medium text-foreground mt-8 mb-3">13.5 Small Claims Exception</h3>

@@ -58,10 +58,10 @@ const Careers = () => {
                                     Think you'd be a great fit? Send us your portfolio and a note about why you want to join 94mercato.
                                 </p>
                                 <a
-                                    href="mailto:careers@94mercato.com"
+                                    href="mailto:support@94mercato.com"
                                     className="text-champagne hover:underline"
                                 >
-                                    careers@94mercato.com
+                                    support@94mercato.com
                                 </a>
                             </div>
                         </div>

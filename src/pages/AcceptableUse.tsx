@@ -126,7 +126,7 @@ export default function AcceptableUse() {
               <h3 className="font-serif text-lg font-medium text-foreground mt-8 mb-3">4.3 Reporting Violations</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 To report a suspected AUP violation:<br/>
-                <strong className="text-foreground">Email:</strong> <a href="mailto:abuse@94mercato.com" className="text-champagne hover:underline">abuse@94mercato.com</a><br/>
+                <strong className="text-foreground">Email:</strong> <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a><br/>
                 <strong className="text-foreground">Subject Line:</strong> AUP Violation Report
               </p>
 
@@ -146,7 +146,7 @@ export default function AcceptableUse() {
 
               <h2 className="heading-medium text-2xl mt-12 mb-4">7. CONTACT</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                For AUP-related matters: <a href="mailto:abuse@94mercato.com" className="text-champagne hover:underline">abuse@94mercato.com</a><br/>
+                For AUP-related matters: <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a><br/>
                 Outbrix US LLC — Sheridan, Wyoming, USA
               </p>
 

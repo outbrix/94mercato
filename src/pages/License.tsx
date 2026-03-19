@@ -118,7 +118,7 @@ export default function License() {
 
               <h3 className="font-serif text-lg font-medium text-foreground mt-8 mb-3">5.3 Report of Infringement</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                To report intellectual property infringement: <a href="mailto:legal@94mercato.com" className="text-champagne hover:underline">legal@94mercato.com</a> — include the subject line "DMCA Notice."
+                To report intellectual property infringement: <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a> — include the subject line "DMCA Notice."
               </p>
 
               <h2 className="heading-medium text-2xl mt-12 mb-4">6. WARRANTY DISCLAIMER</h2>

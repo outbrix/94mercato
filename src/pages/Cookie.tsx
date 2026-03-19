@@ -20,7 +20,7 @@ export default function Cookie() {
               <h1 className="heading-large text-3xl md:text-4xl mt-3 mb-4">Cookie Policy</h1>
               <p className="text-muted-foreground">Last Updated: {new Date().toLocaleDateString()}</p>
               <p className="text-muted-foreground mt-2">Operated by: Outbrix US LLC — Sheridan, Wyoming, USA</p>
-              <p className="text-muted-foreground">Contact: <a href="mailto:privacy@94mercato.com" className="text-champagne hover:underline">privacy@94mercato.com</a></p>
+              <p className="text-muted-foreground">Contact: <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a></p>
             </div>
           </div>
         </section>
@@ -254,7 +254,7 @@ export default function Cookie() {
 
               <h2 className="heading-medium text-2xl mt-12 mb-4">9. CONTACT</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                For questions about our cookie use: <a href="mailto:privacy@94mercato.com" className="text-champagne hover:underline">privacy@94mercato.com</a><br/>
+                For questions about our cookie use: <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a><br/>
                 Outbrix US LLC — Sheridan, Wyoming, USA
               </p>
 

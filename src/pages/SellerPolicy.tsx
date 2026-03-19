@@ -250,7 +250,7 @@ export default function SellerPolicy() {
 
               <h2 className="heading-medium text-2xl mt-12 mb-4">10. CONTACT</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                For seller inquiries: <a href="mailto:sellers@94mercato.com" className="text-champagne hover:underline">sellers@94mercato.com</a><br/>
+                For seller inquiries: <a href="mailto:support@94mercato.com" className="text-champagne hover:underline">support@94mercato.com</a><br/>
                 Outbrix US LLC — Sheridan, Wyoming, USA
               </p>
 
