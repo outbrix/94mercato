@@ -26,11 +26,8 @@ export const useCartStore = create<CartState>()(
         set((state) => {
           const existingItem = state.items.find((i) => i.id === item.id);
           if (existingItem) {
-            // If item already exists, increment its quantity
-            const updatedItems = state.items.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-            );
-            return { items: updatedItems };
+            // If item already exists, don't increment its quantity
+            return { items: state.items };
           } else {
             // Otherwise, add the new item with quantity 1
             return { items: [...state.items, { ...item, quantity: 1 }] };

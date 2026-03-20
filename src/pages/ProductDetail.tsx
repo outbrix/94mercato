@@ -5,26 +5,25 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Helmet } from "react-helmet-async";
 import {
-  ShoppingCart,
-  Heart,
-  Share2,
-  Shield,
-  Download,
-  Clock,
-  Check,
-  ChevronRight,
   ChevronLeft,
-  Loader2,
-  Edit,
-  AlertTriangle,
-  Plus,
-  Minus,
-  RefreshCw,
+  ChevronRight,
+  ShoppingCart,
   Star,
+  ShieldCheck,
+  Share2,
+  Heart,
+  Package,
+  Check,
+  CheckCircle2,
+  Clock,
+  Shield,
   Zap,
   ArrowRight,
-  ShieldCheck,
-  Eye,
+  Info,
+  ExternalLink,
+  Loader2,
+  AlertTriangle,
+  RefreshCw
 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
@@ -61,6 +60,7 @@ interface Product {
   seller_tier?: string;
   seller_role?: string;
   is_verified?: boolean;
+  is_purchased?: boolean;
   rating: number | null;
   review_count: number;
   sales_count: number;
@@ -92,7 +92,6 @@ const ProductDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [isRetrying, setIsRetrying] = useState(false);
 
@@ -182,15 +181,11 @@ const ProductDetail = () => {
       image: product.thumbnail_url || (product.images && product.images[0]) || '',
     };
 
-    // Add item multiple times based on quantity
-    for (let i = 0; i < quantity; i++) {
-      addItem(itemToAdd);
-    }
+    addItem(itemToAdd);
 
     toast.success("Added to cart", {
-      description: `${quantity}x ${product.title} added to your cart.`,
+      description: `${product.title} added to your cart.`,
     });
-    setQuantity(1); // Reset quantity after adding
   };
 
   const handleToggleWishlist = () => {
@@ -323,7 +318,7 @@ const ProductDetail = () => {
         <div className="relative pt-24 pb-20 overflow-hidden">
           {/* Dynamic Ambient Background - Enhanced Visibility */}
           <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-            <div 
+            <div
               className="absolute top-0 left-1/2 -translate-x-1/2 w-[140%] h-[140%] bg-cover bg-center opacity-[0.12] blur-[120px] scale-110 animate-in fade-in duration-1000"
               style={{ backgroundImage: `url(${displayImage})` }}
             />
@@ -341,7 +336,7 @@ const ProductDetail = () => {
             </nav>
 
             <div className="grid grid-cols-1 lg:grid-cols-[80px,1fr,400px] gap-8 xl:gap-12 items-start">
-              
+
               {/* Zone 1: Vertical Thumbnails (Desktop) */}
               <div className="hidden lg:flex flex-col gap-3">
                 {allImages.map((img, idx) => (
@@ -350,8 +345,8 @@ const ProductDetail = () => {
                     onClick={() => setSelectedImageIndex(idx)}
                     className={cn(
                       "relative aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300",
-                      selectedImageIndex === idx 
-                        ? "border-sapphire shadow-lg scale-105" 
+                      selectedImageIndex === idx
+                        ? "border-sapphire shadow-lg scale-105"
                         : "border-transparent hover:border-border/60 opacity-60 hover:opacity-100"
                     )}
                   >
@@ -368,7 +363,7 @@ const ProductDetail = () => {
                     alt={product.title}
                     className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105"
                   />
-                  
+
                   {/* Status Badges Overlay */}
                   <div className="absolute top-6 left-6 flex flex-col gap-2">
                     {product.badge && (
@@ -399,25 +394,25 @@ const ProductDetail = () => {
                     ))}
                   </div>
 
-                   {/* Arrows Overlay */}
-                   {allImages.length > 1 && (
+                  {/* Arrows Overlay */}
+                  {allImages.length > 1 && (
                     <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
-                       <Button 
-                        variant="midnight" 
-                        size="icon" 
+                      <Button
+                        variant="midnight"
+                        size="icon"
                         className="rounded-full h-12 w-12"
                         onClick={() => setSelectedImageIndex(prev => (prev > 0 ? prev - 1 : allImages.length - 1))}
-                       >
-                         <ChevronLeft className="h-6 w-6" />
-                       </Button>
-                       <Button 
-                        variant="midnight" 
-                        size="icon" 
+                      >
+                        <ChevronLeft className="h-6 w-6" />
+                      </Button>
+                      <Button
+                        variant="midnight"
+                        size="icon"
                         className="rounded-full h-12 w-12"
                         onClick={() => setSelectedImageIndex(prev => (prev < allImages.length - 1 ? prev + 1 : 0))}
-                       >
-                         <ChevronRight className="h-6 w-6" />
-                       </Button>
+                      >
+                        <ChevronRight className="h-6 w-6" />
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -456,7 +451,7 @@ const ProductDetail = () => {
               <aside className="lg:sticky lg:top-28 space-y-8 animate-in fade-in slide-in-from-right-8 duration-1000" style={{ animationDelay: '200ms' }}>
                 <div className="p-8 bg-midnight/30 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-48 h-48 bg-sapphire/10 rounded-full -mr-24 -mt-24 blur-3xl animate-pulse" />
-                  
+
                   <div className="space-y-6 relative z-10">
                     <div className="flex items-center justify-between font-black">
                       <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{product.category}</span>
@@ -484,26 +479,47 @@ const ProductDetail = () => {
 
                     <div className="flex items-end gap-3 pt-2">
                       <span className="text-3xl lg:text-4xl font-sans font-black tracking-tighter">
-                         {formatPrice(convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency), currentCurrency)}
+                        {formatPrice(convert(product.price, (product.currency || 'USD') as CurrencyCode, currentCurrency), currentCurrency)}
                       </span>
                     </div>
-
                     <div className="space-y-3 pt-6">
-                      <Button
-                        variant="luxury"
-                        size="xl"
-                        className="w-full h-16 text-lg font-black uppercase tracking-[0.1em] rounded-2xl shadow-2xl shadow-sapphire/20 transition-all hover:scale-[1.02] active:scale-[0.98] group relative overflow-hidden"
-                        onClick={handleAddToCart}
-                        disabled={!isPublished && !isOwner}
-                      >
-                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
-                        <ShoppingCart className="mr-3 h-5 w-5 transition-transform group-hover:-translate-y-1" />
-                        Add to Cart
-                      </Button>
-                      
+                      {product.is_purchased ? (
+                        <div className="space-y-4">
+                          <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-3 text-emerald-400">
+                            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                              <Check className="h-5 w-5" />
+                            </div>
+                            <div className="text-sm font-bold uppercase tracking-wider">You already own this product</div>
+                          </div>
+                          <Button
+                            variant="luxury-outline"
+                            size="xl"
+                            className="w-full h-16 text-lg font-black uppercase tracking-[0.1em] rounded-2xl"
+                            asChild
+                          >
+                            <Link to="/purchases">
+                              <Package className="mr-3 h-5 w-5" />
+                              View in Dashboard
+                            </Link>
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          variant="luxury"
+                          size="xl"
+                          className="w-full h-16 text-lg font-black uppercase tracking-[0.1em] rounded-2xl shadow-2xl shadow-sapphire/20 transition-all hover:scale-[1.02] active:scale-[0.98] group relative overflow-hidden"
+                          onClick={handleAddToCart}
+                          disabled={!isPublished && !isOwner}
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
+                          <ShoppingCart className="mr-3 h-5 w-5 transition-transform group-hover:-translate-y-1" />
+                          {isPublished ? "Add to Cart" : (isOwner ? "Preview Mode" : "Unavailable")}
+                        </Button>
+                      )}
+
                       <div className="grid grid-cols-2 gap-3">
-                        <Button 
-                          variant="luxury-outline" 
+                        <Button
+                          variant="luxury-outline"
                           className={cn("h-12 rounded-xl text-[10px] font-black uppercase tracking-widest", inWishlist && "bg-rose-500/10 text-rose-500 border-rose-500/20")}
                           onClick={handleToggleWishlist}
                         >
@@ -511,25 +527,25 @@ const ProductDetail = () => {
                           Wishlist
                         </Button>
                         <Button variant="luxury-outline" className="h-12 rounded-xl text-[10px] font-black uppercase tracking-widest" onClick={handleShare}>
-                           <Share2 className="mr-2 h-4 w-4" />
-                           Share
+                          <Share2 className="mr-2 h-4 w-4" />
+                          Share
                         </Button>
                       </div>
                     </div>
 
                     <div className="pt-8 border-t border-border/40 space-y-4">
-                       <div className="flex items-center gap-3 text-xs text-muted-foreground font-bold">
-                          <div className="w-8 h-8 rounded-full bg-sapphire/10 flex items-center justify-center">
-                            <Shield className="h-4 w-4 text-sapphire" />
-                          </div>
-                          Secure Checkout
-                       </div>
-                       <div className="flex items-center gap-3 text-xs text-muted-foreground font-bold">
-                          <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                            <Zap className="h-4 w-4 text-emerald-400" />
-                          </div>
-                          Instant Digital Delivery
-                       </div>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground font-bold">
+                        <div className="w-8 h-8 rounded-full bg-sapphire/10 flex items-center justify-center">
+                          <Shield className="h-4 w-4 text-sapphire" />
+                        </div>
+                        Secure Checkout
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground font-bold">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                          <Zap className="h-4 w-4 text-emerald-400" />
+                        </div>
+                        Instant Digital Delivery
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -538,7 +554,7 @@ const ProductDetail = () => {
                 <div onClick={() => window.open(`/seller/${encodeURIComponent(product.seller_name)}`, '_blank')} className="p-6 bg-secondary/10 rounded-[2rem] border border-border/40 flex items-center justify-between group cursor-pointer hover:bg-secondary/20 transition-all">
                   <div className="flex items-center gap-4">
                     <div className="relative">
-                       {product.seller_avatar ? (
+                      {product.seller_avatar ? (
                         <img src={product.seller_avatar} alt={product.seller_name} className="w-12 h-12 rounded-full object-cover ring-2 ring-background shadow-lg" />
                       ) : (
                         <div className="w-12 h-12 rounded-full bg-sapphire/10 flex items-center justify-center text-lg font-serif font-black text-sapphire ring-2 ring-background shadow-lg">
@@ -546,7 +562,7 @@ const ProductDetail = () => {
                         </div>
                       )}
                       <div className="absolute -bottom-1 -right-1">
-                         <TierBadge tier={resolveSellerTier(product.seller_tier, product.seller_role)} size="sm" className="shadow-md" />
+                        <TierBadge tier={resolveSellerTier(product.seller_tier, product.seller_role)} size="sm" className="shadow-md" />
                       </div>
                     </div>
                     <div>
@@ -561,13 +577,13 @@ const ProductDetail = () => {
 
             {/* Mobile (Simplified) */}
             <div className="lg:hidden mt-20 space-y-12 pt-12 border-t border-border/40">
-               <div>
-                  <h2 className="text-2xl font-serif mb-6">Artifact Details</h2>
-                  <div className="prose prose-invert text-sm font-light text-muted-foreground whitespace-pre-wrap">
-                    {product.full_description || product.description}
-                  </div>
-               </div>
-               {features.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-serif mb-6">Artifact Details</h2>
+                <div className="prose prose-invert text-sm font-light text-muted-foreground whitespace-pre-wrap">
+                  {product.full_description || product.description}
+                </div>
+              </div>
+              {features.length > 0 && (
                 <div className="space-y-4">
                   <h3 className="text-[10px] font-black uppercase tracking-widest text-champagne">Included Features</h3>
                   <div className="flex flex-wrap gap-2">
@@ -589,13 +605,13 @@ const ProductDetail = () => {
                   <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
                     Read unedited feedback from the collectors' collective who have acquired this artifact.
                   </p>
-                <div className="flex items-center gap-4 p-6 bg-card/40 rounded-3xl border border-border/50">
+                  <div className="flex items-center gap-4 p-6 bg-card/40 rounded-3xl border border-border/50">
                     {product.rating ? (
                       <>
                         <span className="text-5xl font-serif font-black text-champagne">{Number(product.rating).toFixed(1)}</span>
                         <div>
                           <div className="flex items-center mb-1">
-                            {[1,2,3,4,5].map(i => <Star key={i} className={`h-4 w-4 ${i <= Math.round(Number(product.rating)) ? 'fill-champagne text-champagne' : 'text-muted-foreground'}`} />)}
+                            {[1, 2, 3, 4, 5].map(i => <Star key={i} className={`h-4 w-4 ${i <= Math.round(Number(product.rating)) ? 'fill-champagne text-champagne' : 'text-muted-foreground'}`} />)}
                           </div>
                           <span className="text-[10px] uppercase font-black text-muted-foreground/60 tracking-widest">
                             {product.review_count} {product.review_count === 1 ? 'Review' : 'Reviews'}
@@ -608,7 +624,7 @@ const ProductDetail = () => {
                         <span className="text-xs text-muted-foreground">No reviews yet</span>
                       </div>
                     )}
-                </div>
+                  </div>
                 </div>
                 <div className="md:w-2/3">
                   <ReviewSection productId={product.id} productSlug={product.slug} />
@@ -617,20 +633,20 @@ const ProductDetail = () => {
 
               {/* Related Products */}
               <div className="space-y-12 animate-in fade-in slide-in-from-bottom-12 duration-1000">
-                 <div className="flex items-end justify-between">
-                    <div>
-                      <h2 className="text-3xl lg:text-4xl font-serif mb-3">You might also <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-sapphire to-champagne">like</span></h2>
-                      <p className="text-muted-foreground text-sm">Products frequently viewed together with this item.</p>
-                    </div>
-                    <Button variant="luxury-outline" asChild className="hidden sm:flex rounded-full px-6 group transition-all hover:pr-8">
-                      <Link to="/products" className="flex items-center">View All <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-2" /></Link>
-                    </Button>
-                 </div>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                   {relatedProducts.map((p) => (
-                     <ProductCard key={p.id} product={p as any} />
-                   ))}
-                 </div>
+                <div className="flex items-end justify-between">
+                  <div>
+                    <h2 className="text-3xl lg:text-4xl font-serif mb-3">You might also <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-sapphire to-champagne">like</span></h2>
+                    <p className="text-muted-foreground text-sm">Products frequently viewed together with this item.</p>
+                  </div>
+                  <Button variant="luxury-outline" asChild className="hidden sm:flex rounded-full px-6 group transition-all hover:pr-8">
+                    <Link to="/products" className="flex items-center">View All <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-2" /></Link>
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {relatedProducts.map((p) => (
+                    <ProductCard key={p.id} product={p as any} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>

@@ -42,7 +42,7 @@ const Cart = () => {
     const subtotalUSD = items.reduce(
         (total, item) => {
             const itemPriceUSD = convert(item.price / 100, (item.currency || 'USD') as any, 'USD');
-            return total + (itemPriceUSD * 100 * item.quantity);
+            return total + (itemPriceUSD * 100);
         },
         0
     );
@@ -132,7 +132,7 @@ const Cart = () => {
             // Format items for the API
             const checkoutItems = items.map((item) => ({
                 productId: parseInt(item.id),
-                quantity: item.quantity,
+                quantity: 1,
             }));
 
             const response = await api.post("/orders/checkout", {
@@ -274,28 +274,15 @@ const Cart = () => {
 
                                             {/* Footer Controls */}
                                             <div className="flex items-center justify-between pt-6 border-t border-white/5">
-                                                <div className="flex items-center p-1 rounded-full bg-midnight border border-white/5">
-                                                    <button
-                                                        onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                                                        className="h-8 w-8 rounded-full flex items-center justify-center text-cream/40 hover:text-cream hover:bg-white/5 transition-all"
-                                                    >
-                                                        <Minus className="h-3 w-3" />
-                                                    </button>
-                                                    <span className="w-10 text-center text-sm font-mono text-cream/80">
-                                                        {item.quantity.toString().padStart(2, '0')}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                                                        className="h-8 w-8 rounded-full flex items-center justify-center text-cream/40 hover:text-cream hover:bg-white/5 transition-all"
-                                                    >
-                                                        <Plus className="h-3 w-3" />
-                                                    </button>
+                                                <div className="flex items-center gap-2 p-1 px-3 rounded-full bg-midnight border border-white/5">
+                                                    <span className="text-[10px] text-cream/40 uppercase tracking-widest font-black">Quantity:</span>
+                                                    <span className="text-sm font-mono text-cream/80">01</span>
                                                 </div>
 
                                                 <div className="text-right">
-                                                    <p className="text-xs text-cream/20 uppercase tracking-widest font-black mb-1">Row Total</p>
+                                                    <p className="text-xs text-cream/20 uppercase tracking-widest font-black mb-1">Item Total</p>
                                                     <p className="font-serif text-xl text-cream">
-                                                        {formatDisplayPrice(item.price * item.quantity, item.currency)}
+                                                        {formatDisplayPrice(item.price, item.currency)}
                                                     </p>
                                                 </div>
                                             </div>
