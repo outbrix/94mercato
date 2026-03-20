@@ -200,7 +200,7 @@ const DashboardUpload = () => {
 
             toast({
                 title: "Product Created!",
-                description: "Your product has been submitted for admin review.",
+                description: "Your Product has been uploaded successfully.",
             });
 
             // Navigate back to dashboard
@@ -409,7 +409,7 @@ const DashboardUpload = () => {
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="category">Category</Label>
-                                        <CategorySelector 
+                                        <CategorySelector
                                             value={formData.category}
                                             onValueChange={(val) => setFormData({ ...formData, category: val })}
                                         />

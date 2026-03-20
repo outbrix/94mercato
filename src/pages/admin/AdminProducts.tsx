@@ -10,10 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, CheckCircle, XCircle, Trash2, Loader2, Download } from "lucide-react";
+import { MoreHorizontal, Eye, CheckCircle, XCircle, Trash2, Loader2, Download, ShieldCheck } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
+
+type ApiError = { response?: { data?: { message?: string } } };
+const errMsg = (err: unknown, fallback: string) =>
+  ((err as ApiError).response?.data?.message) || fallback;
 
 // Product type matching backend response
 interface Product {
@@ -27,6 +31,7 @@ interface Product {
   badge: string | null;
   images: string[];
   status: 'draft' | 'pending' | 'published' | 'rejected' | 'removed' | 'flagged';
+  is_verified?: boolean;
   created_at: string;
   updated_at: string;
   seller_id: number;
@@ -48,7 +53,7 @@ export default function AdminProducts() {
       setProducts(response.data.products);
     } catch (err: unknown) {
       console.error('Failed to fetch products:', err);
-      setError(err.response?.data?.message || 'Failed to load products');
+      setError(errMsg(err, 'Failed to load products'));
       toast({
         title: "Error",
         description: "Failed to load products. Please try again.",
@@ -77,7 +82,25 @@ export default function AdminProducts() {
       console.error('Failed to update product status:', err);
       toast({
         title: "Error",
-        description: err.response?.data?.message || "Failed to update product status.",
+        description: errMsg(err, "Failed to update product status."),
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Toggle 94M Verified badge
+  const handleToggleVerify = async (productId: number) => {
+    try {
+      const response = await api.patch(`/admin/products/${productId}/verify`);
+      toast({
+        title: response.data.product.is_verified ? '94M Verified granted ✓' : 'Verification removed',
+        description: response.data.message,
+      });
+      fetchProducts();
+    } catch (err: unknown) {
+      toast({
+        title: "Error",
+        description: errMsg(err, "Failed to toggle verification."),
         variant: "destructive",
       });
     }
@@ -96,7 +119,7 @@ export default function AdminProducts() {
       console.error('Failed to delete product:', err);
       toast({
         title: "Error",
-        description: err.response?.data?.message || "Failed to remove product.",
+        description: errMsg(err, "Failed to remove product."),
         variant: "destructive",
       });
     }
@@ -119,7 +142,7 @@ export default function AdminProducts() {
       console.error('Failed to get download URL:', err);
       toast({
         title: "Error",
-        description: err.response?.data?.message || "Failed to download file.",
+        description: errMsg(err, "Failed to download file."),
         variant: "destructive",
       });
     }
@@ -161,6 +184,17 @@ export default function AdminProducts() {
       render: (product: Product) => <StatusBadge status={product.status} />,
     },
     {
+      key: "is_verified",
+      header: "94M Verified",
+      render: (product: Product) => product.is_verified ? (
+        <span className="inline-flex items-center gap-1 text-emerald-400 text-xs font-bold">
+          <ShieldCheck className="h-3.5 w-3.5" /> Verified
+        </span>
+      ) : (
+        <span className="text-cream/30 text-xs">—</span>
+      ),
+    },
+    {
       key: "created_at",
       header: "Created",
       render: (product: Product) => formatDate(product.created_at),
@@ -189,6 +223,13 @@ export default function AdminProducts() {
             >
               <Download className="h-4 w-4 mr-2" />
               Download File
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className={product.is_verified ? "text-amber-400 cursor-pointer" : "text-emerald-400 cursor-pointer"}
+              onClick={() => handleToggleVerify(product.id)}
+            >
+              <ShieldCheck className="h-4 w-4 mr-2" />
+              {product.is_verified ? 'Remove Verification' : 'Grant 94M Verified'}
             </DropdownMenuItem>
             {product.status === "pending" && (
               <>
