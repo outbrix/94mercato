@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Loader2, Star, Package } from "lucide-react";
+import { TierBadge, resolveSellerTier } from "@/components/seller/TierBadge";
 import api from "@/lib/api";
 
 interface Seller {
@@ -12,6 +13,8 @@ interface Seller {
     bio: string | null;
     product_count: number;
     is_verified: boolean;
+    seller_type?: 'Starter' | 'Partner' | 'Creator';
+    role?: string;
 }
 
 const Sellers = () => {
@@ -23,8 +26,8 @@ const Sellers = () => {
         const fetchSellers = async () => {
             try {
                 setIsLoading(true);
-                const response = await api.get('/sellers/featured');
-                setSellers(response.data);
+                const response = await api.get('/auth/sellers?limit=50');
+                setSellers(response.data.sellers || []);
             } catch (err: unknown) {
                 console.error('Error fetching sellers:', err);
                 // Use fallback data if API fails
@@ -94,7 +97,7 @@ const Sellers = () => {
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-champagne/10">
                                                     <span className="text-2xl font-serif text-champagne">
-                                                        {seller.display_name.charAt(0).toUpperCase()}
+                                                        {(seller.display_name || 'Seller').charAt(0).toUpperCase()}
                                                     </span>
                                                 </div>
                                             )}
@@ -102,6 +105,9 @@ const Sellers = () => {
                                         <h3 className="font-medium text-lg group-hover:text-champagne transition-colors">
                                             {seller.display_name}
                                         </h3>
+                                        <div className="flex justify-center mt-1">
+                                            <TierBadge tier={resolveSellerTier(seller.seller_type, seller.role)} size="sm" />
+                                        </div>
                                         {seller.is_verified && (
                                             <span className="inline-flex items-center gap-1 text-xs text-champagne mt-1">
                                                 <Star className="h-3 w-3 fill-current" />

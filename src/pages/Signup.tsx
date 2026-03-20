@@ -27,6 +27,29 @@ const Signup = () => {
   const navigate = useNavigate();
   const { commissionRate } = useSettings();
 
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const user = await loginWithGoogle(tokenResponse.access_token);
+        
+        // Redirect based on role
+        if (user.role === 'admin') {
+          navigate("/admin");
+        } else if (user.role === 'seller') {
+          navigate("/dashboard");
+        } else {
+          // Buyers go to home page
+          navigate("/purchases");
+        }
+      } catch (err: unknown) {
+        setError(getErrorMessage(err));
+      }
+    },
+    onError: () => {
+      setError("Google signup failed");
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -58,25 +81,7 @@ const Signup = () => {
     }
   };
 
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const user = await loginWithGoogle(tokenResponse.access_token);
-        if (user.role === 'admin') {
-          navigate("/admin");
-        } else if (user.role === 'seller') {
-          navigate("/dashboard");
-        } else {
-          navigate("/purchases");
-        }
-      } catch (err: unknown) {
-        setError(getErrorMessage(err));
-      }
-    },
-    onError: () => {
-      setError("Google signup failed");
-    },
-  });
+
 
   return (
     <>

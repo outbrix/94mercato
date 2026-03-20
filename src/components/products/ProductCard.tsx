@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, ShoppingCart, Star } from "lucide-react";
+import { Eye, ShoppingCart, Star, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
@@ -29,6 +29,7 @@ interface ProductCardProps {
     category: string;
     rating: number;
     sales: number;
+    is_verified?: boolean;
   };
   className?: string;
   style?: React.CSSProperties;
@@ -140,6 +141,14 @@ export function ProductCard({ product, className, style, viewMode = "grid" }: Pr
              </Badge>
           )}
         </div>
+
+        {/* 94M Verified Overlay Badge */}
+        {product.is_verified && (
+          <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2.5 py-1 bg-black/70 backdrop-blur-md rounded-full border border-emerald-400/40 text-emerald-400 text-[10px] font-bold uppercase tracking-wider shadow-lg">
+            <ShieldCheck className="h-3 w-3 fill-emerald-400/20" />
+            Verified Selection
+          </div>
+        )}
 
         {/* Price Tag Overlay */}
         <div className="absolute bottom-3 left-3">

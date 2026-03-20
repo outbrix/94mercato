@@ -60,6 +60,7 @@ interface Product {
   seller_is_verified: boolean;
   seller_tier?: string;
   seller_role?: string;
+  is_verified?: boolean;
   rating: number | null;
   review_count: number;
   sales_count: number;
@@ -470,10 +471,15 @@ const ProductDetail = () => {
 
                     <div className="relative">
                       <h1 className="text-3xl lg:text-4xl font-serif leading-tight tracking-tight mb-2">{product.title}</h1>
-                      <div className="flex items-center gap-2 mb-4">
-                        <Badge variant="outline" className="text-[8px] border-sapphire/30 text-sapphire px-2">94M Verified</Badge>
-                        <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-400 px-2 font-bold tracking-tight">Premium Selection</Badge>
-                      </div>
+                      {product.is_verified && (
+                        <div className="flex items-center gap-2 mb-4">
+                          <Badge variant="outline" className="text-[8px] border-sapphire/30 text-sapphire px-2 flex items-center gap-1">
+                            <ShieldCheck className="h-3 w-3" />
+                            94M Verified
+                          </Badge>
+                          <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-400 px-2 font-bold tracking-tight">Verified Selection</Badge>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex items-end gap-3 pt-2">
