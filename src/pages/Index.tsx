@@ -18,7 +18,7 @@ const Index = () => {
         <title>94mercato — Sell What You Know | Digital Marketplace for Creators</title>
         <meta
           name="description"
-          content="94mercato is where creators sell templates, courses, fonts, and digital products directly to their audience — with as low as 2% fees."
+          content="94mercato is where creators sell templates, courses, fonts, and digital products directly to their audience — and keep up to 98% of your revenue."
         />
         <meta property="og:title" content="94mercato — Sell What You Know" />
         <meta
@@ -34,7 +34,9 @@ const Index = () => {
         <Categories />
         <TrendingProducts />
 
+        {/* Hidden until first wave of sellers onboarded — preserved for future use:
         <FeaturedCreators />
+        */}
         <SellerCTA />
         <Testimonials />
         <RecentlyViewed />

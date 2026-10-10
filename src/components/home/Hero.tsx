@@ -72,16 +72,21 @@ export function Hero() {
 
       <div className="container-luxury relative z-10 py-20">
         <div className="max-w-4xl">
-          {/* ─── Eyebrow with live indicator ─── */}
+          {/* ─── Eyebrow with launch badge ─── */}
           <div className="flex items-center gap-3 mb-8 animate-fade-up">
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-cream/5 border border-cream/10 backdrop-blur-sm">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-champagne opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-champagne" />
               </span>
+              <span className="text-xs text-cream/70 font-medium">
+                ✨ Early Creator Access Open — Launching Soon
+              </span>
+              {/* Preserved for future use when creators count is live:
               <span className="text-xs text-cream/70 font-medium">
                 {creators.toLocaleString()}+ creators selling right now
               </span>
+              */}
             </div>
           </div>
 
@@ -100,8 +105,8 @@ export function Hero() {
           {/* ─── Subline ─── */}
           <p className="text-xl md:text-2xl text-cream/50 max-w-2xl mt-8 leading-relaxed font-light animate-fade-up delay-200">
             94mercato is where creators sell templates, courses, fonts, and digital
-            products directly to their audience — with{" "}
-            <span className="text-champagne font-medium">as low as {stats.LOWEST_FEE}% fees</span>.
+            products directly to their audience — and keep up to{" "}
+            <span className="text-champagne font-medium">98% of your revenue</span>.
           </p>
 
           {/* ─── CTA row ─── */}
@@ -123,7 +128,7 @@ export function Hero() {
             </Link>
           </div>
 
-          {/* ─── Social proof strip ─── */}
+          {/* ─── Social proof strip (Preserved for future use) ───
           <div className="flex items-center gap-8 mt-14 pt-8 border-t border-cream/10 animate-fade-up delay-400">
             <div>
               <p className="text-3xl md:text-4xl font-serif font-semibold text-cream tabular-nums">
@@ -152,6 +157,7 @@ export function Hero() {
               </p>
             </div>
           </div>
+          */}
         </div>
       </div>
     </section>

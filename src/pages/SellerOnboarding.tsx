@@ -487,36 +487,36 @@ const SellerOnboarding = () => {
         />
       </Helmet>
       <Layout>
-        <section className="min-h-screen pt-28 pb-20 bg-gradient-to-b from-stone/30 to-background">
-          <div className="container-luxury">
+        <section className="min-h-screen pt-24 sm:pt-28 pb-12 sm:pb-20 bg-gradient-to-b from-stone/30 to-background">
+          <div className="container-luxury px-4 sm:px-6">
             {/* Header */}
-            <div className="text-center mb-12">
-              <h1 className="heading-large mb-3">Become a Seller</h1>
-              <p className="text-muted-foreground">
+            <div className="text-center mb-8 sm:mb-12">
+              <h1 className="heading-large mb-2 sm:mb-3 text-3xl sm:text-4xl md:text-5xl">Become a Seller</h1>
+              <p className="text-muted-foreground text-sm sm:text-base">
                 Complete these steps to start selling your digital products
               </p>
             </div>
 
             {/* Progress Steps */}
-            <div className="max-w-3xl mx-auto mb-12">
+            <div className="max-w-3xl mx-auto mb-8 sm:mb-12">
               <div className="flex items-center justify-between">
                 {steps.map((step, index) => (
-                  <div key={step.id} className="flex items-center">
+                  <div key={step.id} className="flex items-center flex-1 last:flex-none">
                     <div className="flex flex-col items-center">
                       <div
-                        className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${currentStep >= step.id
+                        className={`w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-300 ${currentStep >= step.id
                           ? "bg-champagne text-foreground"
                           : "bg-secondary text-muted-foreground"
                           }`}
                       >
                         {currentStep > step.id ? (
-                          <Check className="h-5 w-5" />
+                          <Check className="h-4 w-4 sm:h-5 sm:w-5" />
                         ) : (
-                          <step.icon className="h-5 w-5" />
+                          <step.icon className="h-4 w-4 sm:h-5 sm:w-5" />
                         )}
                       </div>
                       <span
-                        className={`text-xs mt-2 ${currentStep >= step.id
+                        className={`text-[10px] sm:text-xs mt-1 sm:mt-2 text-center leading-tight ${currentStep >= step.id
                           ? "text-foreground"
                           : "text-muted-foreground"
                           }`}
@@ -526,7 +526,7 @@ const SellerOnboarding = () => {
                     </div>
                     {index < steps.length - 1 && (
                       <div
-                        className={`w-24 md:w-32 h-px mx-4 transition-colors ${currentStep > step.id
+                        className={`flex-1 h-px mx-1 sm:mx-4 transition-colors ${currentStep > step.id
                           ? "bg-champagne"
                           : "bg-border"
                           }`}
@@ -539,7 +539,7 @@ const SellerOnboarding = () => {
 
             {/* Step Content */}
             <div className="max-w-2xl mx-auto">
-              <div className="glass-card-elevated p-8">
+              <div className="glass-card-elevated p-5 sm:p-8">
                 {/* Step 1: Profile */}
                 {currentStep === 1 && (
                   <div className="space-y-6 animate-fade-in">
@@ -910,7 +910,7 @@ const SellerOnboarding = () => {
                       </div>
 
                       {/* Price, Currency, Category */}
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="productPrice">Price *</Label>
                           <Input

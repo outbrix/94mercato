@@ -64,9 +64,12 @@ export function Categories() {
               <span className="text-sm font-medium text-cream/80 group-hover:text-cream transition-colors">
                 {cat.name}
               </span>
+              <ArrowUpRight className="h-3.5 w-3.5 text-cream/30 group-hover:text-champagne transition-colors" />
+              {/* Category count preserved for future use:
               <span className="text-xs text-cream/30 ml-1 tabular-nums">
                 {cat.count}
               </span>
+              */}
             </Link>
           ))}
         </div>

@@ -11,7 +11,7 @@ import { CurrencySwitcher } from './CurrencySwitcher';
 import FuzzyText from '@/components/ui/FuzzyText';
 
 const Logo = () => (
-  <Link to="/" className="group flex items-center pr-3 md:pr-4 border-r border-white/10 hover:border-transparent transition-colors duration-300 shrink-0">
+  <Link to="/" className="group flex items-center pr-2 md:pr-4 md:border-r md:border-white/10 hover:border-transparent transition-colors duration-300 shrink-0">
     <FuzzyText 
       baseIntensity={0.02}
       hoverIntensity={0.08}
@@ -56,19 +56,19 @@ const HeaderActions = ({ onSearchClick }: { onSearchClick: () => void }) => {
   const totalWishlistItems = wishlistItems.length;
 
   return (
-    <div className="flex items-center gap-1.5 md:gap-3">
+    <div className="flex items-center gap-1 md:gap-3">
       <Button
         variant="ghost"
         size="icon"
-        className="h-9 w-9 text-cream/70 hover:text-cream hover:bg-sapphire/10"
+        className="h-8 w-8 md:h-9 md:w-9 text-cream/70 hover:text-cream hover:bg-sapphire/10"
         onClick={onSearchClick}
       >
-        <Search className="h-4 w-4 md:h-5 md:w-5" />
+        <Search className="h-4 w-4" />
       </Button>
       
-      <Link to="/wishlist">
-        <Button variant="ghost" size="icon" className="relative h-9 w-9 text-cream/70 hover:text-cream hover:bg-sapphire/10">
-          <Heart className="h-4 w-4 md:h-5 md:w-5" />
+      <Link to="/wishlist" className="hidden sm:block">
+        <Button variant="ghost" size="icon" className="relative h-8 w-8 md:h-9 md:w-9 text-cream/70 hover:text-cream hover:bg-sapphire/10">
+          <Heart className="h-4 w-4" />
           {totalWishlistItems > 0 &&
             <Badge className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 md:h-4 md:w-4 justify-center p-0 text-[8px] md:text-xs bg-red-500 text-white border-none">{totalWishlistItems}</Badge>
           }
@@ -76,8 +76,8 @@ const HeaderActions = ({ onSearchClick }: { onSearchClick: () => void }) => {
       </Link>
 
       <Link to="/cart">
-        <Button variant="ghost" size="icon" className="relative h-9 w-9 text-cream/70 hover:text-cream hover:bg-sapphire/10">
-          <ShoppingBag className="h-4 w-4 md:h-5 md:w-5" />
+        <Button variant="ghost" size="icon" className="relative h-8 w-8 md:h-9 md:w-9 text-cream/70 hover:text-cream hover:bg-sapphire/10">
+          <ShoppingBag className="h-4 w-4" />
           {totalCartItems > 0 &&
             <Badge className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 md:h-4 md:w-4 justify-center p-0 text-[8px] md:text-xs bg-champagne text-black">{totalCartItems}</Badge>
           }
@@ -158,18 +158,18 @@ export const Header = () => {
         <div className={containerClasses}>
           <Logo />
           <Navigation links={navLinks} />
-          <div className="flex items-center gap-1 md:gap-2">
-            <div className="hidden sm:block">
+          <div className="flex items-center gap-0.5 md:gap-2">
+            <div className="hidden md:block">
               <CurrencySwitcher />
             </div>
             <HeaderActions onSearchClick={() => setSearchOpen(true)} />
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden text-cream"
+              className="lg:hidden text-cream h-8 w-8 md:h-9 md:w-9 shrink-0"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-5 w-5 md:h-6 md:w-6" /> : <Menu className="h-5 w-5 md:h-6 md:w-6" />}
             </Button>
           </div>
         </div>
